@@ -32,6 +32,9 @@ subprojects {
     }
 
     javadoc {
+        options {
+            source = '8'
+        }
         if(JavaVersion.current().isJava9Compatible()) {
             options.addBooleanOption('html5', true)
         }

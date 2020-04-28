@@ -1,5 +1,7 @@
 # Spring Annotated Web Data Binder
 
+[![Build Status](https://travis-ci.org/mattbertolini/spring-annotated-web-data-binder.svg?branch=master)](https://travis-ci.org/mattbertolini/spring-annotated-web-data-binder)
+
 JAX-RS style data binding for Spring MVC and Spring WebFlux. Bind query params, form data, headers, cookies, and 
 session data to a Java bean. It has built-in support for nested beans, type conversion, and validation. It's basically 
 a more advanced `@ModelAttribute`.  

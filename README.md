@@ -1,0 +1,167 @@
+# Spring Annotated Web Data Binder
+
+JAX-RS style data binding for Spring MVC and Spring WebFlux. Bind query params, form data, headers, cookies, and 
+session data to a Java bean. It has built-in support for nested beans, type conversion, and validation. It's basically 
+a more advanced `@ModelAttribute`.  
+
+```java
+public class CustomRequestBean {
+    // Query parameters
+    @RequestParameter("different_name")
+    private String queryParam;
+
+    // Form data
+    @FormParameter("form_data")
+    private String formData;
+    
+    // HTTP headers
+    @HeaderParameter("X-Custom-Header")
+    private String headerValues;
+    
+    // Spring MVC/WebFlux path variables
+    @PathParameter("pathParam")
+    private Integer pathParam;
+
+    // HTTP cookie values
+    @CookieParameter("cookie_value")
+    private String cookieValue;
+
+    // HTTP session attributes
+    @SessionParameter("sessionAttribute")
+    private String sessionAttribute;
+
+    // Spring derived request scoped data like locale and time zone
+    @RequestContext
+    private Locale locale;
+    
+    @RequestContext    
+    private ZoneId timeZone;
+
+    // A nested Java bean with additional annotated properties
+    @BeanParameter
+    private NestedBean nestedBean;
+    
+    // Getters and Setters
+}
+
+@RestController
+public class RequestController {
+
+    @Autowired
+    private SomeService someService; 
+
+    @GetMapping(value = "/example", produces = MediaType.TEXT_PLAIN_VALUE)
+    public String handleRequest(@BeanParameter CustomRequestBean customRequestBean) {
+        return someService.doSomethingWithBean(customRequestBean);
+    }
+}
+```
+
+Full documentation is coming soon.
+
+## Status
+
+This library is in beta status until the version reaches 1.0.0. This is because I would like to see how the API works 
+in the real world before it is considered stable. This means that the API can change without notice until version 1.0.0.
+After version 1.0.0 I will do my best to keep breaking changes to major version changes only.
+
+That being said, the library is tested and usable in a production environment.
+
+## Background
+
+I've had the opportunity to build and maintain multiple RESTful APIs at various companies over the last 10 years. When 
+selecting a web framework, it usually came down to either Spring MVC, or a JAX-RS implementation like Jersey. I've 
+always enjoyed using Spring and Spring MVC and tended to prefer it over JAX-RS but one thing has always bothered me 
+about it: the weak Java bean binding.
+
+The Spring MVC `@ModelAttribute` provides some basic Java bean binding, but it relies on the query parameters directly 
+matching the property names. For example, if the property name is `firstName` with camel case then the query parameter 
+must be camel case as well. This is all fine when building an API from scratch but real life is far from that clean and 
+tidy. Most times I was dealing with pre-existing query parameter names with a variety of naming strategies like snake 
+case and abbreviated parameter names.
+
+There are all sorts of workarounds and hacks to make these use cases work. Most of these workarounds involved modifying 
+lower level Spring components. Nothing felt like it was designed to be exposed to the developer. It was often times 
+easier to leverage JAX-RS and its *Param annotations (`@QueryParam`, `@FormParam`, etc) as they provided much-needed 
+flexibility. It was frustrating as this feature was the only thing I really liked about JAX-RS. I much rather use 
+Spring and Spring MVC.
+
+This library is my attempt to fill the gap I see in Spring MVC.
+
+## Requirements
+
+* Java 8+
+* Spring MVC or Spring WebFlux (5.2.6+)   
+
+## Use
+
+Add the appropriate artifact to your build.
+
+### Spring MVC
+
+Maven:
+```xml
+<dependency>
+    <groupId>com.mattbertolini</groupId>
+    <artifactId>spring-webmvc-annotated-data-binder</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+</dependency>
+```
+
+Gradle:
+```groovy
+implementation 'com.mattbertolini:spring-webmvc-annotated-data-binder:0.1.0-SNAPSHOT'
+```
+
+Ivy:
+```xml
+<dependency org="com.mattbertolini" name="spring-webmvc-annotated-data-binder" rev="0.1.0-SNAPSHOT"/>
+```
+
+### Spring WebFlux
+
+Maven:
+```xml
+<dependency>
+    <groupId>com.mattbertolini</groupId>
+    <artifactId>spring-webflux-annotated-data-binder</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+</dependency>
+```
+
+Gradle:
+```groovy
+implementation 'com.mattbertolini:spring-webflux-annotated-data-binder:0.1.0-SNAPSHOT'
+```
+
+Ivy:
+```xml
+<dependency org="com.mattbertolini" name="spring-webflux-annotated-data-binder" rev="0.1.0-SNAPSHOT"/>
+```
+
+## Build
+
+To build:
+
+```shell
+./gradlew build
+```
+
+Windows:
+```shell
+gradlew.bat build
+```
+
+## Design Goals
+
+I had a few design goals when starting this project:
+
+* Support both Spring MVC and Spring WebFlux.
+* Have no dependencies other than Spring.
+* Behave as close to the `@ModelAttribute` as possible.
+
+I tried to stick to the philosophy "What do 90% of people need 90% of the time".
+
+## License
+
+This project is licensed under the Apache License 2.0. 

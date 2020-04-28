@@ -1,0 +1,139 @@
+= Spring Annotated Web Data Binder
+:toc: left
+
+// Overridden in the Gradle file
+:sourceDir: ../../../src/main/java
+:resourcesDir: ../../../src/main/resources
+
+
+
+== Configuration
+
+Setting up the binder is very simple. Just add a single bean to your Spring configuration:
+
+[source,java,indent=0]
+.Java
+----
+include::{sourceDir}/com/mattbertolini/spring/web/bind/docs/webmvc/ExampleContext.java[tag=javaMvcConfiguration]
+----
+
+If you are using Spring XML configuration you can also add the configuration bean like below. Spring WebFlux doesn't
+have XML-based configuration, but you can add the binder configuration via XML if needed.
+[source,xml,indent=0]
+.XML
+----
+include::{resourcesDir}/com/mattbertolini/spring/web/bind/docs/webmvc/example-context.xml[tag=xmlMvcConfiguration,indent=0]
+----
+
+== Binding Data
+
+The library has the ability to bind several types of HTTP data to a Java Bean:
+
+* Query parameters via `@RequestParameter`
+* Form data via `@FormParameter`
+* Headers via `@HeaderParameter`
+* Cookies via `@CookieParameter`
+* Path variables via `@PathParameter`
+* Session data via `@SessionParameter`
+* Java Servlet/Spring-related objects via `@RequestContext`
+
+=== Query Parameters
+
+To bind query parameters use the `@RequestParameter` annotation.
+
+[source,java,indent=0]
+----
+include::{sourceDir}/com/mattbertolini/spring/web/bind/docs/CustomRequestBean.java[tags=class;queryParam]
+----
+
+=== Form Data
+
+To bind `application/x-www-form-urlencoded` form data use the `@FormParameter` annotation.
+
+[source,java,indent=0]
+----
+include::{sourceDir}/com/mattbertolini/spring/web/bind/docs/CustomRequestBean.java[tags=class;formParam]
+----
+
+[NOTE]
+====
+Due to the architecture of the Java Servlet framework, query parameters and form data are grouped together as request
+parameters. Because of this, the `@RequestParamter` and `@FormParamter` are basically alises for each other in Spring
+MVC. In Spring WebFlux these two data types are treated separately.
+====
+
+
+=== Headers
+
+To bind a header value use the `@HeaderParameter` annotation.
+
+[source,java,indent=0]
+----
+include::{sourceDir}/com/mattbertolini/spring/web/bind/docs/CustomRequestBean.java[tags=class;headerParam]
+----
+
+=== Cookies
+
+To bind a cookie value use the `@CookieParameter` annotation.
+
+[source,java,indent=0]
+----
+include::{sourceDir}/com/mattbertolini/spring/web/bind/docs/CustomRequestBean.java[tags=class;cookieParam]
+----
+
+You can also bind directly to a `javax.servlet.http.Cookie` object.
+
+[source,java,indent=0]
+----
+include::{sourceDir}/com/mattbertolini/spring/web/bind/docs/CustomRequestBean.java[tag=class]
+----
+
+=== Path Variables
+
+Spring MVC supports binding values to URL paths via path variables. To bind path variables use the `@PathParameter`
+annotation.
+
+[source,java,indent=0]
+----
+include::{sourceDir}/com/mattbertolini/spring/web/bind/docs/CustomRequestBean.java[tags=class;pathParam]
+----
+
+=== Session Values
+
+To bind a value from a session use the `@SessionParameter` annotation.
+
+[source,java,indent=0]
+----
+include::{sourceDir}/com/mattbertolini/spring/web/bind/docs/CustomRequestBean.java[tags=class;sessionParam]
+----
+
+== Controller Usage
+
+To bind request data to a bean, use the `@BeanParameter` annotation on the controller method parameter.
+
+[source,java,indent=0]
+----
+include::{sourceDir}/com/mattbertolini/spring/web/bind/docs/ExampleController.java[tags=controllerBody]
+----
+
+== Pre-Load Binding Data at Startup
+
+By default, request bean binding data is lazy loaded on the first request binding to the bean. You can pre-load this
+data at startup by annotating the request bean class with the `@RequestBean` annotation and telling the introspector
+which packages to scan for annotated classes.
+
+[source,java,indent=0]
+----
+package com.example;
+
+include::{sourceDir}/com/mattbertolini/spring/web/bind/docs/CustomRequestBean.java[tags=class;preload;queryParam]
+
+@Configuration
+public class SpringContext {
+    @Bean
+    public BinderConfiguration binderConfiguration() {
+        return new BinderConfiguration()
+            .addPackageToScan("com.example"); // Scan package for @RequestBean annotated classes
+    }
+}
+----

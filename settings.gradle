@@ -1,0 +1,6 @@
+rootProject.name = 'spring-annotated-web-data-binder'
+include 'spring-annotated-data-binder-core'
+include 'spring-webmvc-annotated-data-binder'
+include 'spring-webflux-annotated-data-binder'
+include 'integration-tests'
+include 'docs'

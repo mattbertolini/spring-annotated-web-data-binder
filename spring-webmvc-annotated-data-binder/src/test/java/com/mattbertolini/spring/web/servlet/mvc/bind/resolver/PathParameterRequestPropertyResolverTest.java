@@ -1,0 +1,130 @@
+/*
+ * Copyright 2019-2020 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
+
+import com.mattbertolini.spring.web.bind.annotation.PathParameter;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.core.ResolvableType;
+import org.springframework.core.convert.TypeDescriptor;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.servlet.HandlerMapping;
+
+import java.lang.annotation.Annotation;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
+class PathParameterRequestPropertyResolverTest {
+    private PathParameterRequestPropertyResolver resolver;
+    private ServletWebRequest request;
+    private MockHttpServletRequest servletRequest;
+
+    @BeforeEach
+    void setUp() {
+        resolver = new PathParameterRequestPropertyResolver();
+        servletRequest = new MockHttpServletRequest();
+        request = new ServletWebRequest(servletRequest);
+    }
+
+    @Test
+    void supportsReturnsTrueOnPresenceOfAnnotation() {
+        boolean result = resolver.supports(typeDescriptor(new StubbingAnnotation("name")));
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void supportsReturnsFalseOnMissingAnnotation() {
+        boolean result = resolver.supports(typeDescriptor());
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void supportsReturnsFalseOnMissingAnnotationValue() {
+        boolean result = resolver.supports(typeDescriptor(new StubbingAnnotation(null)));
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void throwsExceptionIfResolveCalledWithNoAnnotation() {
+        // Unlikely to happen as the library always checks the supports method.
+        assertThatExceptionOfType(IllegalStateException.class)
+            .isThrownBy(() -> resolver.resolve(typeDescriptor(), request));
+    }
+
+    @Test
+    void returnsValuePathParameter() {
+        String expected = "pathValue";
+        String parameterName = "pathParamName";
+        makePathParamMap(parameterName, expected);
+        Object actual = resolver.resolve(typeDescriptor(new StubbingAnnotation(parameterName)), request);
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void returnsNullIfNoPathVariableFound() {
+        String parameterName = "pathParamName";
+        emptyPathParamMap();
+        Object actual = resolver.resolve(typeDescriptor(new StubbingAnnotation(parameterName)), request);
+        assertThat(actual).isNull();
+    }
+
+    @Test
+    void returnsNullIfNoPathVariablesMapExistsOnRequest() {
+        String parameterName = "pathParamName";
+        servletRequest.removeAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+        Object actual = resolver.resolve(typeDescriptor(new StubbingAnnotation(parameterName)), request);
+        assertThat(actual).isNull();
+    }
+
+    private void makePathParamMap(String name, String value) {
+        Map<String, String> pathVarsMap = new HashMap<>();
+        pathVarsMap.put(name, value);
+        servletRequest.setAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE, pathVarsMap);
+    }
+
+    private void emptyPathParamMap() {
+        servletRequest.setAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE, Collections.emptyMap());
+    }
+
+    private TypeDescriptor typeDescriptor(Annotation... annotations) {
+        return new TypeDescriptor(ResolvableType.forClass(String.class), null, annotations);
+    }
+
+    @SuppressWarnings("ClassExplicitlyAnnotation")
+    private static class StubbingAnnotation implements PathParameter {
+        private final String name;
+
+        private StubbingAnnotation(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String value() {
+            return name;
+        }
+
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return PathParameter.class;
+        }
+    }
+}

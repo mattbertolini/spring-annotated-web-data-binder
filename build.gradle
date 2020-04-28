@@ -1,0 +1,84 @@
+plugins {
+    id 'base'
+    id 'jacoco'
+}
+
+subprojects {
+    apply plugin: 'java'
+
+    group 'com.mattbertolini'
+    version '0.1.0-SNAPSHOT'
+    
+    sourceCompatibility = 1.8
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation platform('org.springframework:spring-framework-bom:5.2.6.RELEASE')
+        implementation platform('javax.servlet:javax.servlet-api:3.1.0')
+        implementation platform('com.google.code.findbugs:jsr305:3.0.2')
+
+        // Test
+        implementation platform('org.junit:junit-bom:5.6.1')
+        implementation platform('org.assertj:assertj-core:3.15.0')
+        implementation platform('nl.jqno.equalsverifier:equalsverifier:3.1.13')
+        implementation platform('org.mockito:mockito-core:3.3.3')
+    }
+    
+    test {
+        useJUnitPlatform()
+    }
+
+    javadoc {
+        if(JavaVersion.current().isJava9Compatible()) {
+            options.addBooleanOption('html5', true)
+        }
+    }
+}
+
+ext {
+    projectsWithCoverage = []
+    rootJacocoDir = "${rootProject.buildDir}/reports/jacoco/test"
+    mergedExecFile = "${rootProject.buildDir}/jacoco/merged-test.exec"
+    reportHtmlDir = "$rootJacocoDir/html/"
+    reportXmlFile = "$rootJacocoDir/jacocoTestReport.xml"
+}
+
+ext.javadocLinks = [
+    "https://docs.oracle.com/javase/8/docs/api/",
+    "https://docs.oracle.com/javaee/7/api/",
+] as String[]
+
+repositories {
+    mavenCentral()
+}
+
+evaluationDependsOnChildren()
+
+task jacocoRootMerge(type: JacocoMerge) {
+    dependsOn = projectsWithCoverage.test
+    executionData files(projectsWithCoverage.jacocoTestReport.executionData)
+    destinationFile = file(mergedExecFile)
+}
+
+task jacocoMergeReport(type: JacocoReport, dependsOn: jacocoRootMerge) {
+    executionData.setFrom file(mergedExecFile)
+    sourceDirectories.setFrom files(projectsWithCoverage.sourceSets.main.allSource.srcDirs)
+    classDirectories.setFrom files(projectsWithCoverage.sourceSets.main.output)
+    
+
+    reports {
+        html.enabled = true
+        xml.enabled = true
+        csv.enabled = false
+
+        html.destination = file(reportHtmlDir)
+        xml.destination = file(reportXmlFile)
+    }
+}
+
+wrapper {
+    distributionType = Wrapper.DistributionType.ALL
+}

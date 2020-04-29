@@ -108,18 +108,18 @@ Maven:
 <dependency>
     <groupId>com.mattbertolini</groupId>
     <artifactId>spring-webmvc-annotated-data-binder</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
 </dependency>
 ```
 
 Gradle:
 ```groovy
-implementation 'com.mattbertolini:spring-webmvc-annotated-data-binder:0.1.0-SNAPSHOT'
+implementation 'com.mattbertolini:spring-webmvc-annotated-data-binder:0.1.0'
 ```
 
 Ivy:
 ```xml
-<dependency org="com.mattbertolini" name="spring-webmvc-annotated-data-binder" rev="0.1.0-SNAPSHOT"/>
+<dependency org="com.mattbertolini" name="spring-webmvc-annotated-data-binder" rev="0.1.0"/>
 ```
 
 ### Spring WebFlux
@@ -129,18 +129,18 @@ Maven:
 <dependency>
     <groupId>com.mattbertolini</groupId>
     <artifactId>spring-webflux-annotated-data-binder</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
 </dependency>
 ```
 
 Gradle:
 ```groovy
-implementation 'com.mattbertolini:spring-webflux-annotated-data-binder:0.1.0-SNAPSHOT'
+implementation 'com.mattbertolini:spring-webflux-annotated-data-binder:0.1.0'
 ```
 
 Ivy:
 ```xml
-<dependency org="com.mattbertolini" name="spring-webflux-annotated-data-binder" rev="0.1.0-SNAPSHOT"/>
+<dependency org="com.mattbertolini" name="spring-webflux-annotated-data-binder" rev="0.1.0"/>
 ```
 
 ## Build

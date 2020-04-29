@@ -65,9 +65,9 @@ publishing {
 
     publications {
         mavenJava(MavenPublication) {
-            groupId = 'com.mattbertolini'
-            artifactId = 'spring-webflux-annotated-data-binder'
-            version = '0.1.0-SNAPSHOT'
+            groupId = project.group
+            artifactId = project.name
+            version = project.version
 
             from components.java
 

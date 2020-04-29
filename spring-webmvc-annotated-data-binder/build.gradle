@@ -71,6 +71,11 @@ publishing {
                 name = 'Spring MVC Annotated Data Binder'
                 description = 'Annotated Java Bean data binder for Spring MVC'
                 url = 'https://github.com/mattbertolini/spring-annotated-web-data-binder'
+                developers {
+                    developer {
+                        name = 'Matt Bertolini'
+                    }
+                }
                 licenses {
                     license {
                         name = 'The Apache License, Version 2.0'

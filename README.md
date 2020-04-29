@@ -122,15 +122,6 @@ Ivy:
 <dependency org="com.mattbertolini" name="spring-webmvc-annotated-data-binder" rev="0.1.0"/>
 ```
 
-Once the jar is on your classpath, add a `BinderConfiguration` bean to your Spring context:
-
-```java
-@Bean
-public BinderConfiguration binderConfiguration() {
-    return new BinderConfiguration();
-}
-```
-
 ### Spring WebFlux
 
 Maven:
@@ -150,6 +141,17 @@ implementation 'com.mattbertolini:spring-webflux-annotated-data-binder:0.1.0'
 Ivy:
 ```xml
 <dependency org="com.mattbertolini" name="spring-webflux-annotated-data-binder" rev="0.1.0"/>
+```
+
+### Configuration 
+
+Once the jar is on your classpath, add a `BinderConfiguration` bean to your Spring context:
+
+```java
+@Bean
+public BinderConfiguration binderConfiguration() {
+    return new BinderConfiguration();
+}
 ```
 
 ## Build

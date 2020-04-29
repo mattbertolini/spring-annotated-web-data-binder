@@ -3,6 +3,20 @@ plugins {
     id 'jacoco'
 }
 
+ext {
+    projectsWithCoverage = []
+    rootJacocoDir = "${rootProject.buildDir}/reports/jacoco/test"
+    mergedExecFile = "${rootProject.buildDir}/jacoco/merged-test.exec"
+    reportHtmlDir = "$rootJacocoDir/html/"
+    reportXmlFile = "$rootJacocoDir/jacocoTestReport.xml"
+}
+
+ext.javadocLinks = [
+    'https://docs.oracle.com/javase/8/docs/api/',
+    'https://docs.oracle.com/javaee/7/api/',
+    'https://docs.spring.io/spring/docs/5.2.6.RELEASE/javadoc-api/'
+] as String[]
+
 subprojects {
     apply plugin: 'java'
 
@@ -34,25 +48,13 @@ subprojects {
     javadoc {
         options {
             source = '8'
+            links = rootProject.ext.javadocLinks
         }
         if(JavaVersion.current().isJava9Compatible()) {
             options.addBooleanOption('html5', true)
         }
     }
 }
-
-ext {
-    projectsWithCoverage = []
-    rootJacocoDir = "${rootProject.buildDir}/reports/jacoco/test"
-    mergedExecFile = "${rootProject.buildDir}/jacoco/merged-test.exec"
-    reportHtmlDir = "$rootJacocoDir/html/"
-    reportXmlFile = "$rootJacocoDir/jacocoTestReport.xml"
-}
-
-ext.javadocLinks = [
-    "https://docs.oracle.com/javase/8/docs/api/",
-    "https://docs.oracle.com/javaee/7/api/",
-] as String[]
 
 repositories {
     mavenCentral()

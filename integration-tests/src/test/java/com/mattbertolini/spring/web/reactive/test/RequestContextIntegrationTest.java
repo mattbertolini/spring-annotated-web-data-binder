@@ -19,7 +19,7 @@ import java.util.TimeZone;
 import static com.mattbertolini.spring.web.reactive.test.SessionMutator.session;
 
 @SpringJUnitWebConfig(classes = {RequestContextIntegrationTest.Context.class})
-public class RequestContextIntegrationTest {
+class RequestContextIntegrationTest {
     private WebTestClient webTestClient;
 
     @BeforeEach

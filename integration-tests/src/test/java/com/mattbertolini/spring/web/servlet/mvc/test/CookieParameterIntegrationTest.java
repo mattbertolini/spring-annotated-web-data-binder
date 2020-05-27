@@ -37,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringJUnitWebConfig(classes = {CookieParameterIntegrationTest.Context.class})
-public class CookieParameterIntegrationTest {
+class CookieParameterIntegrationTest {
 
     private MockMvc mockMvc;
 

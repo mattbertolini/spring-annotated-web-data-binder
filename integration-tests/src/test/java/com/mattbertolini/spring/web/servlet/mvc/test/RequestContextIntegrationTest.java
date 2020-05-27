@@ -40,7 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringJUnitWebConfig(classes = {RequestContextIntegrationTest.Context.class})
-public class RequestContextIntegrationTest {
+class RequestContextIntegrationTest {
     private MockMvc mockMvc;
 
     @BeforeEach

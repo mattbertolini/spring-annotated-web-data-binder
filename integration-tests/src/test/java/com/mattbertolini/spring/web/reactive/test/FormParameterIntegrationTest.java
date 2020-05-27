@@ -32,7 +32,7 @@ import org.springframework.web.reactive.config.EnableWebFlux;
 import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
 
 @SpringJUnitWebConfig(classes = {FormParameterIntegrationTest.Context.class})
-public class FormParameterIntegrationTest {
+class FormParameterIntegrationTest {
 
     private WebTestClient webTestClient;
 

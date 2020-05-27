@@ -30,7 +30,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.reactive.config.EnableWebFlux;
 
 @SpringJUnitWebConfig(classes = {RequestParameterIntegrationTest.Context.class})
-public class RequestParameterIntegrationTest {
+class RequestParameterIntegrationTest {
 
     private WebTestClient webTestClient;
 

@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringJUnitWebConfig(classes = {SessionParameterIntegrationTest.Context.class})
-public class SessionParameterIntegrationTest {
+class SessionParameterIntegrationTest {
 
     private MockMvc mockMvc;
 

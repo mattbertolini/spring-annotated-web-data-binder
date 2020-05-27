@@ -19,5 +19,5 @@ package com.mattbertolini.spring.web.bind.docs.webflux;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 
 @SpringJUnitWebConfig(classes = {ExampleContext.class})
-public class WebFluxDocsJavaConfigIntegrationTest {
+class WebFluxDocsJavaConfigIntegrationTest {
 }

@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringJUnitWebConfig(locations = {"/com/mattbertolini/spring/web/bind/docs/webmvc/example-context.xml"})
-public class WebMvcDocsXmlConfigIntegrationTest {
+class WebMvcDocsXmlConfigIntegrationTest {
 
     private MockMvc mockMvc;
 

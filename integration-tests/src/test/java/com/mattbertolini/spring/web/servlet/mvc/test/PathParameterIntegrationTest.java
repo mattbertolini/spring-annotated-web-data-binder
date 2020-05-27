@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringJUnitWebConfig(classes = {PathParameterIntegrationTest.Context.class})
-public class PathParameterIntegrationTest {
+class PathParameterIntegrationTest {
 
     private MockMvc mockMvc;
 

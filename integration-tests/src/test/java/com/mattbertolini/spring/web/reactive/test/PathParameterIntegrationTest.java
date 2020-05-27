@@ -29,7 +29,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.reactive.config.EnableWebFlux;
 
 @SpringJUnitWebConfig(classes = {PathParameterIntegrationTest.Context.class})
-public class PathParameterIntegrationTest {
+class PathParameterIntegrationTest {
 
     private WebTestClient webTestClient;
 

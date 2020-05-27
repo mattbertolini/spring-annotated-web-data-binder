@@ -30,7 +30,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.reactive.config.EnableWebFlux;
 
 @SpringJUnitWebConfig(classes = {CookieParameterIntegrationTest.Context.class})
-public class CookieParameterIntegrationTest {
+class CookieParameterIntegrationTest {
 
     private WebTestClient webTestClient;
 

@@ -1,6 +1,7 @@
 plugins {
     id 'base'
     id 'jacoco'
+    id 'org.sonarqube' version '2.8'
 }
 
 ext {
@@ -81,6 +82,12 @@ task jacocoMergeReport(type: JacocoReport, dependsOn: jacocoRootMerge) {
 
         html.destination = file(reportHtmlDir)
         xml.destination = file(reportXmlFile)
+    }
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "mattbertolini_spring-annotated-web-data-binder"
     }
 }
 

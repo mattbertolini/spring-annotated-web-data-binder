@@ -35,7 +35,7 @@ class WebFluxDocsJavaConfigIntegrationTest {
     }
 
     @Test
-    void name() {
+    void makesRequestAndBindsData() {
         webTestClient.post()
             .uri("/example/42?different_name=different_value")
             .accept(MediaType.TEXT_PLAIN)

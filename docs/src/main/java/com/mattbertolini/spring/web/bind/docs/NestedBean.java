@@ -16,5 +16,17 @@
 
 package com.mattbertolini.spring.web.bind.docs;
 
+import com.mattbertolini.spring.web.bind.annotation.RequestParameter;
+
 public class NestedBean {
+    @RequestParameter("nested_request_param")
+    private String nestedRequestParameter;
+
+    public String getNestedRequestParameter() {
+        return nestedRequestParameter;
+    }
+
+    public void setNestedRequestParameter(String nestedRequestParameter) {
+        this.nestedRequestParameter = nestedRequestParameter;
+    }
 }

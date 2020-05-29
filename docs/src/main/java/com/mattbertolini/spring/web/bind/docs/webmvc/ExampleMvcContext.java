@@ -25,7 +25,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
 @EnableWebMvc
-public class ExampleContext {
+public class ExampleMvcContext {
     // tag::javaMvcConfiguration[]
     @Bean
     public BinderConfiguration binderConfiguration() {

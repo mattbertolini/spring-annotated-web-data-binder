@@ -29,7 +29,7 @@ import javax.servlet.http.Cookie;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringJUnitWebConfig(classes = {ExampleContext.class})
+@SpringJUnitWebConfig(classes = {ExampleMvcContext.class})
 class WebMvcDocsJavaConfigIntegrationTest {
 
     private MockMvc mockMvc;
@@ -49,6 +49,7 @@ class WebMvcDocsJavaConfigIntegrationTest {
             .header("X-Custom-Header", "A_Header_Value")
             .cookie(new Cookie("cookie_value", "some_cookie_value"))
             .queryParam("different_name", "different_value")
+            .queryParam("nested_request_param", "nested")
             .sessionAttr("sessionAttribute", "sessionValue"))
             .andExpect(status().isOk());
     }

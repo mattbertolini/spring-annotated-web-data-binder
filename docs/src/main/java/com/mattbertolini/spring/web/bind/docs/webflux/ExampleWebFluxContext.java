@@ -25,7 +25,7 @@ import org.springframework.web.reactive.config.EnableWebFlux;
 
 @Configuration
 @EnableWebFlux
-public class ExampleContext {
+public class ExampleWebFluxContext {
     @Bean
     public BinderConfiguration binderConfiguration() {
         return new BinderConfiguration();

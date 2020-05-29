@@ -49,6 +49,7 @@ class WebMvcDocsXmlConfigIntegrationTest {
             .header("X-Custom-Header", "A_Header_Value")
             .cookie(new Cookie("cookie_value", "some_cookie_value"))
             .queryParam("different_name", "different_value")
+            .queryParam("nested_request_param", "nested")
             .sessionAttr("sessionAttribute", "sessionValue"))
             .andExpect(status().isOk());
     }

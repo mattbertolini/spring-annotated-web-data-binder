@@ -25,7 +25,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
 
-@SpringJUnitWebConfig(classes = {ExampleContext.class})
+@SpringJUnitWebConfig(classes = {ExampleWebFluxContext.class})
 class WebFluxDocsJavaConfigIntegrationTest {
     private WebTestClient webTestClient;
 
@@ -37,7 +37,7 @@ class WebFluxDocsJavaConfigIntegrationTest {
     @Test
     void makesRequestAndBindsData() {
         webTestClient.post()
-            .uri("/example/42?different_name=different_value")
+            .uri("/example/42?different_name=different_value&nested_request_param=nested")
             .accept(MediaType.TEXT_PLAIN)
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .body(fromFormData("form_data_", "form_value"))

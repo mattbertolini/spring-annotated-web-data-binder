@@ -1,0 +1,83 @@
+package com.mattbertolini.spring.web.bind;
+
+import com.mattbertolini.spring.web.bind.resolver.RequestPropertyResolverBase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.core.convert.TypeDescriptor;
+
+import java.util.Collections;
+import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+class AbstractPropertyResolverRegistryTest {
+    private TestingRegistry registry;
+
+    @BeforeEach
+    void setUp() {
+        registry = new TestingRegistry();
+    }
+
+    @Test
+    void findsResolvers() {
+        TestingResolver resolverOne = mock(TestingResolver.class);
+        TestingResolver resolverTwo = mock(TestingResolver.class);
+        TestingResolver resolverThree = mock(TestingResolver.class);
+
+        when(resolverTwo.supports(any(TypeDescriptor.class))).thenReturn(true);
+
+        registry.addResolver(resolverOne);
+        registry.addResolver(resolverTwo);
+        registry.addResolver(resolverThree);
+
+        TestingResolver actual = registry.findResolverFor(TypeDescriptor.valueOf(String.class));
+        assertThat(actual).isEqualTo(resolverTwo);
+    }
+
+    @Test
+    void addResolversWithSet() {
+        TestingResolver resolver = mock(TestingResolver.class);
+        Set<TestingResolver> set = Collections.singleton(resolver);
+
+        registry.addResolvers(set);
+
+        Set<TestingResolver> actual = registry.getPropertyResolvers();
+        assertThat(actual)
+            .isNotEmpty()
+            .containsAll(set);
+    }
+
+    @Test
+    void addResolversFromAnotherRegistry() {
+        TestingResolver resolverOne = mock(TestingResolver.class);
+        TestingResolver resolverTwo = mock(TestingResolver.class);
+        TestingRegistry anotherRegistry = new TestingRegistry();
+        anotherRegistry.addResolver(resolverOne);
+        anotherRegistry.addResolver(resolverTwo);
+
+        registry.addResolvers(anotherRegistry);
+
+        Set<TestingResolver> actual = registry.getPropertyResolvers();
+        assertThat(actual)
+            .isNotEmpty()
+            .contains(resolverOne, resolverTwo);
+    }
+
+    @Test
+    void addsSingleResolver() {
+        TestingResolver resolver = mock(TestingResolver.class);
+
+        registry.addResolver(resolver);
+
+        Set<TestingResolver> actual = registry.getPropertyResolvers();
+        assertThat(actual)
+            .isNotEmpty()
+            .contains(resolver);
+    }
+
+    private interface TestingResolver extends RequestPropertyResolverBase<Object, Object> {}
+    private static class TestingRegistry extends AbstractPropertyResolverRegistry<TestingResolver> {}
+}

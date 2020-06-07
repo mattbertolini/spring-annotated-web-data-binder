@@ -17,6 +17,7 @@
 package com.mattbertolini.spring.web.reactive.test;
 
 import org.springframework.http.client.reactive.ClientHttpConnector;
+import org.springframework.lang.NonNull;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.reactive.server.WebTestClientConfigurer;
 import org.springframework.web.server.adapter.WebHttpHandlerBuilder;
@@ -37,7 +38,7 @@ class SessionMutator implements WebTestClientConfigurer {
     }
 
     @Override
-    public void afterConfigurerAdded(WebTestClient.Builder builder, WebHttpHandlerBuilder httpHandlerBuilder, ClientHttpConnector connector) {
+    public void afterConfigurerAdded(@NonNull WebTestClient.Builder builder, WebHttpHandlerBuilder httpHandlerBuilder, ClientHttpConnector connector) {
         httpHandlerBuilder.filter(new SessionFilter(attributes));
     }
 }

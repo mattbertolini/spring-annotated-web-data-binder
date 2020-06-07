@@ -36,12 +36,12 @@ import org.springframework.web.reactive.config.WebFluxConfigurationSupport;
 import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
 
 @SpringJUnitWebConfig(classes = {DirectFieldAccessIntegrationTest.Context.class})
-public class DirectFieldAccessIntegrationTest {
+class DirectFieldAccessIntegrationTest {
 
     private WebTestClient webTestClient;
 
     @BeforeEach
-    public void setUp(WebApplicationContext webApplicationContext) {
+    void setUp(WebApplicationContext webApplicationContext) {
         webTestClient = WebTestClient.bindToApplicationContext(webApplicationContext).build();
     }
 

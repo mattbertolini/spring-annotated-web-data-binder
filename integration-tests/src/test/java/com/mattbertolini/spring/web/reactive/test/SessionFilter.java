@@ -16,6 +16,7 @@
 
 package com.mattbertolini.spring.web.reactive.test;
 
+import org.springframework.lang.NonNull;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
@@ -33,6 +34,7 @@ class SessionFilter implements WebFilter {
     }
 
     @Override
+    @NonNull
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         return exchange.getSession()
             .doOnNext(webSession -> webSession.getAttributes().putAll(attributes))

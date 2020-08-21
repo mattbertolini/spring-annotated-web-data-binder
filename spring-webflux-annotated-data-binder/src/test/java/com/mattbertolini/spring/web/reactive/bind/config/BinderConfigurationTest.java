@@ -4,10 +4,8 @@ import com.mattbertolini.spring.web.reactive.bind.BeanParameterMethodArgumentRes
 import com.mattbertolini.spring.web.reactive.bind.PropertyResolverRegistry;
 import com.mattbertolini.spring.web.reactive.bind.resolver.RequestContextRequestPropertyResolver;
 import com.mattbertolini.spring.web.reactive.bind.resolver.RequestPropertyResolver;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.core.ReactiveAdapterRegistry;
 import org.springframework.web.reactive.result.method.annotation.ArgumentResolverConfigurer;
 import org.springframework.web.reactive.result.method.annotation.RequestMappingHandlerAdapter;
@@ -15,10 +13,8 @@ import org.springframework.web.reactive.result.method.annotation.RequestMappingH
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.mock;
@@ -37,33 +33,24 @@ class BinderConfigurationTest {
     }
 
     @Test
-    void returnsBeanIfNotHandlerAdapter() throws Exception {
-        config.afterPropertiesSet();
+    void returnsBeanIfNotHandlerAdapter() {
         Object obj = config.postProcessBeforeInitialization(new Object(), "irrelevant");
         assertThat(obj).isNotNull();
         assertThat(obj).isInstanceOf(Object.class);
     }
 
     @Test
-    void returnsAdapterBeanIfCorrectType() throws Exception {
-        config.afterPropertiesSet();
+    void returnsAdapterBeanIfCorrectType() {
         Object obj = config.postProcessBeforeInitialization(adapter, "irrelevant");
         assertThat(obj).isInstanceOf(RequestMappingHandlerAdapter.class);
     }
 
     @Test
-    void addsMethodArgumentResolverToConfigurer() throws Exception {
-        config.afterPropertiesSet();
+    void addsMethodArgumentResolverToConfigurer() {
         ArgumentResolverConfigurer resolverConfigurer = mock(ArgumentResolverConfigurer.class);
         when(adapter.getArgumentResolverConfigurer()).thenReturn(resolverConfigurer);
         config.postProcessBeforeInitialization(adapter, "irrelevant");
         verify(resolverConfigurer).addCustomResolver(any(BeanParameterMethodArgumentResolver.class));
-    }
-
-    @Test
-    void throwsExceptionIfIntrospectorIsNull() {
-        assertThatThrownBy(() -> config.postProcessBeforeInitialization(adapter, "irrelevant"))
-            .isInstanceOf(IllegalStateException.class);
     }
 
     @Test

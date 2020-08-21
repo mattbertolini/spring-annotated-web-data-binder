@@ -16,15 +16,25 @@
 
 package com.mattbertolini.spring.web.servlet.mvc.bind.config;
 
+import com.mattbertolini.spring.web.bind.introspect.AnnotatedRequestBeanIntrospector;
 import com.mattbertolini.spring.web.bind.introspect.ClassPathScanningAnnotatedRequestBeanIntrospector;
 import com.mattbertolini.spring.web.bind.introspect.DefaultAnnotatedRequestBeanIntrospector;
 import com.mattbertolini.spring.web.servlet.mvc.bind.BeanParameterMethodArgumentResolver;
-import com.mattbertolini.spring.web.servlet.mvc.bind.DefaultPropertyResolverRegistry;
 import com.mattbertolini.spring.web.servlet.mvc.bind.PropertyResolverRegistry;
+import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.CookieParameterRequestPropertyResolver;
+import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.FormParameterMapRequestPropertyResolver;
+import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.FormParameterRequestPropertyResolver;
+import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.HeaderParameterMapRequestPropertyResolver;
+import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.HeaderParameterRequestPropertyResolver;
+import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.PathParameterMapRequestPropertyResolver;
+import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.PathParameterRequestPropertyResolver;
+import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.RequestContextRequestPropertyResolver;
+import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.RequestParameterMapRequestPropertyResolver;
+import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.RequestParameterRequestPropertyResolver;
 import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.RequestPropertyResolver;
+import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.SessionParameterRequestPropertyResolver;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanInitializationException;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
@@ -35,13 +45,12 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-public class BinderConfiguration implements InitializingBean, BeanPostProcessor {
+public class BinderConfiguration implements BeanPostProcessor {
     private final Set<String> packagesToScan;
     private final PropertyResolverRegistry propertyResolverRegistry;
-    private BeanParameterMethodArgumentResolver resolver;
 
     public BinderConfiguration() {
-        this(new DefaultPropertyResolverRegistry());
+        this(new PropertyResolverRegistry());
     }
 
     public BinderConfiguration(PropertyResolverRegistry propertyResolverRegistry) {
@@ -79,27 +88,58 @@ public class BinderConfiguration implements InitializingBean, BeanPostProcessor 
     }
 
     @Override
-    public void afterPropertiesSet() {
-        DefaultAnnotatedRequestBeanIntrospector defaultIntrospector = new DefaultAnnotatedRequestBeanIntrospector(propertyResolverRegistry);
-        ClassPathScanningAnnotatedRequestBeanIntrospector introspector = new ClassPathScanningAnnotatedRequestBeanIntrospector(defaultIntrospector, packagesToScan);
-        try {
-            introspector.afterPropertiesSet();
-        } catch (Exception e) {
-            throw new BeanInitializationException("Unable to create introspector");
-        }
-        resolver = new BeanParameterMethodArgumentResolver(introspector);
-    }
-
-    @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
         if (!(bean instanceof RequestMappingHandlerAdapter)) {
             return bean;
         }
 
-        if (resolver == null) {
-            throw new IllegalStateException("BeanParameterMethodArgumentResolver is null. Perhaps the afterPropertiesSet method was not called?");
-        }
         RequestMappingHandlerAdapter adapter = (RequestMappingHandlerAdapter) bean;
+
+        PropertyResolverRegistry propertyResolverRegistry = createPropertyResolverRegistry();
+        AnnotatedRequestBeanIntrospector introspector = createIntrospector(propertyResolverRegistry);
+        BeanParameterMethodArgumentResolver resolver = createResolver(introspector);
+
+        addCustomResolverToHandlerAdapter(adapter, resolver);
+
+        return adapter;
+    }
+
+    private PropertyResolverRegistry createPropertyResolverRegistry() {
+        PropertyResolverRegistry registry = new PropertyResolverRegistry();
+
+        registry.addResolver(new RequestParameterRequestPropertyResolver());
+        registry.addResolver(new RequestParameterMapRequestPropertyResolver());
+        registry.addResolver(new FormParameterRequestPropertyResolver());
+        registry.addResolver(new FormParameterMapRequestPropertyResolver());
+        registry.addResolver(new PathParameterRequestPropertyResolver());
+        registry.addResolver(new PathParameterMapRequestPropertyResolver());
+        registry.addResolver(new CookieParameterRequestPropertyResolver());
+        registry.addResolver(new HeaderParameterRequestPropertyResolver());
+        registry.addResolver(new HeaderParameterMapRequestPropertyResolver());
+        registry.addResolver(new SessionParameterRequestPropertyResolver());
+        registry.addResolver(new RequestContextRequestPropertyResolver());
+        
+        registry.addResolvers(propertyResolverRegistry);
+
+        return registry;
+    }
+
+    private AnnotatedRequestBeanIntrospector createIntrospector(PropertyResolverRegistry registry) {
+        DefaultAnnotatedRequestBeanIntrospector defaultIntrospector = new DefaultAnnotatedRequestBeanIntrospector(registry);
+        ClassPathScanningAnnotatedRequestBeanIntrospector introspector = new ClassPathScanningAnnotatedRequestBeanIntrospector(defaultIntrospector, packagesToScan);
+        try {
+            introspector.afterPropertiesSet();
+        } catch (Exception e) {
+            throw new BeanInitializationException("Unable to create introspector", e);
+        }
+        return introspector;
+    }
+
+    private BeanParameterMethodArgumentResolver createResolver(AnnotatedRequestBeanIntrospector introspector) {
+        return new BeanParameterMethodArgumentResolver(introspector);
+    }
+
+    private void addCustomResolverToHandlerAdapter(RequestMappingHandlerAdapter adapter, BeanParameterMethodArgumentResolver resolver) {
         List<HandlerMethodArgumentResolver> currentResolvers = adapter.getCustomArgumentResolvers();
         if (currentResolvers == null) {
             currentResolvers = Collections.emptyList();
@@ -108,7 +148,5 @@ public class BinderConfiguration implements InitializingBean, BeanPostProcessor 
         newResolvers.addAll(currentResolvers);
         newResolvers.add(resolver);
         adapter.setCustomArgumentResolvers(newResolvers);
-
-        return adapter;
     }
 }

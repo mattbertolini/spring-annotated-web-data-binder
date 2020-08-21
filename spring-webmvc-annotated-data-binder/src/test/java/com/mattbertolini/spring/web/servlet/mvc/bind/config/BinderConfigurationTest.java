@@ -31,7 +31,6 @@ class BinderConfigurationTest {
 
     @Test
     void returnsBeanIfNotHandlerAdapter() throws Exception {
-        config.afterPropertiesSet();
         Object obj = config.postProcessBeforeInitialization(new Object(), "irrelevant");
         assertThat(obj).isNotNull();
         assertThat(obj).isInstanceOf(Object.class);
@@ -39,22 +38,14 @@ class BinderConfigurationTest {
 
     @Test
     void returnsAdapterBeanIfCorrectType() throws Exception {
-        config.afterPropertiesSet();
         Object obj = config.postProcessBeforeInitialization(adapter, "irrelevant");
         assertThat(obj).isInstanceOf(RequestMappingHandlerAdapter.class);
     }
 
     @Test
     void setsCustomerResolver() throws Exception {
-        config.afterPropertiesSet();
         config.postProcessBeforeInitialization(adapter, "irrelevant");
         verify(adapter).setCustomArgumentResolvers(anyList());
-    }
-
-    @Test
-    void throwsExceptionIfResolverIsNull() {
-        assertThatThrownBy(() -> config.postProcessBeforeInitialization(adapter, "irrelevant"))
-            .isInstanceOf(IllegalStateException.class);
     }
 
     @Test

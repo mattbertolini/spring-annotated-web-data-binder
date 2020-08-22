@@ -77,6 +77,7 @@ public class DefaultAnnotatedRequestBeanIntrospector implements AnnotatedRequest
         PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
         for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
             String propertyName = getPropertyName(prefix, propertyDescriptor);
+            BindingProperty bindingProperty = BindingProperty.forPropertyDescriptor(propertyDescriptor);
             TypeDescriptor typeDescriptor = createTypeDescriptor(propertyDescriptor);
             Class<?> type = typeDescriptor.getType();
             if (typeDescriptor.hasAnnotation(BeanParameter.class) && !BeanUtils.isSimpleProperty(type)) {
@@ -92,7 +93,7 @@ public class DefaultAnnotatedRequestBeanIntrospector implements AnnotatedRequest
                 if (resolver == null) {
                     continue;
                 }
-                propertyData.add(new ResolvedPropertyData(propertyName, typeDescriptor, resolver));
+                propertyData.add(new ResolvedPropertyData(propertyName, typeDescriptor, bindingProperty, resolver));
             }
         }
     }

@@ -19,6 +19,7 @@ package com.mattbertolini.spring.web.servlet.mvc.bind;
 import com.mattbertolini.spring.web.bind.RequestPropertyBindingException;
 import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
 import com.mattbertolini.spring.web.bind.introspect.AnnotatedRequestBeanIntrospector;
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import com.mattbertolini.spring.web.bind.introspect.ResolvedPropertyData;
 import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.RequestPropertyResolver;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,6 +42,7 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import javax.validation.Valid;
+import java.beans.PropertyDescriptor;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -151,8 +153,8 @@ class BeanParameterMethodArgumentResolverTest {
     @Test
     void resolvesPropertyValues() throws Exception {
         List<ResolvedPropertyData> propertyData = Arrays.asList(
-            new ResolvedPropertyData("propertyOne", TypeDescriptor.valueOf(String.class), MockRequestPropertyResolver.value("expected")),
-            new ResolvedPropertyData("propertyTwo", TypeDescriptor.valueOf(Integer.class), MockRequestPropertyResolver.value(42))
+            new ResolvedPropertyData("propertyOne", TypeDescriptor.valueOf(String.class), BindingProperty.forPropertyDescriptor(new PropertyDescriptor("propertyOne", ABeanClass.class)), MockRequestPropertyResolver.value("expected")),
+            new ResolvedPropertyData("propertyTwo", TypeDescriptor.valueOf(Integer.class), BindingProperty.forPropertyDescriptor(new PropertyDescriptor("propertyTwo", ABeanClass.class)), MockRequestPropertyResolver.value(42))
         );
 
         MethodParameter methodParameter = createMethodParameter("anAnnotatedMethod", ABeanClass.class);
@@ -178,8 +180,8 @@ class BeanParameterMethodArgumentResolverTest {
     @Test
     void resolvesOnlyFoundPropertyValues() throws Exception {
         List<ResolvedPropertyData> propertyData = Arrays.asList(
-            new ResolvedPropertyData("propertyOne", TypeDescriptor.valueOf(String.class), MockRequestPropertyResolver.noValueFound()),
-            new ResolvedPropertyData("propertyTwo", TypeDescriptor.valueOf(Integer.class), MockRequestPropertyResolver.value(42))
+            new ResolvedPropertyData("propertyOne", TypeDescriptor.valueOf(String.class), BindingProperty.forPropertyDescriptor(new PropertyDescriptor("propertyOne", ABeanClass.class)), MockRequestPropertyResolver.noValueFound()),
+            new ResolvedPropertyData("propertyTwo", TypeDescriptor.valueOf(Integer.class), BindingProperty.forPropertyDescriptor(new PropertyDescriptor("propertyTwo", ABeanClass.class)), MockRequestPropertyResolver.value(42))
         );
 
         MethodParameter methodParameter = createMethodParameter("anAnnotatedMethod", ABeanClass.class);
@@ -202,8 +204,8 @@ class BeanParameterMethodArgumentResolverTest {
     @Test
     void throwsExceptionWhenResolverErrors() throws Exception {
         List<ResolvedPropertyData> propertyData = Arrays.asList(
-            new ResolvedPropertyData("propertyOne", TypeDescriptor.valueOf(String.class), MockRequestPropertyResolver.value("expected")),
-            new ResolvedPropertyData("propertyTwo", TypeDescriptor.valueOf(Integer.class), MockRequestPropertyResolver.throwsException())
+            new ResolvedPropertyData("propertyOne", TypeDescriptor.valueOf(String.class), BindingProperty.forPropertyDescriptor(new PropertyDescriptor("propertyOne", ABeanClass.class)), MockRequestPropertyResolver.value("expected")),
+            new ResolvedPropertyData("propertyTwo", TypeDescriptor.valueOf(Integer.class), BindingProperty.forPropertyDescriptor(new PropertyDescriptor("propertyTwo", ABeanClass.class)), MockRequestPropertyResolver.throwsException())
         );
         
         MethodParameter methodParameter = createMethodParameter("anAnnotatedMethod", ABeanClass.class);
@@ -395,7 +397,26 @@ class BeanParameterMethodArgumentResolverTest {
         public void withBindingResult(@BeanParameter @Validated ABeanClass aBeanClass, BindingResult bindingResult) {}
     }
 
-    private static class ABeanClass {}
+    private static class ABeanClass {
+        private String propertyOne;
+        private Integer propertyTwo;
+
+        public String getPropertyOne() {
+            return propertyOne;
+        }
+
+        public void setPropertyOne(String propertyOne) {
+            this.propertyOne = propertyOne;
+        }
+
+        public Integer getPropertyTwo() {
+            return propertyTwo;
+        }
+
+        public void setPropertyTwo(Integer propertyTwo) {
+            this.propertyTwo = propertyTwo;
+        }
+    }
 
     private static class ValidationGroupOne {}
     private static class ValidationGroupTwo {}

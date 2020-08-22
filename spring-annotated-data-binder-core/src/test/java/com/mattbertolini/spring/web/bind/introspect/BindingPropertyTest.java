@@ -141,7 +141,7 @@ class BindingPropertyTest {
     }
 
     @SuppressWarnings("unused")
-    static class TestingType {
+    private static class TestingType {
         private String stringProperty;
 
         private int primitiveProperty;

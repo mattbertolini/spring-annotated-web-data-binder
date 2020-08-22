@@ -112,6 +112,7 @@ class HeaderParameterMapRequestPropertyResolverTest {
         assertThat(map).containsEntry("x-header", "one");
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void returnsEmptyMapWhenHeaderValuesReturnsNull() {
         NativeWebRequest mock = mock(NativeWebRequest.class);

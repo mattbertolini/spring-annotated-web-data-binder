@@ -79,8 +79,8 @@ public class DefaultAnnotatedRequestBeanIntrospector implements AnnotatedRequest
             String propertyName = getPropertyName(prefix, propertyDescriptor);
             BindingProperty bindingProperty = BindingProperty.forPropertyDescriptor(propertyDescriptor);
             TypeDescriptor typeDescriptor = createTypeDescriptor(propertyDescriptor);
-            Class<?> type = typeDescriptor.getType();
-            if (typeDescriptor.hasAnnotation(BeanParameter.class) && !BeanUtils.isSimpleProperty(type)) {
+            Class<?> type = bindingProperty.getType();
+            if (bindingProperty.hasAnnotation(BeanParameter.class) && !BeanUtils.isSimpleProperty(type)) {
                 if (!cycleClasses.add(type)) {
                     throw new CircularReferenceException("Aborting finding resolvers. Circular reference found. Circular " +
                         "references not supported as they can cause stack overflow errors. Cycle: " +

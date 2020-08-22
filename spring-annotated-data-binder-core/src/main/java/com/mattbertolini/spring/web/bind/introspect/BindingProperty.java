@@ -24,13 +24,14 @@ import org.springframework.lang.Nullable;
 
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
+import java.util.Objects;
 
 /**
  * An abstraction around a Java bean property that contains reflection information used by the data binder. This class
  * is needed because the spring web framework need both the {@link MethodParameter} type and the {@link TypeDescriptor}
  * type. This class contains both derived from the same Java {@link PropertyDescriptor}.
  */
-public class BindingProperty {
+public final class BindingProperty {
     private final TypeDescriptor typeDescriptor;
     private final MethodParameter methodParameter;
 
@@ -118,5 +119,19 @@ public class BindingProperty {
             return null;
         }
         return new MethodParameter(property.getWriteMethod(), 0).withContainingClass(property.getObjectType());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BindingProperty)) return false;
+        BindingProperty that = (BindingProperty) o;
+        return Objects.equals(typeDescriptor, that.typeDescriptor) &&
+            Objects.equals(methodParameter, that.methodParameter);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(typeDescriptor, methodParameter);
     }
 }

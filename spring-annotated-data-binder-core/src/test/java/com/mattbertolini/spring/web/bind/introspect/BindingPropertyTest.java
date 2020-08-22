@@ -1,10 +1,12 @@
 package com.mattbertolini.spring.web.bind.introspect;
 
 import com.mattbertolini.spring.web.bind.annotation.RequestParameter;
+import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.MethodParameter;
+import org.springframework.core.convert.TypeDescriptor;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -113,6 +115,16 @@ class BindingPropertyTest {
             BindingProperty bindingProperty = BindingProperty.forPropertyDescriptor(aPropertyDescriptor("stringProperty"));
             assertThat(bindingProperty.hasAnnotation(RequestParameter.class)).isFalse();
         }
+    }
+
+    @Test
+    void equalsContract() throws Exception {
+        EqualsVerifier.forClass(BindingProperty.class)
+            .withPrefabValues(TypeDescriptor.class, TypeDescriptor.valueOf(String.class), TypeDescriptor.valueOf(Integer.class))
+            .withPrefabValues(MethodParameter.class,
+                new MethodParameter(BindingProperty.class.getMethod("getType"), -1),
+                new MethodParameter(BindingProperty.class.getMethod("getObjectType"), -1))
+            .verify();
     }
 
     private PropertyDescriptor aPropertyDescriptor(String propertyName) throws IntrospectionException {

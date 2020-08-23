@@ -1,5 +1,6 @@
 package com.mattbertolini.spring.web.reactive.bind;
 
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import com.mattbertolini.spring.web.reactive.bind.resolver.RequestPropertyResolver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,7 +48,7 @@ class PropertyResolverRegistryTest {
     private static class FakeResolver implements RequestPropertyResolver {
 
         @Override
-        public boolean supports(@NonNull TypeDescriptor typeDescriptor) {
+        public boolean supports(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty) {
             return false;
         }
 

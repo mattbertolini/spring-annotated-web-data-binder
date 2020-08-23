@@ -16,6 +16,7 @@
 
 package com.mattbertolini.spring.web.bind.resolver;
 
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
@@ -28,7 +29,7 @@ import org.springframework.lang.Nullable;
  * @param <R> The response type to use.
  */
 public interface RequestPropertyResolverBase<T, R> {
-    boolean supports(@NonNull TypeDescriptor typeDescriptor);
+    boolean supports(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty);
     
     @Nullable
     R resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull T request);

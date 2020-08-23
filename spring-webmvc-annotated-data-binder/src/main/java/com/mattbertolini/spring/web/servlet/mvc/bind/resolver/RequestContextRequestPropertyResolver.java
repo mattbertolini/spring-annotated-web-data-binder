@@ -17,6 +17,7 @@
 package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.RequestContext;
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.http.HttpMethod;
 import org.springframework.lang.NonNull;
@@ -33,9 +34,9 @@ import java.util.TimeZone;
 
 public class RequestContextRequestPropertyResolver implements RequestPropertyResolver {
     @Override
-    public boolean supports(@NonNull TypeDescriptor typeDescriptor) {
-        Class<?> type = typeDescriptor.getType();
-        return typeDescriptor.hasAnnotation(RequestContext.class) && (
+    public boolean supports(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty) {
+        Class<?> type = bindingProperty.getType();
+        return bindingProperty.hasAnnotation(RequestContext.class) && (
             WebRequest.class.isAssignableFrom(type) ||
                 ServletRequest.class.isAssignableFrom(type) ||
                 HttpSession.class.isAssignableFrom(type) ||

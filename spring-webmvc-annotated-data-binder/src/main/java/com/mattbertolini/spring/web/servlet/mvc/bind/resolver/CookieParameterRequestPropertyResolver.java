@@ -17,6 +17,7 @@
 package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.CookieParameter;
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
@@ -28,8 +29,8 @@ import javax.servlet.http.HttpServletRequest;
 
 public class CookieParameterRequestPropertyResolver implements RequestPropertyResolver {
     @Override
-    public boolean supports(@NonNull TypeDescriptor typeDescriptor) {
-        return typeDescriptor.hasAnnotation(CookieParameter.class);
+    public boolean supports(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty) {
+        return bindingProperty.hasAnnotation(CookieParameter.class);
     }
 
     @Override

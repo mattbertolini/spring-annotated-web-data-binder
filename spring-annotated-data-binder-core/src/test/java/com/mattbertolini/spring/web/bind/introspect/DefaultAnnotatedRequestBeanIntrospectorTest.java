@@ -75,8 +75,8 @@ class DefaultAnnotatedRequestBeanIntrospectorTest {
         }
 
         @Override
-        public boolean supports(@NonNull TypeDescriptor typeDescriptor) {
-            return typeDescriptor.hasAnnotation(annotationType);
+        public boolean supports(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty) {
+            return bindingProperty.hasAnnotation(annotationType);
         }
 
         @Override

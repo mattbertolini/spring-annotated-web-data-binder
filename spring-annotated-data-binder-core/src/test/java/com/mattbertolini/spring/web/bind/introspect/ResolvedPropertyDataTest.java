@@ -75,7 +75,7 @@ class ResolvedPropertyDataTest {
     private static class StubResolver implements RequestPropertyResolverBase<Object, Object> {
 
         @Override
-        public boolean supports(@NonNull TypeDescriptor typeDescriptor) {
+        public boolean supports(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty) {
             return false;
         }
 

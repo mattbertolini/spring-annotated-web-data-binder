@@ -17,6 +17,7 @@
 package com.mattbertolini.spring.web.reactive.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.HeaderParameter;
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ResolvableType;
@@ -25,6 +26,8 @@ import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
 import org.springframework.mock.web.server.MockServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Collections;
@@ -43,20 +46,20 @@ class HeaderParameterRequestPropertyResolverTest {
     }
 
     @Test
-    void supportsReturnsTrueOnPresenceOfAnnotation() {
-        boolean result = resolver.supports(typeDescriptor(String.class, new StubbingAnnotation("name")));
+    void supportsReturnsTrueOnPresenceOfAnnotation() throws Exception {
+        boolean result = resolver.supports(typeDescriptor(String.class, new StubbingAnnotation("name")), bindingProperty("annotated", TestingBean.class));
         assertThat(result).isTrue();
     }
 
     @Test
-    void supportsReturnsFalseOnMissingAnnotation() {
-        boolean result = resolver.supports(typeDescriptor(String.class));
+    void supportsReturnsFalseOnMissingAnnotation() throws Exception {
+        boolean result = resolver.supports(typeDescriptor(String.class), bindingProperty("notAnnotated", TestingBean.class));
         assertThat(result).isFalse();
     }
 
     @Test
-    void supportsReturnsFalseOnMissingAnnotationValue() {
-        boolean result = resolver.supports(typeDescriptor(String.class, new StubbingAnnotation(null)));
+    void supportsReturnsFalseOnMissingAnnotationValue() throws Exception {
+        boolean result = resolver.supports(typeDescriptor(String.class, new StubbingAnnotation(null)), bindingProperty("missingValue", TestingBean.class));
         assertThat(result).isFalse();
     }
 
@@ -111,6 +114,10 @@ class HeaderParameterRequestPropertyResolverTest {
         return new TypeDescriptor(ResolvableType.forClass(clazz), null, annotations);
     }
 
+    private BindingProperty bindingProperty(String property, Class<?> clazz) throws IntrospectionException {
+        return BindingProperty.forPropertyDescriptor(new PropertyDescriptor(property, clazz));
+    }
+
     @SuppressWarnings("ClassExplicitlyAnnotation")
     private static class StubbingAnnotation implements HeaderParameter {
 
@@ -128,6 +135,41 @@ class HeaderParameterRequestPropertyResolverTest {
         @Override
         public Class<? extends Annotation> annotationType() {
             return HeaderParameter.class;
+        }
+    }
+
+    @SuppressWarnings("unused")
+    private static class TestingBean {
+        @HeaderParameter("irrelevant")
+        private String annotated;
+
+        private String notAnnotated;
+
+        @HeaderParameter
+        private String missingValue;
+
+        public String getAnnotated() {
+            return annotated;
+        }
+
+        public void setAnnotated(String annotated) {
+            this.annotated = annotated;
+        }
+
+        public String getNotAnnotated() {
+            return notAnnotated;
+        }
+
+        public void setNotAnnotated(String notAnnotated) {
+            this.notAnnotated = notAnnotated;
+        }
+
+        public String getMissingValue() {
+            return missingValue;
+        }
+
+        public void setMissingValue(String missingValue) {
+            this.missingValue = missingValue;
         }
     }
 }

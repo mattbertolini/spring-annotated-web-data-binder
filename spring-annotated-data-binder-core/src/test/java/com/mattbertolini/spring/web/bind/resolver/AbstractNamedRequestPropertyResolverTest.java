@@ -16,6 +16,7 @@
 
 package com.mattbertolini.spring.web.bind.resolver;
 
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.lang.NonNull;
@@ -52,7 +53,7 @@ class AbstractNamedRequestPropertyResolverTest {
         }
 
         @Override
-        public boolean supports(@NonNull TypeDescriptor typeDescriptor) {
+        public boolean supports(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty) {
             return true;
         }
     }

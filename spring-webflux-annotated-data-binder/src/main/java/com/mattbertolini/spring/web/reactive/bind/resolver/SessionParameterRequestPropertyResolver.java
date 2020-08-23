@@ -17,6 +17,7 @@
 package com.mattbertolini.spring.web.reactive.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.SessionParameter;
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
@@ -25,8 +26,8 @@ import reactor.core.publisher.Mono;
 
 public class SessionParameterRequestPropertyResolver implements RequestPropertyResolver {
     @Override
-    public boolean supports(@NonNull TypeDescriptor typeDescriptor) {
-        return typeDescriptor.hasAnnotation(SessionParameter.class);
+    public boolean supports(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty) {
+        return bindingProperty.hasAnnotation(SessionParameter.class);
     }
 
     @NonNull

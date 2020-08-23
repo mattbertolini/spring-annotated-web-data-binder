@@ -17,6 +17,7 @@
 package com.mattbertolini.spring.web.reactive.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.RequestContext;
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.springframework.context.i18n.LocaleContext;
 import org.springframework.context.i18n.TimeZoneAwareLocaleContext;
 import org.springframework.core.convert.TypeDescriptor;
@@ -34,9 +35,9 @@ import java.util.TimeZone;
 
 public class RequestContextRequestPropertyResolver implements RequestPropertyResolver {
     @Override
-    public boolean supports(@NonNull TypeDescriptor typeDescriptor) {
-        Class<?> type = typeDescriptor.getType();
-        return typeDescriptor.hasAnnotation(RequestContext.class) && (
+    public boolean supports(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty) {
+        Class<?> type = bindingProperty.getType();
+        return bindingProperty.hasAnnotation(RequestContext.class) && (
             ServerWebExchange.class.isAssignableFrom(type) ||
                 ServerHttpRequest.class.isAssignableFrom(type) ||
                 WebSession.class.isAssignableFrom(type) ||

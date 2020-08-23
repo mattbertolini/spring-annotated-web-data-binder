@@ -17,6 +17,7 @@
 package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.PathParameter;
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.lang.NonNull;
 import org.springframework.util.StringUtils;
@@ -30,10 +31,10 @@ import java.util.Map;
 
 public class PathParameterMapRequestPropertyResolver implements RequestPropertyResolver {
     @Override
-    public boolean supports(@NonNull TypeDescriptor typeDescriptor) {
-        PathParameter annotation = typeDescriptor.getAnnotation(PathParameter.class);
+    public boolean supports(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty) {
+        PathParameter annotation = bindingProperty.getAnnotation(PathParameter.class);
         return annotation != null && !StringUtils.hasText(annotation.value()) &&
-            Map.class.isAssignableFrom(typeDescriptor.getType());
+            Map.class.isAssignableFrom(bindingProperty.getType());
     }
 
     @SuppressWarnings("unchecked")

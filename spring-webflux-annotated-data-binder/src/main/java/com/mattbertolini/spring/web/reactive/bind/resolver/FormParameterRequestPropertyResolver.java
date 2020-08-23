@@ -17,6 +17,7 @@
 package com.mattbertolini.spring.web.reactive.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.FormParameter;
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
@@ -26,8 +27,8 @@ import reactor.core.publisher.Mono;
 
 public class FormParameterRequestPropertyResolver implements RequestPropertyResolver {
     @Override
-    public boolean supports(@NonNull TypeDescriptor typeDescriptor) {
-        FormParameter annotation = typeDescriptor.getAnnotation(FormParameter.class);
+    public boolean supports(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty) {
+        FormParameter annotation = bindingProperty.getAnnotation(FormParameter.class);
         return annotation != null && StringUtils.hasText(annotation.value());
     }
 

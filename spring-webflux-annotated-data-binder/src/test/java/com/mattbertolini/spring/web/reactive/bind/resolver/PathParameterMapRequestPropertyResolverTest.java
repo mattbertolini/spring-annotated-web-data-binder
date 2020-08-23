@@ -17,6 +17,7 @@
 package com.mattbertolini.spring.web.reactive.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.PathParameter;
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ResolvableType;
@@ -26,8 +27,9 @@ import org.springframework.mock.web.server.MockServerWebExchange;
 import org.springframework.web.reactive.HandlerMapping;
 import reactor.core.publisher.Mono;
 
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,26 +44,26 @@ class PathParameterMapRequestPropertyResolverTest {
     }
 
     @Test
-    void supportsReturnsTrueOnPresenceOfAnnotation() {
-        boolean result = resolver.supports(typeDescriptor(Map.class, new StubbingAnnotation(null)));
+    void supportsReturnsTrueOnPresenceOfAnnotation() throws Exception {
+        boolean result = resolver.supports(typeDescriptor(Map.class, new StubbingAnnotation(null)), bindingProperty("annotated", TestingBean.class));
         assertThat(result).isTrue();
     }
 
     @Test
-    void supportsReturnsFalseOnMissingAnnotation() {
-        boolean result = resolver.supports(typeDescriptor(Map.class));
+    void supportsReturnsFalseOnMissingAnnotation() throws Exception {
+        boolean result = resolver.supports(typeDescriptor(Map.class), bindingProperty("notAnnotated", TestingBean.class));
         assertThat(result).isFalse();
     }
 
     @Test
-    void supportsReturnsFalseWhenAnnotationValueIsPresent() {
-        boolean result = resolver.supports(typeDescriptor(Map.class, new StubbingAnnotation("name")));
+    void supportsReturnsFalseWhenAnnotationValueIsPresent() throws Exception {
+        boolean result = resolver.supports(typeDescriptor(Map.class, new StubbingAnnotation("name")), bindingProperty("withValue", TestingBean.class));
         assertThat(result).isFalse();
     }
 
     @Test
-    void supportsReturnsFalseWhenTypeIsNotMap() {
-        boolean result = resolver.supports(typeDescriptor(String.class, new StubbingAnnotation(null)));
+    void supportsReturnsFalseWhenTypeIsNotMap() throws Exception {
+        boolean result = resolver.supports(typeDescriptor(String.class, new StubbingAnnotation(null)), bindingProperty("notAMap", TestingBean.class));
         assertThat(result).isFalse();
     }
 
@@ -102,6 +104,10 @@ class PathParameterMapRequestPropertyResolverTest {
         return new TypeDescriptor(ResolvableType.forClass(clazz), null, annotations);
     }
 
+    private BindingProperty bindingProperty(String property, Class<?> clazz) throws IntrospectionException {
+        return BindingProperty.forPropertyDescriptor(new PropertyDescriptor(property, clazz));
+    }
+
     @SuppressWarnings("ClassExplicitlyAnnotation")
     private static class StubbingAnnotation implements PathParameter {
         private final String name;
@@ -118,6 +124,52 @@ class PathParameterMapRequestPropertyResolverTest {
         @Override
         public Class<? extends Annotation> annotationType() {
             return PathParameter.class;
+        }
+    }
+
+    @SuppressWarnings("unused")
+    private static class TestingBean {
+        @PathParameter
+        private Map<String, String> annotated;
+
+        private Map<String, String> notAnnotated;
+
+        @PathParameter("irrelevant")
+        private String withValue;
+
+        @PathParameter
+        private String notAMap;
+
+        public Map<String, String> getAnnotated() {
+            return annotated;
+        }
+
+        public void setAnnotated(Map<String, String> annotated) {
+            this.annotated = annotated;
+        }
+
+        public Map<String, String> getNotAnnotated() {
+            return notAnnotated;
+        }
+
+        public void setNotAnnotated(Map<String, String> notAnnotated) {
+            this.notAnnotated = notAnnotated;
+        }
+
+        public String getWithValue() {
+            return withValue;
+        }
+
+        public void setWithValue(String withValue) {
+            this.withValue = withValue;
+        }
+
+        public String getNotAMap() {
+            return notAMap;
+        }
+
+        public void setNotAMap(String notAMap) {
+            this.notAMap = notAMap;
         }
     }
 }

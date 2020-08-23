@@ -17,6 +17,7 @@
 package com.mattbertolini.spring.web.reactive.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.HeaderParameter;
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ResolvableType;
@@ -27,6 +28,8 @@ import org.springframework.mock.web.server.MockServerWebExchange;
 import org.springframework.util.MultiValueMap;
 import reactor.core.publisher.Mono;
 
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.Map;
@@ -42,26 +45,26 @@ class HeaderParameterMapRequestPropertyResolverTest {
     }
 
     @Test
-    void supportsReturnsTrueOnPresenceOfAnnotation() {
-        boolean result = resolver.supports(typeDescriptor(Map.class, annotation(null)));
+    void supportsReturnsTrueOnPresenceOfAnnotation() throws Exception {
+        boolean result = resolver.supports(typeDescriptor(Map.class, annotation(null)), bindingProperty("annotated", TestingBean.class));
         assertThat(result).isTrue();
     }
 
     @Test
-    void supportsReturnsFalseOnMissingAnnotation() {
-        boolean result = resolver.supports(typeDescriptor(Map.class));
+    void supportsReturnsFalseOnMissingAnnotation() throws Exception {
+        boolean result = resolver.supports(typeDescriptor(Map.class), bindingProperty("notAnnotated", TestingBean.class));
         assertThat(result).isFalse();
     }
 
     @Test
-    void supportsReturnsFalseWhenAnnotationValueIsPresent() {
-        boolean result = resolver.supports(typeDescriptor(Map.class, annotation("name")));
+    void supportsReturnsFalseWhenAnnotationValueIsPresent() throws Exception {
+        boolean result = resolver.supports(typeDescriptor(Map.class, annotation("name")), bindingProperty("withValue", TestingBean.class));
         assertThat(result).isFalse();
     }
 
     @Test
-    void supportsReturnsFalseWhenTypeIsNotMap() {
-        boolean result = resolver.supports(typeDescriptor(String.class, annotation(null)));
+    void supportsReturnsFalseWhenTypeIsNotMap() throws Exception {
+        boolean result = resolver.supports(typeDescriptor(String.class, annotation(null)), bindingProperty("notAMap", TestingBean.class));
         assertThat(result).isFalse();
     }
 
@@ -123,6 +126,10 @@ class HeaderParameterMapRequestPropertyResolverTest {
         return new TypeDescriptor(ResolvableType.forClass(clazz), null, annotations);
     }
 
+    private BindingProperty bindingProperty(String property, Class<?> clazz) throws IntrospectionException {
+        return BindingProperty.forPropertyDescriptor(new PropertyDescriptor(property, clazz));
+    }
+
     @SuppressWarnings("ClassExplicitlyAnnotation")
     private static class StubbingHeaderParameter implements HeaderParameter {
         private final String name;
@@ -139,6 +146,52 @@ class HeaderParameterMapRequestPropertyResolverTest {
         @Override
         public Class<? extends Annotation> annotationType() {
             return HeaderParameter.class;
+        }
+    }
+
+    @SuppressWarnings("unused")
+    private static class TestingBean {
+        @HeaderParameter
+        private Map<String, String> annotated;
+
+        private Map<String, String> notAnnotated;
+
+        @HeaderParameter("irrelevant")
+        private String withValue;
+
+        @HeaderParameter
+        private String notAMap;
+
+        public Map<String, String> getAnnotated() {
+            return annotated;
+        }
+
+        public void setAnnotated(Map<String, String> annotated) {
+            this.annotated = annotated;
+        }
+
+        public Map<String, String> getNotAnnotated() {
+            return notAnnotated;
+        }
+
+        public void setNotAnnotated(Map<String, String> notAnnotated) {
+            this.notAnnotated = notAnnotated;
+        }
+
+        public String getWithValue() {
+            return withValue;
+        }
+
+        public void setWithValue(String withValue) {
+            this.withValue = withValue;
+        }
+
+        public String getNotAMap() {
+            return notAMap;
+        }
+
+        public void setNotAMap(String notAMap) {
+            this.notAMap = notAMap;
         }
     }
 }

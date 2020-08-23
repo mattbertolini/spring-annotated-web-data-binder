@@ -17,6 +17,7 @@
 package com.mattbertolini.spring.web.reactive.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.RequestContext;
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.i18n.TimeZoneAwareLocaleContext;
@@ -31,6 +32,8 @@ import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebSession;
 import reactor.core.publisher.Mono;
 
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.time.Duration;
 import java.time.ZoneId;
@@ -51,14 +54,14 @@ class RequestContextRequestPropertyResolverTest {
     }
 
     @Test
-    void doesNotSupportTypesNotAnnotatedWithRequestContext() {
+    void doesNotSupportTypesNotAnnotatedWithRequestContext() throws Exception {
         TypeDescriptor typeDescriptor = new TypeDescriptor(ResolvableType.forClass(ServerWebExchange.class), null, null);
-        assertThat(resolver.supports(typeDescriptor)).isFalse();
+        assertThat(resolver.supports(typeDescriptor, bindingProperty("notAnnotated", TestingBean.class))).isFalse();
     }
 
     @Test
-    void doesNotSupportUnknownType() {
-        assertThat(resolver.supports(typeDescriptor(NotKnown.class))).isFalse();
+    void doesNotSupportUnknownType() throws Exception {
+        assertThat(resolver.supports(typeDescriptor(NotKnown.class), bindingProperty("notKnown", TestingBean.class))).isFalse();
     }
 
     @Test
@@ -68,8 +71,8 @@ class RequestContextRequestPropertyResolverTest {
     }
 
     @Test
-    void resolvesServerWebExchange() {
-        assertThat(resolver.supports(typeDescriptor(ServerWebExchange.class))).isTrue();
+    void resolvesServerWebExchange() throws Exception {
+        assertThat(resolver.supports(typeDescriptor(ServerWebExchange.class), bindingProperty("serverWebExchange", TestingBean.class))).isTrue();
 
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant").build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
@@ -81,8 +84,8 @@ class RequestContextRequestPropertyResolverTest {
     }
 
     @Test
-    void resolvesServerHttpRequest() {
-        assertThat(resolver.supports(typeDescriptor(ServerHttpRequest.class))).isTrue();
+    void resolvesServerHttpRequest() throws Exception {
+        assertThat(resolver.supports(typeDescriptor(ServerHttpRequest.class), bindingProperty("serverHttpRequest", TestingBean.class))).isTrue();
 
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant").build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
@@ -94,8 +97,8 @@ class RequestContextRequestPropertyResolverTest {
     }
 
     @Test
-    void resolvesWebSession() {
-        assertThat(resolver.supports(typeDescriptor(WebSession.class))).isTrue();
+    void resolvesWebSession() throws Exception {
+        assertThat(resolver.supports(typeDescriptor(WebSession.class), bindingProperty("webSession", TestingBean.class))).isTrue();
 
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant").build();
         MockWebSession webSession = new MockWebSession();
@@ -111,8 +114,8 @@ class RequestContextRequestPropertyResolverTest {
     }
 
     @Test
-    void resolvesHttpMethod() {
-        assertThat(resolver.supports(typeDescriptor(HttpMethod.class))).isTrue();
+    void resolvesHttpMethod() throws Exception {
+        assertThat(resolver.supports(typeDescriptor(HttpMethod.class), bindingProperty("httpMethod", TestingBean.class))).isTrue();
 
         MockServerHttpRequest request = MockServerHttpRequest.post("/irrelevant").build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
@@ -125,8 +128,8 @@ class RequestContextRequestPropertyResolverTest {
     }
 
     @Test
-    void resolvesLocale() {
-        assertThat(resolver.supports(typeDescriptor(Locale.class))).isTrue();
+    void resolvesLocale() throws Exception {
+        assertThat(resolver.supports(typeDescriptor(Locale.class), bindingProperty("locale", TestingBean.class))).isTrue();
 
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant")
             .acceptLanguageAsLocales(Locale.US)
@@ -157,8 +160,8 @@ class RequestContextRequestPropertyResolverTest {
     }
 
     @Test
-    void resolvesTimeZoneWithDefault() {
-        assertThat(resolver.supports(typeDescriptor(TimeZone.class))).isTrue();
+    void resolvesTimeZoneWithDefault() throws Exception {
+        assertThat(resolver.supports(typeDescriptor(TimeZone.class), bindingProperty("timeZone", TestingBean.class))).isTrue();
 
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant").build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
@@ -188,8 +191,8 @@ class RequestContextRequestPropertyResolverTest {
     }
 
     @Test
-    void resolvesZoneIdWithDefault() {
-        assertThat(resolver.supports(typeDescriptor(ZoneId.class))).isTrue();
+    void resolvesZoneIdWithDefault() throws Exception  {
+        assertThat(resolver.supports(typeDescriptor(ZoneId.class), bindingProperty("zoneId", TestingBean.class))).isTrue();
 
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant").build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
@@ -205,6 +208,10 @@ class RequestContextRequestPropertyResolverTest {
         return new TypeDescriptor(ResolvableType.forClass(clazz), null, new StubbingAnnotation[]{new StubbingAnnotation()});
     }
 
+    private BindingProperty bindingProperty(String property, Class<?> clazz) throws IntrospectionException {
+        return BindingProperty.forPropertyDescriptor(new PropertyDescriptor(property, clazz));
+    }
+
     private static class NotKnown {}
 
     @SuppressWarnings("ClassExplicitlyAnnotation")
@@ -212,6 +219,107 @@ class RequestContextRequestPropertyResolverTest {
         @Override
         public Class<? extends Annotation> annotationType() {
             return RequestContext.class;
+        }
+    }
+
+    @SuppressWarnings("unused")
+    private static class TestingBean {
+        private ServerWebExchange notAnnotated;
+
+        @RequestContext
+        private NotKnown notKnown;
+
+        @RequestContext
+        private ServerWebExchange serverWebExchange;
+
+        @RequestContext
+        private ServerHttpRequest serverHttpRequest;
+
+        @RequestContext
+        private WebSession webSession;
+
+        @RequestContext
+        private HttpMethod httpMethod;
+
+        @RequestContext
+        private Locale locale;
+
+        @RequestContext
+        private TimeZone timeZone;
+
+        @RequestContext
+        private ZoneId zoneId;
+
+        public ServerWebExchange getNotAnnotated() {
+            return notAnnotated;
+        }
+
+        public void setNotAnnotated(ServerWebExchange notAnnotated) {
+            this.notAnnotated = notAnnotated;
+        }
+
+        public NotKnown getNotKnown() {
+            return notKnown;
+        }
+
+        public void setNotKnown(NotKnown notKnown) {
+            this.notKnown = notKnown;
+        }
+
+        public ServerWebExchange getServerWebExchange() {
+            return serverWebExchange;
+        }
+
+        public void setServerWebExchange(ServerWebExchange serverWebExchange) {
+            this.serverWebExchange = serverWebExchange;
+        }
+
+        public ServerHttpRequest getServerHttpRequest() {
+            return serverHttpRequest;
+        }
+
+        public void setServerHttpRequest(ServerHttpRequest serverHttpRequest) {
+            this.serverHttpRequest = serverHttpRequest;
+        }
+
+        public WebSession getWebSession() {
+            return webSession;
+        }
+
+        public void setWebSession(WebSession webSession) {
+            this.webSession = webSession;
+        }
+
+        public HttpMethod getHttpMethod() {
+            return httpMethod;
+        }
+
+        public void setHttpMethod(HttpMethod httpMethod) {
+            this.httpMethod = httpMethod;
+        }
+
+        public Locale getLocale() {
+            return locale;
+        }
+
+        public void setLocale(Locale locale) {
+            this.locale = locale;
+        }
+
+        public TimeZone getTimeZone() {
+            return timeZone;
+        }
+
+        public void setTimeZone(TimeZone timeZone) {
+            this.timeZone = timeZone;
+        }
+
+        public ZoneId getZoneId() {
+            return zoneId;
+        }
+
+        public void setZoneId(ZoneId zoneId) {
+            this.zoneId = zoneId;
         }
     }
 }

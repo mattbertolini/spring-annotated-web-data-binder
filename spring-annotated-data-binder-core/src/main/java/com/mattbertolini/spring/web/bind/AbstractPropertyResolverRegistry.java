@@ -41,7 +41,7 @@ public abstract class AbstractPropertyResolverRegistry<T extends RequestProperty
     @Nullable
     public T findResolverFor(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty) {
         for (T resolver : propertyResolvers) {
-            if (resolver.supports(typeDescriptor)) {
+            if (resolver.supports(typeDescriptor, bindingProperty)) {
                 return resolver;
             }
         }

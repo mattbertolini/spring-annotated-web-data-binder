@@ -45,7 +45,7 @@ class AbstractPropertyResolverRegistryTest {
         TestingResolver resolverTwo = mock(TestingResolver.class);
         TestingResolver resolverThree = mock(TestingResolver.class);
 
-        when(resolverTwo.supports(any(TypeDescriptor.class))).thenReturn(true);
+        when(resolverTwo.supports(any(TypeDescriptor.class), any(BindingProperty.class))).thenReturn(true);
 
         registry.addResolver(resolverOne);
         registry.addResolver(resolverTwo);
@@ -99,6 +99,7 @@ class AbstractPropertyResolverRegistryTest {
     private interface TestingResolver extends RequestPropertyResolverBase<Object, Object> {}
     private static class TestingRegistry extends AbstractPropertyResolverRegistry<TestingResolver> {}
 
+    @SuppressWarnings("unused")
     private static class TestingClass {
         private String property;
 

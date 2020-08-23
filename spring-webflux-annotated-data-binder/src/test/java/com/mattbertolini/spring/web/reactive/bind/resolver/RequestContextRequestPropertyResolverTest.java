@@ -181,7 +181,7 @@ class RequestContextRequestPropertyResolverTest {
 
     @Test
     void resolvesZoneId() throws Exception {
-        BindingProperty bindingProperty = bindingProperty("timeZone", TestingBean.class);
+        BindingProperty bindingProperty = bindingProperty("zoneId", TestingBean.class);
         TimeZone timeZone = TimeZone.getTimeZone("America/New_York");
         ZoneId expected = timeZone.toZoneId();
 

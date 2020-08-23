@@ -39,7 +39,7 @@ public class PathParameterRequestPropertyResolver implements RequestPropertyReso
     @SuppressWarnings("unchecked")
     @Override
     public Object resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, @NonNull NativeWebRequest request) {
-        PathParameter annotation = typeDescriptor.getAnnotation(PathParameter.class);
+        PathParameter annotation = bindingProperty.getAnnotation(PathParameter.class);
         Assert.state(annotation != null, "No PathParameter annotation found on type");
 
         Map<String, String> uriTemplateVariables = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE, RequestAttributes.SCOPE_REQUEST);

@@ -37,13 +37,13 @@ public class CookieParameterRequestPropertyResolver implements RequestPropertyRe
     public Object resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, @NonNull NativeWebRequest request) {
         HttpServletRequest servletRequest = request.getNativeRequest(HttpServletRequest.class);
         Assert.state(servletRequest != null, "A HttpServletRequest is required for this resolver and none found.");
-        CookieParameter annotation = typeDescriptor.getAnnotation(CookieParameter.class);
+        CookieParameter annotation = bindingProperty.getAnnotation(CookieParameter.class);
         Assert.state(annotation != null, "No CookieParameter annotation found on type");
         Cookie cookie = WebUtils.getCookie(servletRequest, annotation.value());
         if (cookie == null) {
             return null;
         }
-        if (Cookie.class == typeDescriptor.getObjectType()) {
+        if (Cookie.class == bindingProperty.getObjectType()) {
             return cookie;
         }
         return cookie.getValue();

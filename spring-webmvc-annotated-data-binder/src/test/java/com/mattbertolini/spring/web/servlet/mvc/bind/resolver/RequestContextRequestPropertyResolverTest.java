@@ -77,7 +77,7 @@ class RequestContextRequestPropertyResolverTest {
 
     @Test
     void throwsExceptionWhenNativeRequestDoesNotWrapServletRequest() throws Exception {
-        BindingProperty bindingProperty = bindingProperty("nativeWebRequest", TestingBean.class);
+        BindingProperty bindingProperty = bindingProperty("httpServletRequest", TestingBean.class);
         NativeWebRequest webRequest = mock(NativeWebRequest.class);
         when(webRequest.getNativeRequest()).thenReturn(null);
         assertThatThrownBy(() -> resolver.resolve(typeDescriptor(HttpServletRequest.class), bindingProperty, webRequest))
@@ -213,7 +213,7 @@ class RequestContextRequestPropertyResolverTest {
         private NotKnown notKnown;
 
         @RequestContext
-        private NativeWebRequest nativeWebRequest;
+        private HttpServletRequest httpServletRequest;
 
         @RequestContext
         private ServletRequest servletRequest;
@@ -252,12 +252,12 @@ class RequestContextRequestPropertyResolverTest {
             this.notKnown = notKnown;
         }
 
-        public NativeWebRequest getNativeWebRequest() {
-            return nativeWebRequest;
+        public HttpServletRequest getHttpServletRequest() {
+            return httpServletRequest;
         }
 
-        public void setNativeWebRequest(NativeWebRequest nativeWebRequest) {
-            this.nativeWebRequest = nativeWebRequest;
+        public void setHttpServletRequest(HttpServletRequest httpServletRequest) {
+            this.httpServletRequest = httpServletRequest;
         }
 
         public ServletRequest getServletRequest() {

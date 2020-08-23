@@ -37,7 +37,7 @@ public class HeaderParameterRequestPropertyResolver implements RequestPropertyRe
 
     @Override
     public Object resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, @NonNull NativeWebRequest request) {
-        HeaderParameter annotation = typeDescriptor.getAnnotation(HeaderParameter.class);
+        HeaderParameter annotation = bindingProperty.getAnnotation(HeaderParameter.class);
         Assert.state(annotation != null, "No HeaderParameter annotation found on type");
         return request.getHeaderValues(annotation.value());
     }

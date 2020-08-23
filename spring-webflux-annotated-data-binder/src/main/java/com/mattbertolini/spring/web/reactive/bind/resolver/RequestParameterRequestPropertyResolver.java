@@ -36,7 +36,7 @@ public class RequestParameterRequestPropertyResolver implements RequestPropertyR
     @NonNull
     @Override
     public Mono<Object> resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, @NonNull ServerWebExchange serverWebExchange) {
-        RequestParameter annotation = typeDescriptor.getAnnotation(RequestParameter.class);
+        RequestParameter annotation = bindingProperty.getAnnotation(RequestParameter.class);
         Assert.state(annotation != null, "No RequestParameter annotation found on type");
         MultiValueMap<String, String> queryParams = serverWebExchange.getRequest().getQueryParams();
         return Mono.justOrEmpty(queryParams.get(annotation.value()));

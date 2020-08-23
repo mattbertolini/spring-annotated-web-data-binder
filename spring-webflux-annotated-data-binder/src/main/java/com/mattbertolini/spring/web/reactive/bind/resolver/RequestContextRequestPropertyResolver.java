@@ -51,7 +51,7 @@ public class RequestContextRequestPropertyResolver implements RequestPropertyRes
     @NonNull
     @Override
     public Mono<Object> resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, @NonNull ServerWebExchange exchange) {
-        Class<?> type = typeDescriptor.getType();
+        Class<?> type = bindingProperty.getType();
 
         if (ServerWebExchange.class.isAssignableFrom(type)) {
             return Mono.just(exchange);

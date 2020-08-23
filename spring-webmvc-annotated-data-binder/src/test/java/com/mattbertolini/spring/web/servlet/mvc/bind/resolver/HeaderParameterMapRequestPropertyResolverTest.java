@@ -121,7 +121,7 @@ class HeaderParameterMapRequestPropertyResolverTest {
         NativeWebRequest mock = mock(NativeWebRequest.class);
         when(mock.getHeaderNames()).thenReturn(Collections.singletonList("x-header").iterator());
         when(mock.getHeaderValues("x-header")).thenReturn(null);
-        Object actual = resolver.resolve(typeDescriptor(MultiValueMap.class, annotation(null)), bindingProperty("annotated", TestingBean.class), mock);
+        Object actual = resolver.resolve(typeDescriptor(MultiValueMap.class, annotation(null)), bindingProperty("multivalue", TestingBean.class), mock);
         assertThat(actual).isInstanceOf(MultiValueMap.class);
         MultiValueMap<String, String> map = (MultiValueMap<String, String>) actual;
         assertThat(map).isEmpty();

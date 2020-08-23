@@ -33,7 +33,7 @@ public class FormParameterRequestPropertyResolver extends RequestParameterReques
     @Override
     @NonNull
     protected String getName(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty) {
-        FormParameter annotation = typeDescriptor.getAnnotation(FormParameter.class);
+        FormParameter annotation = bindingProperty.getAnnotation(FormParameter.class);
         Assert.state(annotation != null, "No FormParameter annotation found on type");
         return annotation.value();
     }

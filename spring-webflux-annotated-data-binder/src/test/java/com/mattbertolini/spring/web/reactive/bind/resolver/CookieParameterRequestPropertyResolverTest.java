@@ -69,7 +69,7 @@ class CookieParameterRequestPropertyResolverTest {
     @Test
     void returnsValueFromCookie() throws Exception {
         String expected = "expectedValue";
-        String cookieName = "cookie_name";
+        String cookieName = "the_cookie";
 
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant")
             .cookie(new HttpCookie(cookieName, expected)).build();

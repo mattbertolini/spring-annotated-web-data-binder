@@ -42,7 +42,7 @@ public class RequestParameterMapRequestPropertyResolver implements RequestProper
     public Object resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, @NonNull NativeWebRequest request) {
         Map<String, String[]> parameterMap = request.getParameterMap();
 
-        if (MultiValueMap.class.isAssignableFrom(typeDescriptor.getType())) {
+        if (MultiValueMap.class.isAssignableFrom(bindingProperty.getType())) {
             MultiValueMap<String, String> ret = new LinkedMultiValueMap<>(parameterMap.size());
             for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
                 ret.put(entry.getKey(), new LinkedList<>(Arrays.asList(entry.getValue())));

@@ -36,10 +36,10 @@ public class CookieParameterRequestPropertyResolver implements RequestPropertyRe
     @Override
     public Mono<Object> resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, @NonNull ServerWebExchange exchange) {
         MultiValueMap<String, HttpCookie> cookies = exchange.getRequest().getCookies();
-        CookieParameter annotation = typeDescriptor.getAnnotation(CookieParameter.class);
+        CookieParameter annotation = bindingProperty.getAnnotation(CookieParameter.class);
         Assert.state(annotation != null, "No CookieParameter annotation found on type");
         HttpCookie cookie = cookies.getFirst(annotation.value());
-        if (HttpCookie.class.isAssignableFrom(typeDescriptor.getType())) {
+        if (HttpCookie.class.isAssignableFrom(bindingProperty.getType())) {
             return Mono.justOrEmpty(cookie);
         }
         return cookie != null ? Mono.justOrEmpty(cookie.getValue()) : Mono.empty();

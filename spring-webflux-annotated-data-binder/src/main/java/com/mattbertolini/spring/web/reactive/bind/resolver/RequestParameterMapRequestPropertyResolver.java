@@ -39,7 +39,7 @@ public class RequestParameterMapRequestPropertyResolver implements RequestProper
     @NonNull
     public Mono<Object> resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, @NonNull ServerWebExchange request) {
         MultiValueMap<String, String> queryParams = request.getRequest().getQueryParams();
-        if (MultiValueMap.class.isAssignableFrom(typeDescriptor.getType())) {
+        if (MultiValueMap.class.isAssignableFrom(bindingProperty.getType())) {
             return Mono.just(queryParams);
         }
         return Mono.just(queryParams.toSingleValueMap());

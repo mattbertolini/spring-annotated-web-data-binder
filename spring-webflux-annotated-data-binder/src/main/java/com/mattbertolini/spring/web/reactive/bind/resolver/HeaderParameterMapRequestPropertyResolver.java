@@ -39,7 +39,7 @@ public class HeaderParameterMapRequestPropertyResolver implements RequestPropert
     @NonNull
     public Mono<Object> resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, @NonNull ServerWebExchange exchange) {
         // HttpHeaders class extends from MultiValueMap
-        if (MultiValueMap.class.isAssignableFrom(typeDescriptor.getType())) {
+        if (MultiValueMap.class.isAssignableFrom(bindingProperty.getType())) {
             return Mono.just(exchange.getRequest().getHeaders());
         }
         return Mono.just(exchange.getRequest().getHeaders().toSingleValueMap());

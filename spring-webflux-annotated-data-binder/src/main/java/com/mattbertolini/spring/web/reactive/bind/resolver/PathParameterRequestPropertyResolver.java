@@ -39,7 +39,7 @@ public class PathParameterRequestPropertyResolver implements RequestPropertyReso
     @NonNull
     @Override
     public Mono<Object> resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, @NonNull ServerWebExchange exchange) {
-        PathParameter annotation = typeDescriptor.getAnnotation(PathParameter.class);
+        PathParameter annotation = bindingProperty.getAnnotation(PathParameter.class);
         Assert.state(annotation != null, "No PathParameter annotation found on type");
         Map<Object, Object> pathVariables = exchange.getAttributeOrDefault(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE, Collections.emptyMap());
         return Mono.justOrEmpty(pathVariables.get(annotation.value()));

@@ -49,7 +49,7 @@ public class RequestContextRequestPropertyResolver implements RequestPropertyRes
 
     @Override
     public Object resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, @NonNull NativeWebRequest request) {
-        Class<?> type = typeDescriptor.getType();
+        Class<?> type = bindingProperty.getType();
         if (WebRequest.class.isAssignableFrom(type)) {
             return request;
         }

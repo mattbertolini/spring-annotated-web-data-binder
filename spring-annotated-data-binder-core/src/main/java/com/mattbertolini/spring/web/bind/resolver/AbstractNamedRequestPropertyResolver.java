@@ -17,18 +17,17 @@
 package com.mattbertolini.spring.web.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
-import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.lang.NonNull;
 
 public abstract class AbstractNamedRequestPropertyResolver<T, R> implements RequestPropertyResolverBase<T, R> {
     @NonNull
-    protected abstract String getName(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty);
+    protected abstract String getName(@NonNull BindingProperty bindingProperty);
 
     @Override
-    public final R resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, @NonNull T request) {
-        String name = getName(typeDescriptor, bindingProperty);
-        return resolveWithName(typeDescriptor, bindingProperty, name, request);
+    public final R resolve(@NonNull BindingProperty bindingProperty, @NonNull T request) {
+        String name = getName(bindingProperty);
+        return resolveWithName(bindingProperty, name, request);
     }
 
-    protected abstract R resolveWithName(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, String name, @NonNull T request);
+    protected abstract R resolveWithName(@NonNull BindingProperty bindingProperty, String name, @NonNull T request);
 }

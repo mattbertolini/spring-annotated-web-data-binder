@@ -67,7 +67,7 @@ class HeaderParameterRequestPropertyResolverTest {
     void throwsExceptionIfResolveCalledWithNoAnnotation() {
         // Unlikely to happen as the library always checks the supports method.
         assertThatExceptionOfType(IllegalStateException.class)
-            .isThrownBy(() -> resolver.resolve(typeDescriptor(String.class), bindingProperty("notAnnotated", TestingBean.class), request));
+            .isThrownBy(() -> resolver.resolve(bindingProperty("notAnnotated", TestingBean.class), request));
     }
 
     @Test
@@ -75,13 +75,13 @@ class HeaderParameterRequestPropertyResolverTest {
         String[] expected = {"headerValue"};
         String headerName = "X-HeaderName";
         servletRequest.addHeader(headerName, expected);
-        Object actual = resolver.resolve(typeDescriptor(String.class, new StubbingAnnotation(headerName)), bindingProperty("annotated", TestingBean.class), request);
+        Object actual = resolver.resolve(bindingProperty("annotated", TestingBean.class), request);
         assertThat(actual).isEqualTo(expected);
     }
 
     @Test
     void returnsNullWhenNoValueFound() throws Exception {
-        Object actual = resolver.resolve(typeDescriptor(Integer.class, new StubbingAnnotation("X-NotFound")), bindingProperty("annotated", TestingBean.class), request);
+        Object actual = resolver.resolve(bindingProperty("annotated", TestingBean.class), request);
         assertThat(actual).isNull();
     }
 
@@ -92,7 +92,7 @@ class HeaderParameterRequestPropertyResolverTest {
         servletRequest.addHeader(headerName, "one");
         servletRequest.addHeader(headerName, "two");
         servletRequest.addHeader(headerName, "three");
-        Object actual = resolver.resolve(typeDescriptor(List.class, new StubbingAnnotation(headerName)), bindingProperty("multipleValues", TestingBean.class), request);
+        Object actual = resolver.resolve(bindingProperty("multipleValues", TestingBean.class), request);
         assertThat(actual).isEqualTo(expected);
     }
 

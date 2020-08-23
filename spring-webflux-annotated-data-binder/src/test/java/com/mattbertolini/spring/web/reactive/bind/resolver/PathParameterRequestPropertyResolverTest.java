@@ -68,7 +68,7 @@ class PathParameterRequestPropertyResolverTest {
         String expected = "pathValue";
         String parameterName = "pathParamName";
         MockServerWebExchange exchange = makePathParamMap(parameterName, expected);
-        Mono<Object> actual = resolver.resolve(typeDescriptor(new StubbingAnnotation(parameterName)), bindingProperty("annotated", TestingBean.class), exchange);
+        Mono<Object> actual = resolver.resolve(bindingProperty("annotated", TestingBean.class), exchange);
         assertThat(actual.block()).isEqualTo(expected);
     }
 
@@ -79,14 +79,14 @@ class PathParameterRequestPropertyResolverTest {
             .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
         assertThatExceptionOfType(IllegalStateException.class)
-            .isThrownBy(() -> resolver.resolve(typeDescriptor(), bindingProperty("notAnnotated", TestingBean.class), exchange));
+            .isThrownBy(() -> resolver.resolve(bindingProperty("notAnnotated", TestingBean.class), exchange));
     }
 
     @Test
     void returnsNullIfNoPathVariableFound() throws Exception {
         String parameterName = "pathParamName";
         MockServerWebExchange exchange = emptyPathParamMap();
-        Mono<Object> actual = resolver.resolve(typeDescriptor(new StubbingAnnotation(parameterName)), bindingProperty("annotated", TestingBean.class), exchange);
+        Mono<Object> actual = resolver.resolve(bindingProperty("annotated", TestingBean.class), exchange);
         assertThat(actual.block()).isNull();
     }
 
@@ -95,7 +95,7 @@ class PathParameterRequestPropertyResolverTest {
         String parameterName = "pathParamName";
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant").build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
-        Mono<Object> actual = resolver.resolve(typeDescriptor(new StubbingAnnotation(parameterName)), bindingProperty("annotated", TestingBean.class), exchange);
+        Mono<Object> actual = resolver.resolve(bindingProperty("annotated", TestingBean.class), exchange);
         assertThat(actual.block()).isNull();
     }
 

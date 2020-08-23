@@ -338,7 +338,7 @@ class BeanParameterMethodArgumentResolverTest {
 
         @NonNull
         @Override
-        public Mono<Object> resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, @NonNull ServerWebExchange exchange) {
+        public Mono<Object> resolve(@NonNull BindingProperty bindingProperty, @NonNull ServerWebExchange exchange) {
             if (exception != null) {
                 throw exception;
             }

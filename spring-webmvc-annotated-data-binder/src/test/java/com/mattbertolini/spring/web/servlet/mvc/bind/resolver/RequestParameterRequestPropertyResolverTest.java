@@ -67,7 +67,7 @@ class RequestParameterRequestPropertyResolverTest {
     void throwsExceptionIfResolveCalledWithNoAnnotation() {
         // Unlikely to happen as the library always checks the supports method.
         assertThatExceptionOfType(IllegalStateException.class)
-            .isThrownBy(() -> resolver.resolve(typeDescriptor(String.class), bindingProperty("notAnnotated", TestingBean.class), request));
+            .isThrownBy(() -> resolver.resolve(bindingProperty("notAnnotated", TestingBean.class), request));
     }
 
     @Test
@@ -75,13 +75,13 @@ class RequestParameterRequestPropertyResolverTest {
         String[] expected = {"expected value"};
         String parameterName = "testing";
         servletRequest.addParameter(parameterName, expected);
-        Object actual = resolver.resolve(typeDescriptor(String.class, annotation(parameterName)), bindingProperty("annotated", TestingBean.class), request);
+        Object actual = resolver.resolve(bindingProperty("annotated", TestingBean.class), request);
         assertThat(actual).isEqualTo(expected);
     }
 
     @Test
     void returnsNullWhenNoValueFound() throws Exception {
-        Object actual = resolver.resolve(typeDescriptor(Integer.class, annotation("not_found")), bindingProperty("annotated", TestingBean.class), request);
+        Object actual = resolver.resolve(bindingProperty("annotated", TestingBean.class), request);
         assertThat(actual).isNull();
     }
 
@@ -92,7 +92,7 @@ class RequestParameterRequestPropertyResolverTest {
         servletRequest.addParameter(parameterName, "one");
         servletRequest.addParameter(parameterName, "two");
         servletRequest.addParameter(parameterName, "three");
-        Object actual = resolver.resolve(typeDescriptor(List.class, annotation(parameterName)), bindingProperty("multipleValues", TestingBean.class), request);
+        Object actual = resolver.resolve(bindingProperty("multipleValues", TestingBean.class), request);
         assertThat(actual).isEqualTo(expected);
     }
 

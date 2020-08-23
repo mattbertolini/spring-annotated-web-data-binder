@@ -19,7 +19,6 @@ package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
 import com.mattbertolini.spring.web.bind.annotation.RequestParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import com.mattbertolini.spring.web.bind.resolver.AbstractNamedRequestPropertyResolver;
-import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -35,13 +34,13 @@ public class RequestParameterRequestPropertyResolver extends AbstractNamedReques
     }
 
     @Override
-    protected Object resolveWithName(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, String name, @NonNull NativeWebRequest request) {
+    protected Object resolveWithName(@NonNull BindingProperty bindingProperty, String name, @NonNull NativeWebRequest request) {
         return request.getParameterValues(name);
     }
     
     @Override
     @NonNull
-    protected String getName(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty) {
+    protected String getName(@NonNull BindingProperty bindingProperty) {
         RequestParameter annotation = bindingProperty.getAnnotation(RequestParameter.class);
         Assert.state(annotation != null, "No RequestParameter annotation found on type");
         return annotation.value();

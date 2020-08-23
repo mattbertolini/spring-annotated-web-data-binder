@@ -18,7 +18,6 @@ package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.RequestContext;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
-import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.http.HttpMethod;
 import org.springframework.lang.NonNull;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -48,7 +47,7 @@ public class RequestContextRequestPropertyResolver implements RequestPropertyRes
     }
 
     @Override
-    public Object resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, @NonNull NativeWebRequest request) {
+    public Object resolve(@NonNull BindingProperty bindingProperty, @NonNull NativeWebRequest request) {
         Class<?> type = bindingProperty.getType();
         if (WebRequest.class.isAssignableFrom(type)) {
             return request;

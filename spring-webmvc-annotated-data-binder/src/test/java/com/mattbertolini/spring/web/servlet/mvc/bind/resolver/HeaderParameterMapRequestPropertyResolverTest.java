@@ -80,7 +80,7 @@ class HeaderParameterMapRequestPropertyResolverTest {
         servletRequest.addHeader("x-header-one", "one");
         servletRequest.addHeader("x-header-two", "two");
         servletRequest.addHeader("x-header-three", "three");
-        Object actual = resolver.resolve(typeDescriptor(MultiValueMap.class, annotation(null)), bindingProperty("multivalue", TestingBean.class), request);
+        Object actual = resolver.resolve(bindingProperty("multivalue", TestingBean.class), request);
         assertThat(actual).isInstanceOf(MultiValueMap.class);
         MultiValueMap<String, String> map = (MultiValueMap<String, String>) actual;
         assertThat(map)
@@ -94,7 +94,7 @@ class HeaderParameterMapRequestPropertyResolverTest {
         servletRequest.addHeader("x-header-one", "one");
         servletRequest.addHeader("x-header-two", "two");
         servletRequest.addHeader("x-header-three", "three");
-        Object actual = resolver.resolve(typeDescriptor(HttpHeaders.class, annotation(null)), bindingProperty("httpHeaders", TestingBean.class), request);
+        Object actual = resolver.resolve(bindingProperty("httpHeaders", TestingBean.class), request);
         assertThat(actual).isInstanceOf(HttpHeaders.class);
         HttpHeaders headers = (HttpHeaders) actual;
         assertThat(headers)
@@ -109,7 +109,7 @@ class HeaderParameterMapRequestPropertyResolverTest {
         servletRequest.addHeader("x-header", "one");
         servletRequest.addHeader("x-header", "two");
         servletRequest.addHeader("x-header", "three");
-        Object actual = resolver.resolve(typeDescriptor(Map.class, annotation(null)), bindingProperty("annotated", TestingBean.class), request);
+        Object actual = resolver.resolve(bindingProperty("annotated", TestingBean.class), request);
         assertThat(actual).isInstanceOf(Map.class);
         Map<String, String> map = (Map<String, String>) actual;
         assertThat(map).containsEntry("x-header", "one");
@@ -121,7 +121,7 @@ class HeaderParameterMapRequestPropertyResolverTest {
         NativeWebRequest mock = mock(NativeWebRequest.class);
         when(mock.getHeaderNames()).thenReturn(Collections.singletonList("x-header").iterator());
         when(mock.getHeaderValues("x-header")).thenReturn(null);
-        Object actual = resolver.resolve(typeDescriptor(MultiValueMap.class, annotation(null)), bindingProperty("multivalue", TestingBean.class), mock);
+        Object actual = resolver.resolve(bindingProperty("multivalue", TestingBean.class), mock);
         assertThat(actual).isInstanceOf(MultiValueMap.class);
         MultiValueMap<String, String> map = (MultiValueMap<String, String>) actual;
         assertThat(map).isEmpty();

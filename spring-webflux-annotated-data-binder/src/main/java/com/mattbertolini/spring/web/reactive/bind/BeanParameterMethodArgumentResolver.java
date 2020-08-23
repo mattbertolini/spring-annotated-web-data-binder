@@ -70,11 +70,10 @@ public class BeanParameterMethodArgumentResolver extends ModelAttributeMethodArg
     private Mono<Map<String, Object>> getValuesToBind(@NonNull List<ResolvedPropertyData> propertyData, @NonNull ServerWebExchange exchange) {
         return Flux.fromIterable(propertyData).collectMap(ResolvedPropertyData::getPropertyName, data -> {
             BindingProperty bindingProperty = data.getBindingProperty();
-            TypeDescriptor typeDescriptor = data.getTypeDescriptor();
             RequestPropertyResolver resolver = (RequestPropertyResolver) data.getResolver();
             // TODO: Not sure how to do this without the block. I would love some suggestions.
             //noinspection ReactiveStreamsNullableInLambdaInTransform
-            return resolver.resolve(typeDescriptor, bindingProperty, exchange).toProcessor().block();
+            return resolver.resolve(bindingProperty, exchange).toProcessor().block();
         }).onErrorMap(e -> new RequestPropertyBindingException("Unable to resolve property. " + e.getMessage(), e))
             .doOnSuccess(valuesMap -> valuesMap.values().removeIf(Objects::isNull));
     }

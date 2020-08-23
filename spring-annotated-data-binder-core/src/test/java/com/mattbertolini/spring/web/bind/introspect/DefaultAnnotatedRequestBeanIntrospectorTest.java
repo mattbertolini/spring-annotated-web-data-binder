@@ -22,7 +22,6 @@ import com.mattbertolini.spring.web.bind.annotation.RequestParameter;
 import com.mattbertolini.spring.web.bind.resolver.RequestPropertyResolverBase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.lang.NonNull;
 
 import java.lang.annotation.Annotation;
@@ -80,7 +79,7 @@ class DefaultAnnotatedRequestBeanIntrospectorTest {
         }
 
         @Override
-        public Object resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, @NonNull Void request) {
+        public Object resolve(@NonNull BindingProperty bindingProperty, @NonNull Void request) {
             // Don't need to worry about this method. No used in the introspector.
             return null;
         }

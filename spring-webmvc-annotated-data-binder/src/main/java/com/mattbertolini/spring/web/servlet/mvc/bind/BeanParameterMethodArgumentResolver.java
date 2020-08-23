@@ -66,7 +66,7 @@ public class BeanParameterMethodArgumentResolver extends ModelAttributeMethodPro
             String propertyName = data.getPropertyName();
             RequestPropertyResolver resolver = (RequestPropertyResolver) data.getResolver();
             try {
-                Object value = resolver.resolve(data.getTypeDescriptor(), data.getBindingProperty(), request);
+                Object value = resolver.resolve(data.getBindingProperty(), request);
                 if (value != null) {
                     propertyValues.add(propertyName, value);
                 }

@@ -17,7 +17,6 @@
 package com.mattbertolini.spring.web.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
-import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
@@ -32,5 +31,5 @@ public interface RequestPropertyResolverBase<T, R> {
     boolean supports(@NonNull BindingProperty bindingProperty);
     
     @Nullable
-    R resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, @NonNull T request);
+    R resolve(@NonNull BindingProperty bindingProperty, @NonNull T request);
 }

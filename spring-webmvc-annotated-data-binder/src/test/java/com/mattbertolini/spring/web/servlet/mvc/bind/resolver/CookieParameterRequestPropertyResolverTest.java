@@ -27,7 +27,6 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.ServletWebRequest;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
@@ -67,14 +66,14 @@ class CookieParameterRequestPropertyResolverTest {
     void throwsExceptionIfResolveCalledWithNoAnnotation() throws Exception {
         // Unlikely to happen as the library always checks the supports method.
         assertThatExceptionOfType(IllegalStateException.class)
-            .isThrownBy(() -> resolver.resolve(typeDescriptor(String.class), bindingProperty("notAnnotated", TestingBean.class), request));
+            .isThrownBy(() -> resolver.resolve(bindingProperty("notAnnotated", TestingBean.class), request));
     }
 
     @Test
     void throwsExceptionWhenNativeRequestDoesNotWrapServletRequest() throws Exception {
         NativeWebRequest webRequest = mock(NativeWebRequest.class);
         when(webRequest.getNativeRequest()).thenReturn(null);
-        assertThatThrownBy(() -> resolver.resolve(typeDescriptor(HttpServletRequest.class), bindingProperty("annotated", TestingBean.class), webRequest))
+        assertThatThrownBy(() -> resolver.resolve(bindingProperty("annotated", TestingBean.class), webRequest))
             .isInstanceOf(IllegalStateException.class);
     }
 
@@ -84,7 +83,7 @@ class CookieParameterRequestPropertyResolverTest {
         String cookieName = "the_cookie";
         Cookie cookie = new Cookie(cookieName, expected);
         servletRequest.setCookies(cookie);
-        Object actual = resolver.resolve(typeDescriptor(String.class, new StubbingAnnotation(cookieName)), bindingProperty("annotated", TestingBean.class), request);
+        Object actual = resolver.resolve(bindingProperty("annotated", TestingBean.class), request);
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -93,13 +92,13 @@ class CookieParameterRequestPropertyResolverTest {
         String cookieName = "the_cookie";
         Cookie expected = new Cookie(cookieName, "aValue");
         servletRequest.setCookies(expected);
-        Object actual = resolver.resolve(typeDescriptor(Cookie.class, new StubbingAnnotation(cookieName)), bindingProperty("cookieObject", TestingBean.class), request);
+        Object actual = resolver.resolve(bindingProperty("cookieObject", TestingBean.class), request);
         assertThat(actual).isEqualTo(expected);
     }
 
     @Test
     void returnsNullWhenNoCookieFound() throws Exception {
-        Object notFound = resolver.resolve(typeDescriptor(Integer.class, new StubbingAnnotation("not_found")), bindingProperty("annotated", TestingBean.class), request);
+        Object notFound = resolver.resolve(bindingProperty("annotated", TestingBean.class), request);
         assertThat(notFound).isNull();
     }
 

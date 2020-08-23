@@ -78,7 +78,7 @@ class PathParameterMapRequestPropertyResolverTest {
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
         exchange.getAttributes().put(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE, pathVarsMap);
 
-        Mono<Object> objectMono = resolver.resolve(typeDescriptor(Map.class, new StubbingAnnotation(null)), bindingProperty("annotated", TestingBean.class), exchange);
+        Mono<Object> objectMono = resolver.resolve(bindingProperty("annotated", TestingBean.class), exchange);
         Object actual = objectMono.block();
         assertThat(actual).isInstanceOf(Map.class);
         Map<String, String> map = (Map<String, String>) actual;
@@ -93,7 +93,7 @@ class PathParameterMapRequestPropertyResolverTest {
     void returnsEmptyMapWhenNoPathVariables() throws Exception {
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant").build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
-        Mono<Object> objectMono = resolver.resolve(typeDescriptor(Map.class, new StubbingAnnotation(null)), bindingProperty("annotated", TestingBean.class), exchange);
+        Mono<Object> objectMono = resolver.resolve(bindingProperty("annotated", TestingBean.class), exchange);
         Object actual = objectMono.block();
         assertThat(actual).isInstanceOf(Map.class);
         Map<String, String> map = (Map<String, String>) actual;

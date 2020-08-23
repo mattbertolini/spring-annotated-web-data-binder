@@ -71,7 +71,7 @@ class FormParameterRequestPropertyResolverTest {
             .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
         assertThatExceptionOfType(IllegalStateException.class)
-            .isThrownBy(() -> resolver.resolve(typeDescriptor(String.class), bindingProperty("notAnnotated", TestingBean.class), exchange));
+            .isThrownBy(() -> resolver.resolve(bindingProperty("notAnnotated", TestingBean.class), exchange));
     }
 
     @Test
@@ -84,7 +84,7 @@ class FormParameterRequestPropertyResolverTest {
             .body("testing=expected+value");
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
-        Mono<Object> actual = resolver.resolve(typeDescriptor(String.class, annotation(parameterName)), bindingProperty("annotated", TestingBean.class), exchange);
+        Mono<Object> actual = resolver.resolve(bindingProperty("annotated", TestingBean.class), exchange);
         assertThat(actual.block()).isEqualTo(expected);
     }
 
@@ -93,7 +93,7 @@ class FormParameterRequestPropertyResolverTest {
         MockServerHttpRequest request = MockServerHttpRequest.post("/irrelevant").build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
-        Mono<Object> actual = resolver.resolve(typeDescriptor(Integer.class, annotation("not_found")), bindingProperty("annotated", TestingBean.class), exchange);
+        Mono<Object> actual = resolver.resolve(bindingProperty("annotated", TestingBean.class), exchange);
         assertThat(actual.block()).isNull();
     }
 
@@ -107,7 +107,7 @@ class FormParameterRequestPropertyResolverTest {
             .body("multiple_values=one&multiple_values=two&multiple_values=three");
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
-        Mono<Object> actual = resolver.resolve(typeDescriptor(List.class, annotation(parameterName)), bindingProperty("multipleValues", TestingBean.class), exchange);
+        Mono<Object> actual = resolver.resolve(bindingProperty("multipleValues", TestingBean.class), exchange);
         assertThat(actual.block()).isEqualTo(expected);
     }
 

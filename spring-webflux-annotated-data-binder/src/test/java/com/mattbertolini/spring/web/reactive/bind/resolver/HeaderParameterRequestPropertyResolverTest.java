@@ -70,7 +70,7 @@ class HeaderParameterRequestPropertyResolverTest {
             .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
         assertThatExceptionOfType(IllegalStateException.class)
-            .isThrownBy(() -> resolver.resolve(typeDescriptor(String.class), bindingProperty("notAnnotated", TestingBean.class), exchange));
+            .isThrownBy(() -> resolver.resolve(bindingProperty("notAnnotated", TestingBean.class), exchange));
     }
 
     @Test
@@ -84,7 +84,7 @@ class HeaderParameterRequestPropertyResolverTest {
             .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
-        Mono<Object> actual = resolver.resolve(typeDescriptor(String.class, new StubbingAnnotation(headerName)), bindingProperty("annotated", TestingBean.class), exchange);
+        Mono<Object> actual = resolver.resolve(bindingProperty("annotated", TestingBean.class), exchange);
         assertThat(actual.block()).isEqualTo(expected);
     }
 
@@ -92,7 +92,7 @@ class HeaderParameterRequestPropertyResolverTest {
     void returnsNullWhenNoValueFound() throws Exception {
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant").build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
-        Mono<Object> actual = resolver.resolve(typeDescriptor(Integer.class, new StubbingAnnotation("X-NotFound")), bindingProperty("annotated", TestingBean.class), exchange);
+        Mono<Object> actual = resolver.resolve(bindingProperty("annotated", TestingBean.class), exchange);
         assertThat(actual.block()).isNull();
     }
 
@@ -106,7 +106,7 @@ class HeaderParameterRequestPropertyResolverTest {
             .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
         
-        Mono<Object> actual = resolver.resolve(typeDescriptor(List.class, new StubbingAnnotation(headerName)), bindingProperty("multipleValues", TestingBean.class), exchange);
+        Mono<Object> actual = resolver.resolve(bindingProperty("multipleValues", TestingBean.class), exchange);
         assertThat(actual.block()).isEqualTo(expected);
     }
 

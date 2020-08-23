@@ -18,7 +18,6 @@ package com.mattbertolini.spring.web.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.Test;
-import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.lang.NonNull;
 
 import java.beans.PropertyDescriptor;
@@ -31,7 +30,7 @@ class AbstractNamedRequestPropertyResolverTest {
     void resolveUsesResolveWithNameMethod() throws Exception {
         TestingResolver resolver = new TestingResolver("expected");
         BindingProperty bindingProperty = BindingProperty.forPropertyDescriptor(new PropertyDescriptor("property", TestingBean.class));
-        Object actual = resolver.resolve(TypeDescriptor.valueOf(String.class), bindingProperty, new Object());
+        Object actual = resolver.resolve(bindingProperty, new Object());
         assertThat(actual).isEqualTo("expected");
     }
 
@@ -46,12 +45,12 @@ class AbstractNamedRequestPropertyResolverTest {
 
         @Override
         @NonNull
-        protected String getName(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty) {
+        protected String getName(@NonNull BindingProperty bindingProperty) {
             return name;
         }
 
         @Override
-        protected Object resolveWithName(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, String name, @NonNull Object request) {
+        protected Object resolveWithName(@NonNull BindingProperty bindingProperty, String name, @NonNull Object request) {
             return name;
         }
 
@@ -61,6 +60,7 @@ class AbstractNamedRequestPropertyResolverTest {
         }
     }
 
+    @SuppressWarnings("unused")
     private static class TestingBean {
         private String property;
 

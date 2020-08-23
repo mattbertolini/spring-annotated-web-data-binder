@@ -76,7 +76,7 @@ class FormParameterMapRequestPropertyResolverTest {
             .body("form_param_one=one&form_param_two=two&form_param_three=three");
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
         
-        Mono<Object> objectMono = resolver.resolve(typeDescriptor(MultiValueMap.class, annotation(null)), bindingProperty("multivalue", TestingBean.class), exchange);
+        Mono<Object> objectMono = resolver.resolve(bindingProperty("multivalue", TestingBean.class), exchange);
         Object actual = objectMono.block();
         assertThat(actual).isInstanceOf(MultiValueMap.class);
         MultiValueMap<String, String> map = (MultiValueMap<String, String>) actual;
@@ -94,7 +94,7 @@ class FormParameterMapRequestPropertyResolverTest {
             .body("form_param=one&form_param=two&form_param=three");
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
         
-        Mono<Object> objectMono = resolver.resolve(typeDescriptor(Map.class, annotation(null)), bindingProperty("annotated", TestingBean.class), exchange);
+        Mono<Object> objectMono = resolver.resolve(bindingProperty("annotated", TestingBean.class), exchange);
         Object actual = objectMono.block();
         assertThat(actual).isInstanceOf(Map.class);
         Map<String, String> map = (Map<String, String>) actual;

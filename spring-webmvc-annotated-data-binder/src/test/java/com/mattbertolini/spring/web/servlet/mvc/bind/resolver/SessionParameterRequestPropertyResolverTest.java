@@ -63,7 +63,7 @@ class SessionParameterRequestPropertyResolverTest {
     void throwsExceptionIfResolveCalledWithNoAnnotation() {
         // Unlikely to happen as the library always checks the supports method.
         assertThatExceptionOfType(IllegalStateException.class)
-            .isThrownBy(() -> resolver.resolve(typeDescriptor(String.class), bindingProperty("notAnnotated", TestingBean.class), request));
+            .isThrownBy(() -> resolver.resolve(bindingProperty("notAnnotated", TestingBean.class), request));
     }
 
     @Test
@@ -71,19 +71,19 @@ class SessionParameterRequestPropertyResolverTest {
         String expected = "expectedValue";
         String sessionKey = "sessionKey";
         session.setAttribute(sessionKey, expected);
-        Object actual = resolver.resolve(typeDescriptor(String.class, new StubbingAnnotation(sessionKey)), bindingProperty("annotated", TestingBean.class), request);
+        Object actual = resolver.resolve(bindingProperty("annotated", TestingBean.class), request);
         assertThat(actual).isEqualTo(expected);
     }
 
     @Test
     void returnsNullWhenNoKeyFound() throws Exception {
-        Object actual = resolver.resolve(typeDescriptor(Integer.class, new StubbingAnnotation("not_found")), bindingProperty("annotated", TestingBean.class), request);
+        Object actual = resolver.resolve(bindingProperty("annotated", TestingBean.class), request);
         assertThat(actual).isNull();
     }
 
     @Test
     void returnsNullWhenNoSessionExists() throws Exception {
-        Object actual = resolver.resolve(typeDescriptor(String.class, new StubbingAnnotation("no_session")), bindingProperty("annotated", TestingBean.class), request);
+        Object actual = resolver.resolve(bindingProperty("annotated", TestingBean.class), request);
         assertThat(actual).isNull();
     }
 

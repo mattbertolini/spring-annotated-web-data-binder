@@ -18,7 +18,6 @@ package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.HeaderParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
-import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.lang.NonNull;
 import org.springframework.util.LinkedMultiValueMap;
@@ -39,7 +38,7 @@ public class HeaderParameterMapRequestPropertyResolver implements RequestPropert
     }
 
     @Override
-    public Object resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, @NonNull NativeWebRequest request) {
+    public Object resolve(@NonNull BindingProperty bindingProperty, @NonNull NativeWebRequest request) {
         if (MultiValueMap.class.isAssignableFrom(bindingProperty.getType())) {
             MultiValueMap<String, String> retMap;
             if (HttpHeaders.class.isAssignableFrom(bindingProperty.getType())) {

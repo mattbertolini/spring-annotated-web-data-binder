@@ -63,7 +63,7 @@ class CookieParameterRequestPropertyResolverTest {
             .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
         assertThatExceptionOfType(IllegalStateException.class)
-            .isThrownBy(() -> resolver.resolve(typeDescriptor(String.class), bindingProperty("notAnnotated", TestingBean.class), exchange));
+            .isThrownBy(() -> resolver.resolve(bindingProperty("notAnnotated", TestingBean.class), exchange));
     }
 
     @Test
@@ -75,7 +75,7 @@ class CookieParameterRequestPropertyResolverTest {
             .cookie(new HttpCookie(cookieName, expected)).build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
-        Mono<Object> actual = resolver.resolve(typeDescriptor(String.class, new StubbingAnnotation(cookieName)), bindingProperty("annotated", TestingBean.class), exchange);
+        Mono<Object> actual = resolver.resolve(bindingProperty("annotated", TestingBean.class), exchange);
         assertThat(actual.block()).isEqualTo(expected);
     }
 
@@ -88,7 +88,7 @@ class CookieParameterRequestPropertyResolverTest {
             .cookie(expected).build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
-        Mono<Object> actual = resolver.resolve(typeDescriptor(HttpCookie.class, new StubbingAnnotation(cookieName)), bindingProperty("cookieObject", TestingBean.class), exchange);
+        Mono<Object> actual = resolver.resolve(bindingProperty("cookieObject", TestingBean.class), exchange);
         assertThat(actual.block()).isEqualTo(expected);
     }
 
@@ -97,7 +97,7 @@ class CookieParameterRequestPropertyResolverTest {
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant").build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
-        Mono<Object> notFound = resolver.resolve(typeDescriptor(Integer.class, new StubbingAnnotation("not_found")), bindingProperty("annotated", TestingBean.class), exchange);
+        Mono<Object> notFound = resolver.resolve(bindingProperty("annotated", TestingBean.class), exchange);
         assertThat(notFound.block()).isNull();
     }
 

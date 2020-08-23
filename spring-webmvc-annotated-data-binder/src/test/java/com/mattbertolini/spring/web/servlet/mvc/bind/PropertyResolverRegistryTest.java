@@ -4,7 +4,6 @@ import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.RequestPropertyResolver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.lang.NonNull;
 import org.springframework.web.context.request.NativeWebRequest;
 
@@ -52,7 +51,7 @@ class PropertyResolverRegistryTest {
         }
 
         @Override
-        public Object resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, @NonNull NativeWebRequest request) {
+        public Object resolve(@NonNull BindingProperty bindingProperty, @NonNull NativeWebRequest request) {
             return null;
         }
     }

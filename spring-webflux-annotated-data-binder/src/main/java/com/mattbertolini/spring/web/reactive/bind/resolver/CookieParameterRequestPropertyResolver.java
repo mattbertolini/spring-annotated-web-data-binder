@@ -18,7 +18,6 @@ package com.mattbertolini.spring.web.reactive.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.CookieParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
-import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.http.HttpCookie;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
@@ -34,7 +33,7 @@ public class CookieParameterRequestPropertyResolver implements RequestPropertyRe
 
     @NonNull
     @Override
-    public Mono<Object> resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, @NonNull ServerWebExchange exchange) {
+    public Mono<Object> resolve(@NonNull BindingProperty bindingProperty, @NonNull ServerWebExchange exchange) {
         MultiValueMap<String, HttpCookie> cookies = exchange.getRequest().getCookies();
         CookieParameter annotation = bindingProperty.getAnnotation(CookieParameter.class);
         Assert.state(annotation != null, "No CookieParameter annotation found on type");

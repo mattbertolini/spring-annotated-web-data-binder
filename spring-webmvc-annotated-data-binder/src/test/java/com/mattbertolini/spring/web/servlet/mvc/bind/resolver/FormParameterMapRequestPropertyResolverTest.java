@@ -74,7 +74,7 @@ class FormParameterMapRequestPropertyResolverTest {
     @Test
     void returnsMultiValueMap() throws Exception {
         servletRequest.addParameter("form_param", "one", "two", "three");
-        Object actual = resolver.resolve(typeDescriptor(MultiValueMap.class, annotation(null)), bindingProperty("multivalue", TestingBean.class), request);
+        Object actual = resolver.resolve(bindingProperty("multivalue", TestingBean.class), request);
         assertThat(actual).isInstanceOf(MultiValueMap.class);
         MultiValueMap<String, String> map = (MultiValueMap<String, String>) actual;
         assertThat(map).containsEntry("form_param", Arrays.asList("one", "two", "three"));
@@ -84,7 +84,7 @@ class FormParameterMapRequestPropertyResolverTest {
     @Test
     void returnsMapWithFirstValue() throws Exception {
         servletRequest.addParameter("form_param", "one", "two", "three");
-        Object actual = resolver.resolve(typeDescriptor(Map.class, annotation(null)), bindingProperty("annotated", TestingBean.class), request);
+        Object actual = resolver.resolve(bindingProperty("annotated", TestingBean.class), request);
         assertThat(actual).isInstanceOf(Map.class);
         Map<String, String> map = (Map<String, String>) actual;
         assertThat(map).containsEntry("form_param", "one");

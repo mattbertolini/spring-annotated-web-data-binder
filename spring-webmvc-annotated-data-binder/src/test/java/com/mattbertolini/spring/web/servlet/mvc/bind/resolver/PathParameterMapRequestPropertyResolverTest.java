@@ -79,7 +79,7 @@ class PathParameterMapRequestPropertyResolverTest {
         pathVarsMap.put("path_three", "three");
         servletRequest.setAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE, pathVarsMap);
 
-        Object actual = resolver.resolve(typeDescriptor(Map.class, new StubbingAnnotation(null)), bindingProperty("annotated", TestingBean.class), request);
+        Object actual = resolver.resolve(bindingProperty("annotated", TestingBean.class), request);
         assertThat(actual).isInstanceOf(Map.class);
         Map<String, String> map = (Map<String, String>) actual;
         assertThat(map)
@@ -91,7 +91,7 @@ class PathParameterMapRequestPropertyResolverTest {
     @SuppressWarnings("unchecked")
     @Test
     void returnsEmptyMapWhenNoPathVariables() throws Exception {
-        Object actual = resolver.resolve(typeDescriptor(Map.class, new StubbingAnnotation(null)), bindingProperty("annotated", TestingBean.class), request);
+        Object actual = resolver.resolve(bindingProperty("annotated", TestingBean.class), request);
         assertThat(actual).isInstanceOf(Map.class);
         Map<String, String> map = (Map<String, String>) actual;
         assertThat(map).isEmpty();

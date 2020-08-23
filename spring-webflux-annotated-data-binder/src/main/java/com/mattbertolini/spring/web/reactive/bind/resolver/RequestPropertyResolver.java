@@ -18,7 +18,6 @@ package com.mattbertolini.spring.web.reactive.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import com.mattbertolini.spring.web.bind.resolver.RequestPropertyResolverBase;
-import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.lang.NonNull;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -29,5 +28,5 @@ import reactor.core.publisher.Mono;
 public interface RequestPropertyResolver extends RequestPropertyResolverBase<ServerWebExchange, Mono<Object>> {
     @Override
     @NonNull
-    Mono<Object> resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, @NonNull ServerWebExchange request);
+    Mono<Object> resolve(@NonNull BindingProperty bindingProperty, @NonNull ServerWebExchange request);
 }

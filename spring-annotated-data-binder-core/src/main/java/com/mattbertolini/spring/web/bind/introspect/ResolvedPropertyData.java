@@ -17,25 +17,21 @@
 package com.mattbertolini.spring.web.bind.introspect;
 
 import com.mattbertolini.spring.web.bind.resolver.RequestPropertyResolverBase;
-import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.lang.NonNull;
 
 import java.util.Objects;
 
 public final class ResolvedPropertyData {
     private final String propertyName;
-    private final TypeDescriptor typeDescriptor;
     private final BindingProperty bindingProperty;
     private final RequestPropertyResolverBase<?, ?> resolver;
 
     public ResolvedPropertyData(
         @NonNull String propertyName,
-        @NonNull TypeDescriptor typeDescriptor,
         @NonNull BindingProperty bindingProperty,
         @NonNull RequestPropertyResolverBase<?, ?> resolver
     ) {
         this.propertyName = propertyName;
-        this.typeDescriptor = typeDescriptor;
         this.bindingProperty = bindingProperty;
         this.resolver = resolver;
     }
@@ -43,11 +39,6 @@ public final class ResolvedPropertyData {
     @NonNull
     public String getPropertyName() {
         return propertyName;
-    }
-
-    @NonNull
-    public TypeDescriptor getTypeDescriptor() {
-        return typeDescriptor;
     }
 
     @NonNull
@@ -70,13 +61,12 @@ public final class ResolvedPropertyData {
         }
         ResolvedPropertyData that = (ResolvedPropertyData) o;
         return Objects.equals(propertyName, that.propertyName) &&
-            Objects.equals(typeDescriptor, that.typeDescriptor) &&
             Objects.equals(bindingProperty, that.bindingProperty) &&
             Objects.equals(resolver, that.resolver);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(propertyName, typeDescriptor, bindingProperty, resolver);
+        return Objects.hash(propertyName, bindingProperty, resolver);
     }
 }

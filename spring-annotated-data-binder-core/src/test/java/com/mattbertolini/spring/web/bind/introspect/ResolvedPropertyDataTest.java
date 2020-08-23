@@ -34,7 +34,6 @@ class ResolvedPropertyDataTest {
     void setUp() throws Exception {
         propertyData = new ResolvedPropertyData(
             "name",
-            TypeDescriptor.valueOf(String.class),
             BindingProperty.forPropertyDescriptor(new PropertyDescriptor("property", TestingClass.class)),
             new StubResolver());
     }
@@ -42,11 +41,6 @@ class ResolvedPropertyDataTest {
     @Test
     void returnsPropertyName() {
         assertThat(propertyData.getPropertyName()).isEqualTo("name");
-    }
-
-    @Test
-    void returnsTypeDescriptor() {
-        assertThat(propertyData.getTypeDescriptor()).isEqualTo(TypeDescriptor.valueOf(String.class));
     }
 
     @Test

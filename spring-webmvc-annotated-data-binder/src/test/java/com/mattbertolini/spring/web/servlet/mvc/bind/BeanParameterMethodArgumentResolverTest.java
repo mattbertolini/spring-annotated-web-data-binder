@@ -27,7 +27,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.PropertyValues;
 import org.springframework.core.MethodParameter;
-import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.format.support.FormattingConversionServiceFactoryBean;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
@@ -153,8 +152,8 @@ class BeanParameterMethodArgumentResolverTest {
     @Test
     void resolvesPropertyValues() throws Exception {
         List<ResolvedPropertyData> propertyData = Arrays.asList(
-            new ResolvedPropertyData("propertyOne", TypeDescriptor.valueOf(String.class), BindingProperty.forPropertyDescriptor(new PropertyDescriptor("propertyOne", ABeanClass.class)), MockRequestPropertyResolver.value("expected")),
-            new ResolvedPropertyData("propertyTwo", TypeDescriptor.valueOf(Integer.class), BindingProperty.forPropertyDescriptor(new PropertyDescriptor("propertyTwo", ABeanClass.class)), MockRequestPropertyResolver.value(42))
+            new ResolvedPropertyData("propertyOne", BindingProperty.forPropertyDescriptor(new PropertyDescriptor("propertyOne", ABeanClass.class)), MockRequestPropertyResolver.value("expected")),
+            new ResolvedPropertyData("propertyTwo", BindingProperty.forPropertyDescriptor(new PropertyDescriptor("propertyTwo", ABeanClass.class)), MockRequestPropertyResolver.value(42))
         );
 
         MethodParameter methodParameter = createMethodParameter("anAnnotatedMethod", ABeanClass.class);
@@ -180,8 +179,8 @@ class BeanParameterMethodArgumentResolverTest {
     @Test
     void resolvesOnlyFoundPropertyValues() throws Exception {
         List<ResolvedPropertyData> propertyData = Arrays.asList(
-            new ResolvedPropertyData("propertyOne", TypeDescriptor.valueOf(String.class), BindingProperty.forPropertyDescriptor(new PropertyDescriptor("propertyOne", ABeanClass.class)), MockRequestPropertyResolver.noValueFound()),
-            new ResolvedPropertyData("propertyTwo", TypeDescriptor.valueOf(Integer.class), BindingProperty.forPropertyDescriptor(new PropertyDescriptor("propertyTwo", ABeanClass.class)), MockRequestPropertyResolver.value(42))
+            new ResolvedPropertyData("propertyOne", BindingProperty.forPropertyDescriptor(new PropertyDescriptor("propertyOne", ABeanClass.class)), MockRequestPropertyResolver.noValueFound()),
+            new ResolvedPropertyData("propertyTwo", BindingProperty.forPropertyDescriptor(new PropertyDescriptor("propertyTwo", ABeanClass.class)), MockRequestPropertyResolver.value(42))
         );
 
         MethodParameter methodParameter = createMethodParameter("anAnnotatedMethod", ABeanClass.class);
@@ -204,8 +203,8 @@ class BeanParameterMethodArgumentResolverTest {
     @Test
     void throwsExceptionWhenResolverErrors() throws Exception {
         List<ResolvedPropertyData> propertyData = Arrays.asList(
-            new ResolvedPropertyData("propertyOne", TypeDescriptor.valueOf(String.class), BindingProperty.forPropertyDescriptor(new PropertyDescriptor("propertyOne", ABeanClass.class)), MockRequestPropertyResolver.value("expected")),
-            new ResolvedPropertyData("propertyTwo", TypeDescriptor.valueOf(Integer.class), BindingProperty.forPropertyDescriptor(new PropertyDescriptor("propertyTwo", ABeanClass.class)), MockRequestPropertyResolver.throwsException())
+            new ResolvedPropertyData("propertyOne", BindingProperty.forPropertyDescriptor(new PropertyDescriptor("propertyOne", ABeanClass.class)), MockRequestPropertyResolver.value("expected")),
+            new ResolvedPropertyData("propertyTwo", BindingProperty.forPropertyDescriptor(new PropertyDescriptor("propertyTwo", ABeanClass.class)), MockRequestPropertyResolver.throwsException())
         );
         
         MethodParameter methodParameter = createMethodParameter("anAnnotatedMethod", ABeanClass.class);

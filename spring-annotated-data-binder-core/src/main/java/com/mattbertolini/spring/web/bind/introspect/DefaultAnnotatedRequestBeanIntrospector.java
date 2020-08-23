@@ -20,8 +20,6 @@ import com.mattbertolini.spring.web.bind.AbstractPropertyResolverRegistry;
 import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
 import com.mattbertolini.spring.web.bind.resolver.RequestPropertyResolverBase;
 import org.springframework.beans.BeanUtils;
-import org.springframework.core.convert.Property;
-import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
@@ -78,7 +76,6 @@ public class DefaultAnnotatedRequestBeanIntrospector implements AnnotatedRequest
         for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
             String propertyName = getPropertyName(prefix, propertyDescriptor);
             BindingProperty bindingProperty = BindingProperty.forPropertyDescriptor(propertyDescriptor);
-            TypeDescriptor typeDescriptor = createTypeDescriptor(propertyDescriptor);
             Class<?> type = bindingProperty.getType();
             if (bindingProperty.hasAnnotation(BeanParameter.class) && !BeanUtils.isSimpleProperty(type)) {
                 if (!cycleClasses.add(type)) {
@@ -93,22 +90,9 @@ public class DefaultAnnotatedRequestBeanIntrospector implements AnnotatedRequest
                 if (resolver == null) {
                     continue;
                 }
-                propertyData.add(new ResolvedPropertyData(propertyName, typeDescriptor, bindingProperty, resolver));
+                propertyData.add(new ResolvedPropertyData(propertyName, bindingProperty, resolver));
             }
         }
-    }
-
-    /**
-     * Creates a {@link TypeDescriptor} from the given {@link PropertyDescriptor}. This is a way of bridging the Java
-     * beans world into the Spring world.
-     */
-    @NonNull
-    private TypeDescriptor createTypeDescriptor(@NonNull PropertyDescriptor propertyDescriptor) {
-        return new TypeDescriptor(new Property(
-            propertyDescriptor.getPropertyType(),
-            propertyDescriptor.getReadMethod(),
-            propertyDescriptor.getWriteMethod()
-        ));
     }
 
     /**

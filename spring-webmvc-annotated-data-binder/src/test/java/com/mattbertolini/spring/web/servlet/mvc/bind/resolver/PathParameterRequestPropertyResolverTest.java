@@ -20,15 +20,12 @@ import com.mattbertolini.spring.web.bind.annotation.PathParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.core.ResolvableType;
-import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.servlet.HandlerMapping;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
-import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,19 +47,19 @@ class PathParameterRequestPropertyResolverTest {
 
     @Test
     void supportsReturnsTrueOnPresenceOfAnnotation() throws Exception {
-        boolean result = resolver.supports(bindingProperty("annotated", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("annotated"));
         assertThat(result).isTrue();
     }
 
     @Test
     void supportsReturnsFalseOnMissingAnnotation() throws Exception {
-        boolean result = resolver.supports(bindingProperty("notAnnotated", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("notAnnotated"));
         assertThat(result).isFalse();
     }
 
     @Test
     void supportsReturnsFalseOnMissingAnnotationValue() throws Exception {
-        boolean result = resolver.supports(bindingProperty("missingValue", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("missingValue"));
         assertThat(result).isFalse();
     }
 
@@ -70,7 +67,7 @@ class PathParameterRequestPropertyResolverTest {
     void throwsExceptionIfResolveCalledWithNoAnnotation() {
         // Unlikely to happen as the library always checks the supports method.
         assertThatExceptionOfType(IllegalStateException.class)
-            .isThrownBy(() -> resolver.resolve(bindingProperty("notAnnotated", TestingBean.class), request));
+            .isThrownBy(() -> resolver.resolve(bindingProperty("notAnnotated"), request));
     }
 
     @Test
@@ -78,23 +75,21 @@ class PathParameterRequestPropertyResolverTest {
         String expected = "pathValue";
         String parameterName = "pathParamName";
         makePathParamMap(parameterName, expected);
-        Object actual = resolver.resolve(bindingProperty("annotated", TestingBean.class), request);
+        Object actual = resolver.resolve(bindingProperty("annotated"), request);
         assertThat(actual).isEqualTo(expected);
     }
 
     @Test
     void returnsNullIfNoPathVariableFound() throws Exception {
-        String parameterName = "pathParamName";
         emptyPathParamMap();
-        Object actual = resolver.resolve(bindingProperty("annotated", TestingBean.class), request);
+        Object actual = resolver.resolve(bindingProperty("annotated"), request);
         assertThat(actual).isNull();
     }
 
     @Test
     void returnsNullIfNoPathVariablesMapExistsOnRequest() throws Exception {
-        String parameterName = "pathParamName";
         servletRequest.removeAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-        Object actual = resolver.resolve(bindingProperty("annotated", TestingBean.class), request);
+        Object actual = resolver.resolve(bindingProperty("annotated"), request);
         assertThat(actual).isNull();
     }
 
@@ -108,31 +103,8 @@ class PathParameterRequestPropertyResolverTest {
         servletRequest.setAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE, Collections.emptyMap());
     }
 
-    private TypeDescriptor typeDescriptor(Annotation... annotations) {
-        return new TypeDescriptor(ResolvableType.forClass(String.class), null, annotations);
-    }
-
-    private BindingProperty bindingProperty(String property, Class<?> clazz) throws IntrospectionException {
-        return BindingProperty.forPropertyDescriptor(new PropertyDescriptor(property, clazz));
-    }
-
-    @SuppressWarnings("ClassExplicitlyAnnotation")
-    private static class StubbingAnnotation implements PathParameter {
-        private final String name;
-
-        private StubbingAnnotation(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public String value() {
-            return name;
-        }
-
-        @Override
-        public Class<? extends Annotation> annotationType() {
-            return PathParameter.class;
-        }
+    private BindingProperty bindingProperty(String property) throws IntrospectionException {
+        return BindingProperty.forPropertyDescriptor(new PropertyDescriptor(property, TestingBean.class));
     }
 
     @SuppressWarnings("unused")

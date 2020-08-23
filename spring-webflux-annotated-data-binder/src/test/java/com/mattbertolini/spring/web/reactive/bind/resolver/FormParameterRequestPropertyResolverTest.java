@@ -20,8 +20,6 @@ import com.mattbertolini.spring.web.bind.annotation.FormParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.core.ResolvableType;
-import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.http.MediaType;
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
 import org.springframework.mock.web.server.MockServerWebExchange;
@@ -29,7 +27,6 @@ import reactor.core.publisher.Mono;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
-import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -48,19 +45,19 @@ class FormParameterRequestPropertyResolverTest {
     
     @Test
     void supportsReturnsTrueOnPresenceOfAnnotation() throws Exception {
-        boolean result = resolver.supports(bindingProperty("annotated", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("annotated"));
         assertThat(result).isTrue();
     }
 
     @Test
     void supportsReturnsFalseOnMissingAnnotation() throws Exception {
-        boolean result = resolver.supports(bindingProperty("notAnnotated", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("notAnnotated"));
         assertThat(result).isFalse();
     }
 
     @Test
     void supportsReturnsFalseOnMissingAnnotationValue() throws Exception {
-        boolean result = resolver.supports(bindingProperty("missingValue", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("missingValue"));
         assertThat(result).isFalse();
     }
 
@@ -71,20 +68,19 @@ class FormParameterRequestPropertyResolverTest {
             .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
         assertThatExceptionOfType(IllegalStateException.class)
-            .isThrownBy(() -> resolver.resolve(bindingProperty("notAnnotated", TestingBean.class), exchange));
+            .isThrownBy(() -> resolver.resolve(bindingProperty("notAnnotated"), exchange));
     }
 
     @Test
     void returnsValueFromHttpRequest() throws Exception {
         List<String> expected = Collections.singletonList("expected value");
-        String parameterName = "testing";
 
         MockServerHttpRequest request = MockServerHttpRequest.post("/irrelevant")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .body("testing=expected+value");
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
-        Mono<Object> actual = resolver.resolve(bindingProperty("annotated", TestingBean.class), exchange);
+        Mono<Object> actual = resolver.resolve(bindingProperty("annotated"), exchange);
         assertThat(actual.block()).isEqualTo(expected);
     }
 
@@ -93,53 +89,25 @@ class FormParameterRequestPropertyResolverTest {
         MockServerHttpRequest request = MockServerHttpRequest.post("/irrelevant").build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
-        Mono<Object> actual = resolver.resolve(bindingProperty("annotated", TestingBean.class), exchange);
+        Mono<Object> actual = resolver.resolve(bindingProperty("annotated"), exchange);
         assertThat(actual.block()).isNull();
     }
 
     @Test
     void returnsMultipleValues() throws Exception {
         List<String> expected = Arrays.asList("one", "two", "three");
-        String parameterName = "multiple_values";
 
         MockServerHttpRequest request = MockServerHttpRequest.post("/irrelevant")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .body("multiple_values=one&multiple_values=two&multiple_values=three");
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
-        Mono<Object> actual = resolver.resolve(bindingProperty("multipleValues", TestingBean.class), exchange);
+        Mono<Object> actual = resolver.resolve(bindingProperty("multipleValues"), exchange);
         assertThat(actual.block()).isEqualTo(expected);
     }
 
-    private StubbingRequestParameter annotation(String parameterName) {
-        return new StubbingRequestParameter(parameterName);
-    }
-
-    private TypeDescriptor typeDescriptor(Class<?> clazz, Annotation... annotations) {
-        return new TypeDescriptor(ResolvableType.forClass(clazz), null, annotations);
-    }
-
-    private BindingProperty bindingProperty(String property, Class<?> clazz) throws IntrospectionException {
-        return BindingProperty.forPropertyDescriptor(new PropertyDescriptor(property, clazz));
-    }
-
-    @SuppressWarnings("ClassExplicitlyAnnotation")
-    private static class StubbingRequestParameter implements FormParameter {
-        private final String name;
-
-        private StubbingRequestParameter(String name) {
-            this.name = name == null ? "" : name;
-        }
-
-        @Override
-        public String value() {
-            return name;
-        }
-
-        @Override
-        public Class<? extends Annotation> annotationType() {
-            return FormParameter.class;
-        }
+    private BindingProperty bindingProperty(String property) throws IntrospectionException {
+        return BindingProperty.forPropertyDescriptor(new PropertyDescriptor(property, TestingBean.class));
     }
 
     @SuppressWarnings("unused")

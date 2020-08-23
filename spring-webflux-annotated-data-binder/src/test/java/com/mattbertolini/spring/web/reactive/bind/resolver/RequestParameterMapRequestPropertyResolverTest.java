@@ -20,8 +20,6 @@ import com.mattbertolini.spring.web.bind.annotation.RequestParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.core.ResolvableType;
-import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
 import org.springframework.mock.web.server.MockServerWebExchange;
 import org.springframework.util.MultiValueMap;
@@ -29,7 +27,6 @@ import reactor.core.publisher.Mono;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
-import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -45,25 +42,25 @@ class RequestParameterMapRequestPropertyResolverTest {
 
     @Test
     void supportsReturnsTrueOnPresenceOfAnnotation() throws Exception {
-        boolean result = resolver.supports(bindingProperty("annotated", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("annotated"));
         assertThat(result).isTrue();
     }
 
     @Test
     void supportsReturnsFalseOnMissingAnnotation() throws Exception {
-        boolean result = resolver.supports(bindingProperty("notAnnotated", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("notAnnotated"));
         assertThat(result).isFalse();
     }
 
     @Test
     void supportsReturnsFalseWhenAnnotationValueIsPresent() throws Exception {
-        boolean result = resolver.supports(bindingProperty("valuePresent", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("valuePresent"));
         assertThat(result).isFalse();
     }
 
     @Test
     void supportsReturnsFalseWhenTypeIsNotMap() throws Exception {
-        boolean result = resolver.supports(bindingProperty("notAMap", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("notAMap"));
         assertThat(result).isFalse();
     }
 
@@ -75,7 +72,7 @@ class RequestParameterMapRequestPropertyResolverTest {
             .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
         
-        Mono<Object> objectMono = resolver.resolve(bindingProperty("multivalue", TestingBean.class), exchange);
+        Mono<Object> objectMono = resolver.resolve(bindingProperty("multivalue"), exchange);
         Object actual = objectMono.block();
         assertThat(actual).isInstanceOf(MultiValueMap.class);
         MultiValueMap<String, String> map = (MultiValueMap<String, String>) actual;
@@ -90,46 +87,15 @@ class RequestParameterMapRequestPropertyResolverTest {
             .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
         
-        Mono<Object> objectMono = resolver.resolve(bindingProperty("annotated", TestingBean.class), exchange);
+        Mono<Object> objectMono = resolver.resolve(bindingProperty("annotated"), exchange);
         Object actual = objectMono.block();
         assertThat(actual).isInstanceOf(Map.class);
         Map<String, String> map = (Map<String, String>) actual;
         assertThat(map).containsEntry("request_param", "one");
     }
 
-    private StubbingRequestParameter annotation(String parameterName) {
-        return new StubbingRequestParameter(parameterName);
-    }
-
-    private TypeDescriptor typeDescriptor(Class<?> clazz, Annotation... annotations) {
-        return new TypeDescriptor(ResolvableType.forClass(clazz), null, annotations);
-    }
-
-    private BindingProperty bindingProperty(String property, Class<?> clazz) throws IntrospectionException {
-        return BindingProperty.forPropertyDescriptor(new PropertyDescriptor(property, clazz));
-    }
-
-    @SuppressWarnings("ClassExplicitlyAnnotation")
-    private static class StubbingRequestParameter implements RequestParameter {
-        private final String name;
-
-        private StubbingRequestParameter(String name) {
-            if (name == null) {
-                this.name = "";
-            } else {
-                this.name = name;
-            }
-        }
-
-        @Override
-        public String value() {
-            return name;
-        }
-
-        @Override
-        public Class<? extends Annotation> annotationType() {
-            return RequestParameter.class;
-        }
+    private BindingProperty bindingProperty(String property) throws IntrospectionException {
+        return BindingProperty.forPropertyDescriptor(new PropertyDescriptor(property, TestingBean.class));
     }
 
     @SuppressWarnings("unused")

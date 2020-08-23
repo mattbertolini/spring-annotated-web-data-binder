@@ -20,8 +20,6 @@ import com.mattbertolini.spring.web.bind.annotation.CookieParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.core.ResolvableType;
-import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -29,7 +27,6 @@ import org.springframework.web.context.request.ServletWebRequest;
 import javax.servlet.http.Cookie;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
-import java.lang.annotation.Annotation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -52,28 +49,28 @@ class CookieParameterRequestPropertyResolverTest {
 
     @Test
     void supportsReturnsTrueOnPresenceOfAnnotation() throws Exception {
-        boolean result = resolver.supports(bindingProperty("annotated", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("annotated"));
         assertThat(result).isTrue();
     }
 
     @Test
     void supportsReturnsFalseOnMissingAnnotation() throws Exception {
-        boolean result = resolver.supports(bindingProperty("notAnnotated", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("notAnnotated"));
         assertThat(result).isFalse();
     }
 
     @Test
-    void throwsExceptionIfResolveCalledWithNoAnnotation() throws Exception {
+    void throwsExceptionIfResolveCalledWithNoAnnotation() {
         // Unlikely to happen as the library always checks the supports method.
         assertThatExceptionOfType(IllegalStateException.class)
-            .isThrownBy(() -> resolver.resolve(bindingProperty("notAnnotated", TestingBean.class), request));
+            .isThrownBy(() -> resolver.resolve(bindingProperty("notAnnotated"), request));
     }
 
     @Test
-    void throwsExceptionWhenNativeRequestDoesNotWrapServletRequest() throws Exception {
+    void throwsExceptionWhenNativeRequestDoesNotWrapServletRequest() {
         NativeWebRequest webRequest = mock(NativeWebRequest.class);
         when(webRequest.getNativeRequest()).thenReturn(null);
-        assertThatThrownBy(() -> resolver.resolve(bindingProperty("annotated", TestingBean.class), webRequest))
+        assertThatThrownBy(() -> resolver.resolve(bindingProperty("annotated"), webRequest))
             .isInstanceOf(IllegalStateException.class);
     }
 
@@ -83,7 +80,7 @@ class CookieParameterRequestPropertyResolverTest {
         String cookieName = "the_cookie";
         Cookie cookie = new Cookie(cookieName, expected);
         servletRequest.setCookies(cookie);
-        Object actual = resolver.resolve(bindingProperty("annotated", TestingBean.class), request);
+        Object actual = resolver.resolve(bindingProperty("annotated"), request);
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -92,41 +89,18 @@ class CookieParameterRequestPropertyResolverTest {
         String cookieName = "the_cookie";
         Cookie expected = new Cookie(cookieName, "aValue");
         servletRequest.setCookies(expected);
-        Object actual = resolver.resolve(bindingProperty("cookieObject", TestingBean.class), request);
+        Object actual = resolver.resolve(bindingProperty("cookieObject"), request);
         assertThat(actual).isEqualTo(expected);
     }
 
     @Test
     void returnsNullWhenNoCookieFound() throws Exception {
-        Object notFound = resolver.resolve(bindingProperty("annotated", TestingBean.class), request);
+        Object notFound = resolver.resolve(bindingProperty("annotated"), request);
         assertThat(notFound).isNull();
     }
 
-    private TypeDescriptor typeDescriptor(Class<?> clazz, Annotation... annotations) {
-        return new TypeDescriptor(ResolvableType.forClass(clazz), null, annotations);
-    }
-
-    private BindingProperty bindingProperty(String property, Class<?> clazz) throws IntrospectionException {
-        return BindingProperty.forPropertyDescriptor(new PropertyDescriptor(property, clazz));
-    }
-
-    @SuppressWarnings("ClassExplicitlyAnnotation")
-    private static class StubbingAnnotation implements CookieParameter {
-        private final String value;
-
-        private StubbingAnnotation(String value) {
-            this.value = value;
-        }
-
-        @Override
-        public String value() {
-            return value;
-        }
-
-        @Override
-        public Class<? extends Annotation> annotationType() {
-            return CookieParameter.class;
-        }
+    private BindingProperty bindingProperty(String property) throws IntrospectionException {
+        return BindingProperty.forPropertyDescriptor(new PropertyDescriptor(property, TestingBean.class));
     }
 
     @SuppressWarnings("unused")

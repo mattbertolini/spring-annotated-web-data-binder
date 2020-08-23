@@ -20,15 +20,12 @@ import com.mattbertolini.spring.web.bind.annotation.FormParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.core.ResolvableType;
-import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.request.ServletWebRequest;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
-import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -48,25 +45,25 @@ class FormParameterMapRequestPropertyResolverTest {
 
     @Test
     void supportsReturnsTrueOnPresenceOfAnnotation() throws Exception {
-        boolean result = resolver.supports(bindingProperty("annotated", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("annotated"));
         assertThat(result).isTrue();
     }
 
     @Test
     void supportsReturnsFalseOnMissingAnnotation() throws Exception {
-        boolean result = resolver.supports(bindingProperty("notAnnotated", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("notAnnotated"));
         assertThat(result).isFalse();
     }
 
     @Test
     void supportsReturnsFalseWhenAnnotationValueIsPresent() throws Exception {
-        boolean result = resolver.supports(bindingProperty("withName", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("withName"));
         assertThat(result).isFalse();
     }
 
     @Test
     void supportsReturnsFalseWhenTypeIsNotMap() throws Exception {
-        boolean result = resolver.supports(bindingProperty("notAMap", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("notAMap"));
         assertThat(result).isFalse();
     }
 
@@ -74,7 +71,7 @@ class FormParameterMapRequestPropertyResolverTest {
     @Test
     void returnsMultiValueMap() throws Exception {
         servletRequest.addParameter("form_param", "one", "two", "three");
-        Object actual = resolver.resolve(bindingProperty("multivalue", TestingBean.class), request);
+        Object actual = resolver.resolve(bindingProperty("multivalue"), request);
         assertThat(actual).isInstanceOf(MultiValueMap.class);
         MultiValueMap<String, String> map = (MultiValueMap<String, String>) actual;
         assertThat(map).containsEntry("form_param", Arrays.asList("one", "two", "three"));
@@ -84,41 +81,14 @@ class FormParameterMapRequestPropertyResolverTest {
     @Test
     void returnsMapWithFirstValue() throws Exception {
         servletRequest.addParameter("form_param", "one", "two", "three");
-        Object actual = resolver.resolve(bindingProperty("annotated", TestingBean.class), request);
+        Object actual = resolver.resolve(bindingProperty("annotated"), request);
         assertThat(actual).isInstanceOf(Map.class);
         Map<String, String> map = (Map<String, String>) actual;
         assertThat(map).containsEntry("form_param", "one");
     }
 
-    private StubbingFormParameter annotation(String parameterName) {
-        return new StubbingFormParameter(parameterName);
-    }
-
-    private TypeDescriptor typeDescriptor(Class<?> clazz, Annotation... annotations) {
-        return new TypeDescriptor(ResolvableType.forClass(clazz), null, annotations);
-    }
-
-    private BindingProperty bindingProperty(String property, Class<?> clazz) throws IntrospectionException {
-        return BindingProperty.forPropertyDescriptor(new PropertyDescriptor(property, clazz));
-    }
-
-    @SuppressWarnings("ClassExplicitlyAnnotation")
-    private static class StubbingFormParameter implements FormParameter {
-        private final String name;
-
-        private StubbingFormParameter(String name) {
-            this.name = name == null ? "" : name;
-        }
-
-        @Override
-        public String value() {
-            return name;
-        }
-
-        @Override
-        public Class<? extends Annotation> annotationType() {
-            return FormParameter.class;
-        }
+    private BindingProperty bindingProperty(String property) throws IntrospectionException {
+        return BindingProperty.forPropertyDescriptor(new PropertyDescriptor(property, TestingBean.class));
     }
 
     @SuppressWarnings("unused")

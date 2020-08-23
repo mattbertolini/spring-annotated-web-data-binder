@@ -20,8 +20,6 @@ import com.mattbertolini.spring.web.bind.annotation.PathParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.core.ResolvableType;
-import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
 import org.springframework.mock.web.server.MockServerWebExchange;
 import org.springframework.web.reactive.HandlerMapping;
@@ -29,7 +27,6 @@ import reactor.core.publisher.Mono;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
-import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,25 +42,25 @@ class PathParameterMapRequestPropertyResolverTest {
 
     @Test
     void supportsReturnsTrueOnPresenceOfAnnotation() throws Exception {
-        boolean result = resolver.supports(bindingProperty("annotated", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("annotated"));
         assertThat(result).isTrue();
     }
 
     @Test
     void supportsReturnsFalseOnMissingAnnotation() throws Exception {
-        boolean result = resolver.supports(bindingProperty("notAnnotated", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("notAnnotated"));
         assertThat(result).isFalse();
     }
 
     @Test
     void supportsReturnsFalseWhenAnnotationValueIsPresent() throws Exception {
-        boolean result = resolver.supports(bindingProperty("withValue", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("withValue"));
         assertThat(result).isFalse();
     }
 
     @Test
     void supportsReturnsFalseWhenTypeIsNotMap() throws Exception {
-        boolean result = resolver.supports(bindingProperty("notAMap", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("notAMap"));
         assertThat(result).isFalse();
     }
 
@@ -78,7 +75,7 @@ class PathParameterMapRequestPropertyResolverTest {
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
         exchange.getAttributes().put(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE, pathVarsMap);
 
-        Mono<Object> objectMono = resolver.resolve(bindingProperty("annotated", TestingBean.class), exchange);
+        Mono<Object> objectMono = resolver.resolve(bindingProperty("annotated"), exchange);
         Object actual = objectMono.block();
         assertThat(actual).isInstanceOf(Map.class);
         Map<String, String> map = (Map<String, String>) actual;
@@ -93,38 +90,15 @@ class PathParameterMapRequestPropertyResolverTest {
     void returnsEmptyMapWhenNoPathVariables() throws Exception {
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant").build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
-        Mono<Object> objectMono = resolver.resolve(bindingProperty("annotated", TestingBean.class), exchange);
+        Mono<Object> objectMono = resolver.resolve(bindingProperty("annotated"), exchange);
         Object actual = objectMono.block();
         assertThat(actual).isInstanceOf(Map.class);
         Map<String, String> map = (Map<String, String>) actual;
         assertThat(map).isEmpty();
     }
 
-    private TypeDescriptor typeDescriptor(Class<?> clazz, Annotation... annotations) {
-        return new TypeDescriptor(ResolvableType.forClass(clazz), null, annotations);
-    }
-
-    private BindingProperty bindingProperty(String property, Class<?> clazz) throws IntrospectionException {
-        return BindingProperty.forPropertyDescriptor(new PropertyDescriptor(property, clazz));
-    }
-
-    @SuppressWarnings("ClassExplicitlyAnnotation")
-    private static class StubbingAnnotation implements PathParameter {
-        private final String name;
-
-        private StubbingAnnotation(String name) {
-            this.name = name == null ? "" : name;
-        }
-
-        @Override
-        public String value() {
-            return name;
-        }
-
-        @Override
-        public Class<? extends Annotation> annotationType() {
-            return PathParameter.class;
-        }
+    private BindingProperty bindingProperty(String property) throws IntrospectionException {
+        return BindingProperty.forPropertyDescriptor(new PropertyDescriptor(property, TestingBean.class));
     }
 
     @SuppressWarnings("unused")

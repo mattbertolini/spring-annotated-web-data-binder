@@ -21,8 +21,6 @@ import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.i18n.TimeZoneAwareLocaleContext;
-import org.springframework.core.ResolvableType;
-import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
@@ -34,7 +32,6 @@ import reactor.core.publisher.Mono;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
-import java.lang.annotation.Annotation;
 import java.time.Duration;
 import java.time.ZoneId;
 import java.util.Locale;
@@ -55,23 +52,23 @@ class RequestContextRequestPropertyResolverTest {
 
     @Test
     void doesNotSupportTypesNotAnnotatedWithRequestContext() throws Exception {
-        assertThat(resolver.supports(bindingProperty("notAnnotated", TestingBean.class))).isFalse();
+        assertThat(resolver.supports(bindingProperty("notAnnotated"))).isFalse();
     }
 
     @Test
     void doesNotSupportUnknownType() throws Exception {
-        assertThat(resolver.supports(bindingProperty("notKnown", TestingBean.class))).isFalse();
+        assertThat(resolver.supports(bindingProperty("notKnown"))).isFalse();
     }
 
     @Test
     void throwsExceptionOnUnknownType() {
-        assertThatThrownBy(() -> resolver.resolve(bindingProperty("notKnown", TestingBean.class), MockServerWebExchange.from(MockServerHttpRequest.get("/irrelevant").build())))
+        assertThatThrownBy(() -> resolver.resolve(bindingProperty("notKnown"), MockServerWebExchange.from(MockServerHttpRequest.get("/irrelevant").build())))
             .isInstanceOf(UnsupportedOperationException.class);
     }
 
     @Test
     void resolvesServerWebExchange() throws Exception {
-        BindingProperty bindingProperty = bindingProperty("serverWebExchange", TestingBean.class);
+        BindingProperty bindingProperty = bindingProperty("serverWebExchange");
         assertThat(resolver.supports(bindingProperty)).isTrue();
 
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant").build();
@@ -85,7 +82,7 @@ class RequestContextRequestPropertyResolverTest {
 
     @Test
     void resolvesServerHttpRequest() throws Exception {
-        BindingProperty bindingProperty = bindingProperty("serverHttpRequest", TestingBean.class);
+        BindingProperty bindingProperty = bindingProperty("serverHttpRequest");
         assertThat(resolver.supports(bindingProperty)).isTrue();
 
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant").build();
@@ -99,7 +96,7 @@ class RequestContextRequestPropertyResolverTest {
 
     @Test
     void resolvesWebSession() throws Exception {
-        BindingProperty bindingProperty = bindingProperty("webSession", TestingBean.class);
+        BindingProperty bindingProperty = bindingProperty("webSession");
         assertThat(resolver.supports(bindingProperty)).isTrue();
 
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant").build();
@@ -117,7 +114,7 @@ class RequestContextRequestPropertyResolverTest {
 
     @Test
     void resolvesHttpMethod() throws Exception {
-        BindingProperty bindingProperty = bindingProperty("httpMethod", TestingBean.class);
+        BindingProperty bindingProperty = bindingProperty("httpMethod");
         assertThat(resolver.supports(bindingProperty)).isTrue();
 
         MockServerHttpRequest request = MockServerHttpRequest.post("/irrelevant").build();
@@ -132,7 +129,7 @@ class RequestContextRequestPropertyResolverTest {
 
     @Test
     void resolvesLocale() throws Exception {
-        BindingProperty bindingProperty = bindingProperty("locale", TestingBean.class);
+        BindingProperty bindingProperty = bindingProperty("locale");
         assertThat(resolver.supports(bindingProperty)).isTrue();
 
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant")
@@ -149,7 +146,7 @@ class RequestContextRequestPropertyResolverTest {
 
     @Test
     void resolvesTimeZone() throws Exception {
-        BindingProperty bindingProperty = bindingProperty("timeZone", TestingBean.class);
+        BindingProperty bindingProperty = bindingProperty("timeZone");
         TimeZone expected = TimeZone.getTimeZone("America/New_York");
 
         TimeZoneAwareLocaleContext localeContext = mock(TimeZoneAwareLocaleContext.class);
@@ -166,7 +163,7 @@ class RequestContextRequestPropertyResolverTest {
 
     @Test
     void resolvesTimeZoneWithDefault() throws Exception {
-        BindingProperty bindingProperty = bindingProperty("timeZone", TestingBean.class);
+        BindingProperty bindingProperty = bindingProperty("timeZone");
         assertThat(resolver.supports(bindingProperty)).isTrue();
 
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant").build();
@@ -181,7 +178,7 @@ class RequestContextRequestPropertyResolverTest {
 
     @Test
     void resolvesZoneId() throws Exception {
-        BindingProperty bindingProperty = bindingProperty("zoneId", TestingBean.class);
+        BindingProperty bindingProperty = bindingProperty("zoneId");
         TimeZone timeZone = TimeZone.getTimeZone("America/New_York");
         ZoneId expected = timeZone.toZoneId();
 
@@ -199,7 +196,7 @@ class RequestContextRequestPropertyResolverTest {
 
     @Test
     void resolvesZoneIdWithDefault() throws Exception  {
-        BindingProperty bindingProperty = bindingProperty("zoneId", TestingBean.class);
+        BindingProperty bindingProperty = bindingProperty("zoneId");
         assertThat(resolver.supports(bindingProperty)).isTrue();
 
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant").build();
@@ -212,23 +209,11 @@ class RequestContextRequestPropertyResolverTest {
         assertThat(actual).isEqualTo(ZoneId.systemDefault());
     }
 
-    private TypeDescriptor typeDescriptor(Class<?> clazz) {
-        return new TypeDescriptor(ResolvableType.forClass(clazz), null, new StubbingAnnotation[]{new StubbingAnnotation()});
-    }
-
-    private BindingProperty bindingProperty(String property, Class<?> clazz) throws IntrospectionException {
-        return BindingProperty.forPropertyDescriptor(new PropertyDescriptor(property, clazz));
+    private BindingProperty bindingProperty(String property) throws IntrospectionException {
+        return BindingProperty.forPropertyDescriptor(new PropertyDescriptor(property, TestingBean.class));
     }
 
     private static class NotKnown {}
-
-    @SuppressWarnings("ClassExplicitlyAnnotation")
-    private static class StubbingAnnotation implements RequestContext {
-        @Override
-        public Class<? extends Annotation> annotationType() {
-            return RequestContext.class;
-        }
-    }
 
     @SuppressWarnings("unused")
     private static class TestingBean {

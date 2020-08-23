@@ -20,8 +20,6 @@ import com.mattbertolini.spring.web.bind.annotation.HeaderParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.core.ResolvableType;
-import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
 import org.springframework.mock.web.server.MockServerWebExchange;
@@ -30,7 +28,6 @@ import reactor.core.publisher.Mono;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
-import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.Map;
 
@@ -46,25 +43,25 @@ class HeaderParameterMapRequestPropertyResolverTest {
 
     @Test
     void supportsReturnsTrueOnPresenceOfAnnotation() throws Exception {
-        boolean result = resolver.supports(bindingProperty("annotated", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("annotated"));
         assertThat(result).isTrue();
     }
 
     @Test
     void supportsReturnsFalseOnMissingAnnotation() throws Exception {
-        boolean result = resolver.supports(bindingProperty("notAnnotated", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("notAnnotated"));
         assertThat(result).isFalse();
     }
 
     @Test
     void supportsReturnsFalseWhenAnnotationValueIsPresent() throws Exception {
-        boolean result = resolver.supports(bindingProperty("withValue", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("withValue"));
         assertThat(result).isFalse();
     }
 
     @Test
     void supportsReturnsFalseWhenTypeIsNotMap() throws Exception {
-        boolean result = resolver.supports(bindingProperty("notAMap", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("notAMap"));
         assertThat(result).isFalse();
     }
 
@@ -77,7 +74,7 @@ class HeaderParameterMapRequestPropertyResolverTest {
             .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
-        Mono<Object> objectMono = resolver.resolve(bindingProperty("multivalue", TestingBean.class), exchange);
+        Mono<Object> objectMono = resolver.resolve(bindingProperty("multivalue"), exchange);
         Object actual = objectMono.block();
         assertThat(actual).isInstanceOf(MultiValueMap.class);
         MultiValueMap<String, String> map = (MultiValueMap<String, String>) actual;
@@ -94,7 +91,7 @@ class HeaderParameterMapRequestPropertyResolverTest {
             .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
-        Mono<Object> objectMono = resolver.resolve(bindingProperty("httpHeaders", TestingBean.class), exchange);
+        Mono<Object> objectMono = resolver.resolve(bindingProperty("httpHeaders"), exchange);
         Object actual = objectMono.block();
         assertThat(actual).isInstanceOf(HttpHeaders.class);
         HttpHeaders headers = (HttpHeaders) actual;
@@ -111,42 +108,15 @@ class HeaderParameterMapRequestPropertyResolverTest {
             .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
-        Mono<Object> objectMono = resolver.resolve(bindingProperty("annotated", TestingBean.class), exchange);
+        Mono<Object> objectMono = resolver.resolve(bindingProperty("annotated"), exchange);
         Object actual = objectMono.block();
         assertThat(actual).isInstanceOf(Map.class);
         Map<String, String> map = (Map<String, String>) actual;
         assertThat(map).containsEntry("header_param", "one");
     }
 
-    private StubbingHeaderParameter annotation(String parameterName) {
-        return new StubbingHeaderParameter(parameterName);
-    }
-
-    private TypeDescriptor typeDescriptor(Class<?> clazz, Annotation... annotations) {
-        return new TypeDescriptor(ResolvableType.forClass(clazz), null, annotations);
-    }
-
-    private BindingProperty bindingProperty(String property, Class<?> clazz) throws IntrospectionException {
-        return BindingProperty.forPropertyDescriptor(new PropertyDescriptor(property, clazz));
-    }
-
-    @SuppressWarnings("ClassExplicitlyAnnotation")
-    private static class StubbingHeaderParameter implements HeaderParameter {
-        private final String name;
-
-        private StubbingHeaderParameter(String name) {
-            this.name = name == null ? "" : name;
-        }
-
-        @Override
-        public String value() {
-            return name;
-        }
-
-        @Override
-        public Class<? extends Annotation> annotationType() {
-            return HeaderParameter.class;
-        }
+    private BindingProperty bindingProperty(String property) throws IntrospectionException {
+        return BindingProperty.forPropertyDescriptor(new PropertyDescriptor(property, TestingBean.class));
     }
 
     @SuppressWarnings("unused")

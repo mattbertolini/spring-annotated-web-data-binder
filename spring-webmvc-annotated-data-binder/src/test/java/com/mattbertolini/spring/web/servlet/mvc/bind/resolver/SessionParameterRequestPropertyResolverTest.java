@@ -20,15 +20,12 @@ import com.mattbertolini.spring.web.bind.annotation.SessionParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.core.ResolvableType;
-import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.web.context.request.ServletWebRequest;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
-import java.lang.annotation.Annotation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -49,13 +46,13 @@ class SessionParameterRequestPropertyResolverTest {
 
     @Test
     void supportsReturnsTrueOnPresenceOfAnnotation() throws Exception {
-        boolean result = resolver.supports(bindingProperty("annotated", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("annotated"));
         assertThat(result).isTrue();
     }
 
     @Test
     void supportsReturnsFalseOnMissingAnnotation() throws Exception {
-        boolean result = resolver.supports(bindingProperty("notAnnotated", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("notAnnotated"));
         assertThat(result).isFalse();
     }
 
@@ -63,7 +60,7 @@ class SessionParameterRequestPropertyResolverTest {
     void throwsExceptionIfResolveCalledWithNoAnnotation() {
         // Unlikely to happen as the library always checks the supports method.
         assertThatExceptionOfType(IllegalStateException.class)
-            .isThrownBy(() -> resolver.resolve(bindingProperty("notAnnotated", TestingBean.class), request));
+            .isThrownBy(() -> resolver.resolve(bindingProperty("notAnnotated"), request));
     }
 
     @Test
@@ -71,47 +68,24 @@ class SessionParameterRequestPropertyResolverTest {
         String expected = "expectedValue";
         String sessionKey = "sessionKey";
         session.setAttribute(sessionKey, expected);
-        Object actual = resolver.resolve(bindingProperty("annotated", TestingBean.class), request);
+        Object actual = resolver.resolve(bindingProperty("annotated"), request);
         assertThat(actual).isEqualTo(expected);
     }
 
     @Test
     void returnsNullWhenNoKeyFound() throws Exception {
-        Object actual = resolver.resolve(bindingProperty("annotated", TestingBean.class), request);
+        Object actual = resolver.resolve(bindingProperty("annotated"), request);
         assertThat(actual).isNull();
     }
 
     @Test
     void returnsNullWhenNoSessionExists() throws Exception {
-        Object actual = resolver.resolve(bindingProperty("annotated", TestingBean.class), request);
+        Object actual = resolver.resolve(bindingProperty("annotated"), request);
         assertThat(actual).isNull();
     }
 
-    private TypeDescriptor typeDescriptor(Class<?> clazz, Annotation... annotations) {
-        return new TypeDescriptor(ResolvableType.forClass(clazz), null, annotations);
-    }
-
-    private BindingProperty bindingProperty(String propertyName, Class<?> clazz) throws IntrospectionException {
-        return BindingProperty.forPropertyDescriptor(new PropertyDescriptor(propertyName, clazz));
-    }
-
-    @SuppressWarnings("ClassExplicitlyAnnotation")
-    private static class StubbingAnnotation implements SessionParameter {
-        private final String value;
-
-        private StubbingAnnotation(String value) {
-            this.value = value;
-        }
-
-        @Override
-        public String value() {
-            return value;
-        }
-
-        @Override
-        public Class<? extends Annotation> annotationType() {
-            return SessionParameter.class;
-        }
+    private BindingProperty bindingProperty(String propertyName) throws IntrospectionException {
+        return BindingProperty.forPropertyDescriptor(new PropertyDescriptor(propertyName, TestingBean.class));
     }
 
     @SuppressWarnings("unused")

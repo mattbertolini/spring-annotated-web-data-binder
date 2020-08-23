@@ -20,8 +20,6 @@ import com.mattbertolini.spring.web.bind.annotation.CookieParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.core.ResolvableType;
-import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.http.HttpCookie;
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
 import org.springframework.mock.web.server.MockServerWebExchange;
@@ -29,7 +27,6 @@ import reactor.core.publisher.Mono;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
-import java.lang.annotation.Annotation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -46,13 +43,13 @@ class CookieParameterRequestPropertyResolverTest {
 
     @Test
     void supportsReturnsTrueOnPresenceOfAnnotation() throws Exception {
-        boolean result = resolver.supports(bindingProperty("annotated", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("annotated"));
         assertThat(result).isTrue();
     }
 
     @Test
     void supportsReturnsFalseOnMissingAnnotation() throws Exception {
-        boolean result = resolver.supports(bindingProperty("notAnnotated", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("notAnnotated"));
         assertThat(result).isFalse();
     }
 
@@ -63,7 +60,7 @@ class CookieParameterRequestPropertyResolverTest {
             .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
         assertThatExceptionOfType(IllegalStateException.class)
-            .isThrownBy(() -> resolver.resolve(bindingProperty("notAnnotated", TestingBean.class), exchange));
+            .isThrownBy(() -> resolver.resolve(bindingProperty("notAnnotated"), exchange));
     }
 
     @Test
@@ -75,7 +72,7 @@ class CookieParameterRequestPropertyResolverTest {
             .cookie(new HttpCookie(cookieName, expected)).build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
-        Mono<Object> actual = resolver.resolve(bindingProperty("annotated", TestingBean.class), exchange);
+        Mono<Object> actual = resolver.resolve(bindingProperty("annotated"), exchange);
         assertThat(actual.block()).isEqualTo(expected);
     }
 
@@ -88,7 +85,7 @@ class CookieParameterRequestPropertyResolverTest {
             .cookie(expected).build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
-        Mono<Object> actual = resolver.resolve(bindingProperty("cookieObject", TestingBean.class), exchange);
+        Mono<Object> actual = resolver.resolve(bindingProperty("cookieObject"), exchange);
         assertThat(actual.block()).isEqualTo(expected);
     }
 
@@ -97,35 +94,12 @@ class CookieParameterRequestPropertyResolverTest {
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant").build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
-        Mono<Object> notFound = resolver.resolve(bindingProperty("annotated", TestingBean.class), exchange);
+        Mono<Object> notFound = resolver.resolve(bindingProperty("annotated"), exchange);
         assertThat(notFound.block()).isNull();
     }
 
-    private TypeDescriptor typeDescriptor(Class<?> clazz, Annotation... annotations) {
-        return new TypeDescriptor(ResolvableType.forClass(clazz), null, annotations);
-    }
-
-    private BindingProperty bindingProperty(String property, Class<?> clazz) throws IntrospectionException {
-        return BindingProperty.forPropertyDescriptor(new PropertyDescriptor(property, clazz));
-    }
-
-    @SuppressWarnings("ClassExplicitlyAnnotation")
-    private static class StubbingAnnotation implements CookieParameter {
-        private final String value;
-
-        private StubbingAnnotation(String value) {
-            this.value = value;
-        }
-
-        @Override
-        public String value() {
-            return value;
-        }
-
-        @Override
-        public Class<? extends Annotation> annotationType() {
-            return CookieParameter.class;
-        }
+    private BindingProperty bindingProperty(String property) throws IntrospectionException {
+        return BindingProperty.forPropertyDescriptor(new PropertyDescriptor(property, TestingBean.class));
     }
 
     @SuppressWarnings("unused")

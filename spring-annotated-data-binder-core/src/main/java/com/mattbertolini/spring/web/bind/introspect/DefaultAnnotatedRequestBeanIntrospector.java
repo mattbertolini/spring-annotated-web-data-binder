@@ -89,7 +89,7 @@ public class DefaultAnnotatedRequestBeanIntrospector implements AnnotatedRequest
                 recursiveGetResolversFor(type, propertyName, propertyData, cycleClasses);
                 cycleClasses.remove(type);
             } else {
-                RequestPropertyResolverBase<?, ?> resolver = registry.findResolverFor(typeDescriptor, bindingProperty);
+                RequestPropertyResolverBase<?, ?> resolver = registry.findResolverFor(bindingProperty);
                 if (resolver == null) {
                     continue;
                 }

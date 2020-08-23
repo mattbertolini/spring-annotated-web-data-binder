@@ -29,7 +29,7 @@ import org.springframework.lang.Nullable;
  * @param <R> The response type to use.
  */
 public interface RequestPropertyResolverBase<T, R> {
-    boolean supports(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty);
+    boolean supports(@NonNull BindingProperty bindingProperty);
     
     @Nullable
     R resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull T request);

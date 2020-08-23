@@ -35,7 +35,7 @@ import java.util.TimeZone;
 
 public class RequestContextRequestPropertyResolver implements RequestPropertyResolver {
     @Override
-    public boolean supports(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty) {
+    public boolean supports(@NonNull BindingProperty bindingProperty) {
         Class<?> type = bindingProperty.getType();
         return bindingProperty.hasAnnotation(RequestContext.class) && (
             ServerWebExchange.class.isAssignableFrom(type) ||

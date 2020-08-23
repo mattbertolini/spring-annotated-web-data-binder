@@ -30,7 +30,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 public class HeaderParameterRequestPropertyResolver implements RequestPropertyResolver {
 
     @Override
-    public boolean supports(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty) {
+    public boolean supports(@NonNull BindingProperty bindingProperty) {
         HeaderParameter annotation = bindingProperty.getAnnotation(HeaderParameter.class);
         return annotation != null && StringUtils.hasText(annotation.value());
     }

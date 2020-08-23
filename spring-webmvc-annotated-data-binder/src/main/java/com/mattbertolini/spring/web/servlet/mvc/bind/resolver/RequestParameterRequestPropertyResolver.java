@@ -29,7 +29,7 @@ public class RequestParameterRequestPropertyResolver extends AbstractNamedReques
     implements RequestPropertyResolver {
 
     @Override
-    public boolean supports(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty) {
+    public boolean supports(@NonNull BindingProperty bindingProperty) {
         RequestParameter annotation = bindingProperty.getAnnotation(RequestParameter.class);
         return annotation != null && StringUtils.hasText(annotation.value());
     }

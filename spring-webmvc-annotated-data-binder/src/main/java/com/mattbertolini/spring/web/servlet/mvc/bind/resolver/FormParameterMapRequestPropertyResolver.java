@@ -18,7 +18,6 @@ package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.FormParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
-import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.lang.NonNull;
 import org.springframework.util.StringUtils;
 
@@ -26,7 +25,7 @@ import java.util.Map;
 
 public class FormParameterMapRequestPropertyResolver extends RequestParameterMapRequestPropertyResolver {
     @Override
-    public boolean supports(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty) {
+    public boolean supports(@NonNull BindingProperty bindingProperty) {
         FormParameter annotation = bindingProperty.getAnnotation(FormParameter.class);
         return annotation != null && !StringUtils.hasText(annotation.value()) &&
             Map.class.isAssignableFrom(bindingProperty.getType());

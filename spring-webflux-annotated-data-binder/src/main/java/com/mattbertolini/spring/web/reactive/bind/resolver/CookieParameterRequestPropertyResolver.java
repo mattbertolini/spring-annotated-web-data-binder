@@ -28,7 +28,7 @@ import reactor.core.publisher.Mono;
 
 public class CookieParameterRequestPropertyResolver implements RequestPropertyResolver {
     @Override
-    public boolean supports(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty) {
+    public boolean supports(@NonNull BindingProperty bindingProperty) {
         return bindingProperty.hasAnnotation(CookieParameter.class);
     }
 

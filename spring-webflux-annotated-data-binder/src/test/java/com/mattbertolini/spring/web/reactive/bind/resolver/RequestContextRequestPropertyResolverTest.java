@@ -56,12 +56,12 @@ class RequestContextRequestPropertyResolverTest {
     @Test
     void doesNotSupportTypesNotAnnotatedWithRequestContext() throws Exception {
         TypeDescriptor typeDescriptor = new TypeDescriptor(ResolvableType.forClass(ServerWebExchange.class), null, null);
-        assertThat(resolver.supports(typeDescriptor, bindingProperty("notAnnotated", TestingBean.class))).isFalse();
+        assertThat(resolver.supports(bindingProperty("notAnnotated", TestingBean.class))).isFalse();
     }
 
     @Test
     void doesNotSupportUnknownType() throws Exception {
-        assertThat(resolver.supports(typeDescriptor(NotKnown.class), bindingProperty("notKnown", TestingBean.class))).isFalse();
+        assertThat(resolver.supports(bindingProperty("notKnown", TestingBean.class))).isFalse();
     }
 
     @Test
@@ -72,7 +72,7 @@ class RequestContextRequestPropertyResolverTest {
 
     @Test
     void resolvesServerWebExchange() throws Exception {
-        assertThat(resolver.supports(typeDescriptor(ServerWebExchange.class), bindingProperty("serverWebExchange", TestingBean.class))).isTrue();
+        assertThat(resolver.supports(bindingProperty("serverWebExchange", TestingBean.class))).isTrue();
 
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant").build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
@@ -85,7 +85,7 @@ class RequestContextRequestPropertyResolverTest {
 
     @Test
     void resolvesServerHttpRequest() throws Exception {
-        assertThat(resolver.supports(typeDescriptor(ServerHttpRequest.class), bindingProperty("serverHttpRequest", TestingBean.class))).isTrue();
+        assertThat(resolver.supports(bindingProperty("serverHttpRequest", TestingBean.class))).isTrue();
 
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant").build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
@@ -98,7 +98,7 @@ class RequestContextRequestPropertyResolverTest {
 
     @Test
     void resolvesWebSession() throws Exception {
-        assertThat(resolver.supports(typeDescriptor(WebSession.class), bindingProperty("webSession", TestingBean.class))).isTrue();
+        assertThat(resolver.supports(bindingProperty("webSession", TestingBean.class))).isTrue();
 
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant").build();
         MockWebSession webSession = new MockWebSession();
@@ -115,7 +115,7 @@ class RequestContextRequestPropertyResolverTest {
 
     @Test
     void resolvesHttpMethod() throws Exception {
-        assertThat(resolver.supports(typeDescriptor(HttpMethod.class), bindingProperty("httpMethod", TestingBean.class))).isTrue();
+        assertThat(resolver.supports(bindingProperty("httpMethod", TestingBean.class))).isTrue();
 
         MockServerHttpRequest request = MockServerHttpRequest.post("/irrelevant").build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
@@ -129,7 +129,7 @@ class RequestContextRequestPropertyResolverTest {
 
     @Test
     void resolvesLocale() throws Exception {
-        assertThat(resolver.supports(typeDescriptor(Locale.class), bindingProperty("locale", TestingBean.class))).isTrue();
+        assertThat(resolver.supports(bindingProperty("locale", TestingBean.class))).isTrue();
 
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant")
             .acceptLanguageAsLocales(Locale.US)
@@ -161,7 +161,7 @@ class RequestContextRequestPropertyResolverTest {
 
     @Test
     void resolvesTimeZoneWithDefault() throws Exception {
-        assertThat(resolver.supports(typeDescriptor(TimeZone.class), bindingProperty("timeZone", TestingBean.class))).isTrue();
+        assertThat(resolver.supports(bindingProperty("timeZone", TestingBean.class))).isTrue();
 
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant").build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
@@ -192,7 +192,7 @@ class RequestContextRequestPropertyResolverTest {
 
     @Test
     void resolvesZoneIdWithDefault() throws Exception  {
-        assertThat(resolver.supports(typeDescriptor(ZoneId.class), bindingProperty("zoneId", TestingBean.class))).isTrue();
+        assertThat(resolver.supports(bindingProperty("zoneId", TestingBean.class))).isTrue();
 
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant").build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);

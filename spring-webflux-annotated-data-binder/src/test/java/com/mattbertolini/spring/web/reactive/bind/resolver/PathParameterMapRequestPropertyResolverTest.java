@@ -45,25 +45,25 @@ class PathParameterMapRequestPropertyResolverTest {
 
     @Test
     void supportsReturnsTrueOnPresenceOfAnnotation() throws Exception {
-        boolean result = resolver.supports(typeDescriptor(Map.class, new StubbingAnnotation(null)), bindingProperty("annotated", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("annotated", TestingBean.class));
         assertThat(result).isTrue();
     }
 
     @Test
     void supportsReturnsFalseOnMissingAnnotation() throws Exception {
-        boolean result = resolver.supports(typeDescriptor(Map.class), bindingProperty("notAnnotated", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("notAnnotated", TestingBean.class));
         assertThat(result).isFalse();
     }
 
     @Test
     void supportsReturnsFalseWhenAnnotationValueIsPresent() throws Exception {
-        boolean result = resolver.supports(typeDescriptor(Map.class, new StubbingAnnotation("name")), bindingProperty("withValue", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("withValue", TestingBean.class));
         assertThat(result).isFalse();
     }
 
     @Test
     void supportsReturnsFalseWhenTypeIsNotMap() throws Exception {
-        boolean result = resolver.supports(typeDescriptor(String.class, new StubbingAnnotation(null)), bindingProperty("notAMap", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("notAMap", TestingBean.class));
         assertThat(result).isFalse();
     }
 

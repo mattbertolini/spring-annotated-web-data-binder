@@ -61,12 +61,12 @@ class RequestContextRequestPropertyResolverTest {
     @Test
     void doesNotSupportTypesNotAnnotatedWithRequestContext() throws Exception {
         TypeDescriptor typeDescriptor = new TypeDescriptor(ResolvableType.forClass(WebRequest.class), null, null);
-        assertThat(resolver.supports(typeDescriptor, bindingProperty("notAnnotated", TestingBean.class))).isFalse();
+        assertThat(resolver.supports(bindingProperty("notAnnotated", TestingBean.class))).isFalse();
     }
 
     @Test
     void doesNotSupportUnknownType() throws Exception {
-        assertThat(resolver.supports(typeDescriptor(NotKnown.class), bindingProperty("notKnown", TestingBean.class))).isFalse();
+        assertThat(resolver.supports(bindingProperty("notKnown", TestingBean.class))).isFalse();
     }
 
     @Test
@@ -85,7 +85,7 @@ class RequestContextRequestPropertyResolverTest {
 
     @Test
     void resolvesWebRequestType() throws Exception {
-        assertThat(resolver.supports(typeDescriptor(WebRequest.class), bindingProperty("webRequest", TestingBean.class))).isTrue();
+        assertThat(resolver.supports(bindingProperty("webRequest", TestingBean.class))).isTrue();
 
         Object actual = resolver.resolve(typeDescriptor(WebRequest.class), request);
         assertThat(actual).isNotNull();
@@ -94,7 +94,7 @@ class RequestContextRequestPropertyResolverTest {
 
     @Test
     void resolvesServletRequest() throws Exception {
-        assertThat(resolver.supports(typeDescriptor(ServletRequest.class), bindingProperty("servletRequest", TestingBean.class))).isTrue();
+        assertThat(resolver.supports(bindingProperty("servletRequest", TestingBean.class))).isTrue();
 
         Object actual = resolver.resolve(typeDescriptor(ServletRequest.class), request);
         assertThat(actual).isNotNull();
@@ -103,7 +103,7 @@ class RequestContextRequestPropertyResolverTest {
 
     @Test
     void resolvesHttpSession() throws Exception {
-        assertThat(resolver.supports(typeDescriptor(HttpSession.class), bindingProperty("httpSession", TestingBean.class))).isTrue();
+        assertThat(resolver.supports(bindingProperty("httpSession", TestingBean.class))).isTrue();
 
         servletRequest.setSession(new MockHttpSession());
         Object actual = resolver.resolve(typeDescriptor(HttpSession.class), request);
@@ -113,7 +113,7 @@ class RequestContextRequestPropertyResolverTest {
 
     @Test
     void resolvesHttpMethod() throws Exception {
-        assertThat(resolver.supports(typeDescriptor(HttpMethod.class), bindingProperty("httpMethod", TestingBean.class))).isTrue();
+        assertThat(resolver.supports(bindingProperty("httpMethod", TestingBean.class))).isTrue();
 
         servletRequest.setMethod("POST");
         Object actual = resolver.resolve(typeDescriptor(HttpMethod.class), request);
@@ -124,7 +124,7 @@ class RequestContextRequestPropertyResolverTest {
 
     @Test
     void resolvesLocale() throws Exception {
-        assertThat(resolver.supports(typeDescriptor(Locale.class), bindingProperty("locale", TestingBean.class))).isTrue();
+        assertThat(resolver.supports(bindingProperty("locale", TestingBean.class))).isTrue();
 
         servletRequest.addHeader("Accept-Language", "en-US");
         Object actual = resolver.resolve(typeDescriptor(Locale.class), request);
@@ -135,7 +135,7 @@ class RequestContextRequestPropertyResolverTest {
 
     @Test
     void resolvesTimeZone() throws Exception {
-        assertThat(resolver.supports(typeDescriptor(TimeZone.class), bindingProperty("timeZone", TestingBean.class))).isTrue();
+        assertThat(resolver.supports(bindingProperty("timeZone", TestingBean.class))).isTrue();
 
         TimeZone expected = TimeZone.getTimeZone("America/New_York");
         servletRequest.setAttribute(DispatcherServlet.LOCALE_RESOLVER_ATTRIBUTE, new FixedLocaleResolver(Locale.US, expected));
@@ -156,7 +156,7 @@ class RequestContextRequestPropertyResolverTest {
 
     @Test
     void resolvesZoneId() throws Exception {
-        assertThat(resolver.supports(typeDescriptor(ZoneId.class), bindingProperty("zoneId", TestingBean.class))).isTrue();
+        assertThat(resolver.supports(bindingProperty("zoneId", TestingBean.class))).isTrue();
 
         TimeZone timeZone = TimeZone.getTimeZone("America/New_York");
         ZoneId expected = timeZone.toZoneId();

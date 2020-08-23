@@ -27,7 +27,7 @@ import reactor.core.publisher.Mono;
 
 public class FormParameterRequestPropertyResolver implements RequestPropertyResolver {
     @Override
-    public boolean supports(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty) {
+    public boolean supports(@NonNull BindingProperty bindingProperty) {
         FormParameter annotation = bindingProperty.getAnnotation(FormParameter.class);
         return annotation != null && StringUtils.hasText(annotation.value());
     }

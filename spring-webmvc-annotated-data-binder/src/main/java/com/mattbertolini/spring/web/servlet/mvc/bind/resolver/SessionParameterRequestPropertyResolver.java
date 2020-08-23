@@ -26,7 +26,7 @@ import org.springframework.web.context.request.RequestAttributes;
 
 public class SessionParameterRequestPropertyResolver implements RequestPropertyResolver {
     @Override
-    public boolean supports(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty) {
+    public boolean supports(@NonNull BindingProperty bindingProperty) {
         return bindingProperty.hasAnnotation(SessionParameter.class);
     }
 

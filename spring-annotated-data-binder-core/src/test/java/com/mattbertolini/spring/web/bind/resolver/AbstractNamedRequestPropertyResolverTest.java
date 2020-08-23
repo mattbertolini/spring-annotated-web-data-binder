@@ -53,7 +53,7 @@ class AbstractNamedRequestPropertyResolverTest {
         }
 
         @Override
-        public boolean supports(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty) {
+        public boolean supports(@NonNull BindingProperty bindingProperty) {
             return true;
         }
     }

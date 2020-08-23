@@ -46,25 +46,25 @@ class FormParameterMapRequestPropertyResolverTest {
 
     @Test
     void supportsReturnsTrueOnPresenceOfAnnotation() throws Exception {
-        boolean result = resolver.supports(typeDescriptor(Map.class, annotation(null)), bindingProperty("annotated", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("annotated", TestingBean.class));
         assertThat(result).isTrue();
     }
 
     @Test
     void supportsReturnsFalseOnMissingAnnotation() throws Exception {
-        boolean result = resolver.supports(typeDescriptor(Map.class), bindingProperty("notAnnotated", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("notAnnotated", TestingBean.class));
         assertThat(result).isFalse();
     }
 
     @Test
     void supportsReturnsFalseWhenAnnotationValueIsPresent() throws Exception {
-        boolean result = resolver.supports(typeDescriptor(Map.class, annotation("name")), bindingProperty("withName", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("withName", TestingBean.class));
         assertThat(result).isFalse();
     }
 
     @Test
     void supportsReturnsFalseWhenTypeIsNotMap() throws Exception {
-        boolean result = resolver.supports(typeDescriptor(String.class, annotation(null)), bindingProperty("notAMap", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("notAMap", TestingBean.class));
         assertThat(result).isFalse();
     }
 

@@ -31,7 +31,7 @@ import java.util.Map;
 public class PathParameterRequestPropertyResolver implements RequestPropertyResolver {
 
     @Override
-    public boolean supports(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty) {
+    public boolean supports(@NonNull BindingProperty bindingProperty) {
         PathParameter annotation = bindingProperty.getAnnotation(PathParameter.class);
         return annotation != null && StringUtils.hasText(annotation.value());
     }

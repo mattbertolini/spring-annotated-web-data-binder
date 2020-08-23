@@ -47,19 +47,19 @@ class RequestParameterRequestPropertyResolverTest {
 
     @Test
     void supportsReturnsTrueOnPresenceOfAnnotation() throws Exception {
-        boolean result = resolver.supports(typeDescriptor(String.class, annotation("name")), bindingProperty("annotated", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("annotated", TestingBean.class));
         assertThat(result).isTrue();
     }
 
     @Test
     void supportsReturnsFalseOnMissingAnnotation() throws Exception {
-        boolean result = resolver.supports(typeDescriptor(String.class), bindingProperty("notAnnotated", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("notAnnotated", TestingBean.class));
         assertThat(result).isFalse();
     }
 
     @Test
     void supportsReturnsFalseOnMissingAnnotationValue() throws Exception {
-        boolean result = resolver.supports(typeDescriptor(String.class, annotation(null)), bindingProperty("missingValue", TestingBean.class));
+        boolean result = resolver.supports(bindingProperty("missingValue", TestingBean.class));
         assertThat(result).isFalse();
     }
 

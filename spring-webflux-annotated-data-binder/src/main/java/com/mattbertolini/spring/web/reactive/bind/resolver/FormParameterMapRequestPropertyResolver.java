@@ -30,7 +30,7 @@ import java.util.function.Function;
 
 public class FormParameterMapRequestPropertyResolver implements RequestPropertyResolver {
     @Override
-    public boolean supports(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty) {
+    public boolean supports(@NonNull BindingProperty bindingProperty) {
         FormParameter annotation = bindingProperty.getAnnotation(FormParameter.class);
         return annotation != null && !StringUtils.hasText(annotation.value()) &&
             Map.class.isAssignableFrom(bindingProperty.getType());

@@ -331,7 +331,7 @@ class BeanParameterMethodArgumentResolverTest {
         }
 
         @Override
-        public boolean supports(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty) {
+        public boolean supports(@NonNull BindingProperty bindingProperty) {
             // Not used in this test
             return true;
         }

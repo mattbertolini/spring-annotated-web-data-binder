@@ -45,13 +45,13 @@ class AbstractPropertyResolverRegistryTest {
         TestingResolver resolverTwo = mock(TestingResolver.class);
         TestingResolver resolverThree = mock(TestingResolver.class);
 
-        when(resolverTwo.supports(any(TypeDescriptor.class), any(BindingProperty.class))).thenReturn(true);
+        when(resolverTwo.supports(any(BindingProperty.class))).thenReturn(true);
 
         registry.addResolver(resolverOne);
         registry.addResolver(resolverTwo);
         registry.addResolver(resolverThree);
 
-        TestingResolver actual = registry.findResolverFor(TypeDescriptor.valueOf(String.class), BindingProperty.forPropertyDescriptor(new PropertyDescriptor("property", TestingClass.class)));
+        TestingResolver actual = registry.findResolverFor(BindingProperty.forPropertyDescriptor(new PropertyDescriptor("property", TestingClass.class)));
         assertThat(actual).isEqualTo(resolverTwo);
     }
 

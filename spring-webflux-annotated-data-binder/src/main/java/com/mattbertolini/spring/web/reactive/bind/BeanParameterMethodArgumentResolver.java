@@ -19,6 +19,7 @@ package com.mattbertolini.spring.web.reactive.bind;
 import com.mattbertolini.spring.web.bind.RequestPropertyBindingException;
 import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
 import com.mattbertolini.spring.web.bind.introspect.AnnotatedRequestBeanIntrospector;
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import com.mattbertolini.spring.web.bind.introspect.ResolvedPropertyData;
 import com.mattbertolini.spring.web.reactive.bind.resolver.RequestPropertyResolver;
 import org.springframework.beans.BeanUtils;
@@ -68,11 +69,12 @@ public class BeanParameterMethodArgumentResolver extends ModelAttributeMethodArg
     @NonNull
     private Mono<Map<String, Object>> getValuesToBind(@NonNull List<ResolvedPropertyData> propertyData, @NonNull ServerWebExchange exchange) {
         return Flux.fromIterable(propertyData).collectMap(ResolvedPropertyData::getPropertyName, data -> {
+            BindingProperty bindingProperty = data.getBindingProperty();
             TypeDescriptor typeDescriptor = data.getTypeDescriptor();
             RequestPropertyResolver resolver = (RequestPropertyResolver) data.getResolver();
             // TODO: Not sure how to do this without the block. I would love some suggestions.
             //noinspection ReactiveStreamsNullableInLambdaInTransform
-            return resolver.resolve(typeDescriptor, exchange).toProcessor().block();
+            return resolver.resolve(typeDescriptor, bindingProperty, exchange).toProcessor().block();
         }).onErrorMap(e -> new RequestPropertyBindingException("Unable to resolve property. " + e.getMessage(), e))
             .doOnSuccess(valuesMap -> valuesMap.values().removeIf(Objects::isNull));
     }

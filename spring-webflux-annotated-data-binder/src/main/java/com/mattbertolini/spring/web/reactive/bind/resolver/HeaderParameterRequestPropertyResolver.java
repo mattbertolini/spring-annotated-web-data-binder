@@ -35,7 +35,7 @@ public class HeaderParameterRequestPropertyResolver implements RequestPropertyRe
     
     @Override
     @NonNull
-    public Mono<Object> resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull ServerWebExchange request) {
+    public Mono<Object> resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, @NonNull ServerWebExchange request) {
         HttpHeaders headers = request.getRequest().getHeaders();
         HeaderParameter annotation = typeDescriptor.getAnnotation(HeaderParameter.class);
         Assert.state(annotation != null, "No HeaderParameter annotation found on type");

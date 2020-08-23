@@ -70,31 +70,31 @@ class PathParameterRequestPropertyResolverTest {
     void throwsExceptionIfResolveCalledWithNoAnnotation() {
         // Unlikely to happen as the library always checks the supports method.
         assertThatExceptionOfType(IllegalStateException.class)
-            .isThrownBy(() -> resolver.resolve(typeDescriptor(), request));
+            .isThrownBy(() -> resolver.resolve(typeDescriptor(), bindingProperty("notAnnotated", TestingBean.class), request));
     }
 
     @Test
-    void returnsValuePathParameter() {
+    void returnsValuePathParameter() throws Exception {
         String expected = "pathValue";
         String parameterName = "pathParamName";
         makePathParamMap(parameterName, expected);
-        Object actual = resolver.resolve(typeDescriptor(new StubbingAnnotation(parameterName)), request);
+        Object actual = resolver.resolve(typeDescriptor(new StubbingAnnotation(parameterName)), bindingProperty("annotated", TestingBean.class), request);
         assertThat(actual).isEqualTo(expected);
     }
 
     @Test
-    void returnsNullIfNoPathVariableFound() {
+    void returnsNullIfNoPathVariableFound() throws Exception {
         String parameterName = "pathParamName";
         emptyPathParamMap();
-        Object actual = resolver.resolve(typeDescriptor(new StubbingAnnotation(parameterName)), request);
+        Object actual = resolver.resolve(typeDescriptor(new StubbingAnnotation(parameterName)), bindingProperty("annotated", TestingBean.class), request);
         assertThat(actual).isNull();
     }
 
     @Test
-    void returnsNullIfNoPathVariablesMapExistsOnRequest() {
+    void returnsNullIfNoPathVariablesMapExistsOnRequest() throws Exception {
         String parameterName = "pathParamName";
         servletRequest.removeAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-        Object actual = resolver.resolve(typeDescriptor(new StubbingAnnotation(parameterName)), request);
+        Object actual = resolver.resolve(typeDescriptor(new StubbingAnnotation(parameterName)), bindingProperty("annotated", TestingBean.class), request);
         assertThat(actual).isNull();
     }
 
@@ -137,7 +137,7 @@ class PathParameterRequestPropertyResolverTest {
 
     @SuppressWarnings("unused")
     private static class TestingBean {
-        @PathParameter("irrelevant")
+        @PathParameter("pathParamName")
         private String annotated;
 
         private String notAnnotated;

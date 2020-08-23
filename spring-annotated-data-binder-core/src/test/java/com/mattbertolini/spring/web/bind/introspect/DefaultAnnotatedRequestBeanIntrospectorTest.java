@@ -80,7 +80,7 @@ class DefaultAnnotatedRequestBeanIntrospectorTest {
         }
 
         @Override
-        public Object resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull Void request) {
+        public Object resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, @NonNull Void request) {
             // Don't need to worry about this method. No used in the introspector.
             return null;
         }

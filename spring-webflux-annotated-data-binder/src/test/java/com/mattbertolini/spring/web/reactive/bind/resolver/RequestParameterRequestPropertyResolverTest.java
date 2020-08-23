@@ -69,11 +69,11 @@ class RequestParameterRequestPropertyResolverTest {
             .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
         assertThatExceptionOfType(IllegalStateException.class)
-            .isThrownBy(() -> resolver.resolve(typeDescriptor(String.class), exchange));
+            .isThrownBy(() -> resolver.resolve(typeDescriptor(String.class), bindingProperty("notAnnotated", TestingBean.class), exchange));
     }
 
     @Test
-    void returnsValueFromHttpRequest() {
+    void returnsValueFromHttpRequest() throws Exception {
         List<String> expected = Collections.singletonList("expected value");
         String parameterName = "testing";
 
@@ -82,20 +82,20 @@ class RequestParameterRequestPropertyResolverTest {
             .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
-        Mono<Object> actual = resolver.resolve(typeDescriptor(String.class, annotation(parameterName)), exchange);
+        Mono<Object> actual = resolver.resolve(typeDescriptor(String.class, annotation(parameterName)), bindingProperty("annotated", TestingBean.class), exchange);
         assertThat(actual.block()).isEqualTo(expected);
     }
 
     @Test
-    void returnsNullWhenNoValueFound() {
+    void returnsNullWhenNoValueFound() throws Exception {
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant").build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
-        Mono<Object> actual = resolver.resolve(typeDescriptor(Integer.class, annotation("not_found")), exchange);
+        Mono<Object> actual = resolver.resolve(typeDescriptor(Integer.class, annotation("not_found")), bindingProperty("annotated", TestingBean.class), exchange);
         assertThat(actual.block()).isNull();
     }
 
     @Test
-    void returnsMultipleValues() {
+    void returnsMultipleValues() throws Exception {
         List<String> expected = Arrays.asList("one", "two", "three");
         String parameterName = "multiple_values";
 
@@ -104,7 +104,7 @@ class RequestParameterRequestPropertyResolverTest {
             .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
-        Mono<Object> actual = resolver.resolve(typeDescriptor(List.class, annotation(parameterName)), exchange);
+        Mono<Object> actual = resolver.resolve(typeDescriptor(List.class, annotation(parameterName)), bindingProperty("multipleValues", TestingBean.class), exchange);
         assertThat(actual.block()).isEqualTo(expected);
     }
 
@@ -145,13 +145,16 @@ class RequestParameterRequestPropertyResolverTest {
 
     @SuppressWarnings("unused")
     private static class TestingBean {
-        @RequestParameter("irrelevant")
+        @RequestParameter("testing")
         private String annotated;
 
         private String notAnnotated;
 
         @RequestParameter
         private String missingValue;
+
+        @RequestParameter("multiple_values")
+        private List<String> multipleValues;
 
         public String getAnnotated() {
             return annotated;
@@ -175,6 +178,14 @@ class RequestParameterRequestPropertyResolverTest {
 
         public void setMissingValue(String missingValue) {
             this.missingValue = missingValue;
+        }
+
+        public List<String> getMultipleValues() {
+            return multipleValues;
+        }
+
+        public void setMultipleValues(List<String> multipleValues) {
+            this.multipleValues = multipleValues;
         }
     }
 }

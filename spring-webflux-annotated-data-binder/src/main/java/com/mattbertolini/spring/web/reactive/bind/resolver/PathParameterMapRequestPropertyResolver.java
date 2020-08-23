@@ -38,7 +38,7 @@ public class PathParameterMapRequestPropertyResolver implements RequestPropertyR
 
     @Override
     @NonNull
-    public Mono<Object> resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull ServerWebExchange exchange) {
+    public Mono<Object> resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, @NonNull ServerWebExchange exchange) {
         Map<Object, Object> pathVariables = exchange.getAttributeOrDefault(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE, Collections.emptyMap());
         return Mono.just(pathVariables);
     }

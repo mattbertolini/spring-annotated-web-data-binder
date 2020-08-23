@@ -39,7 +39,7 @@ public class HeaderParameterMapRequestPropertyResolver implements RequestPropert
     }
 
     @Override
-    public Object resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull NativeWebRequest request) {
+    public Object resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, @NonNull NativeWebRequest request) {
         if (MultiValueMap.class.isAssignableFrom(typeDescriptor.getType())) {
             MultiValueMap<String, String> retMap;
             if (HttpHeaders.class.isAssignableFrom(typeDescriptor.getType())) {

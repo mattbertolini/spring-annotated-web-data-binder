@@ -38,7 +38,7 @@ public class FormParameterMapRequestPropertyResolver implements RequestPropertyR
 
     @Override
     @NonNull
-    public Mono<Object> resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull ServerWebExchange exchange) {
+    public Mono<Object> resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, @NonNull ServerWebExchange exchange) {
         if (MultiValueMap.class.isAssignableFrom(typeDescriptor.getType())) {
             return exchange.getFormData().map(Function.identity());
         }

@@ -32,7 +32,7 @@ public class SessionParameterRequestPropertyResolver implements RequestPropertyR
 
     @NonNull
     @Override
-    public Mono<Object> resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull ServerWebExchange exchange) {
+    public Mono<Object> resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, @NonNull ServerWebExchange exchange) {
         SessionParameter annotation = typeDescriptor.getAnnotation(SessionParameter.class);
         Assert.state(annotation != null, "No SessionParameter annotation found on type");
         //noinspection ReactiveStreamsNullableInLambdaInTransform

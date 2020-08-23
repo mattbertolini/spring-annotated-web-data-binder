@@ -39,7 +39,7 @@ public class RequestParameterMapRequestPropertyResolver implements RequestProper
     }
 
     @Override
-    public Object resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull NativeWebRequest request) {
+    public Object resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, @NonNull NativeWebRequest request) {
         Map<String, String[]> parameterMap = request.getParameterMap();
 
         if (MultiValueMap.class.isAssignableFrom(typeDescriptor.getType())) {

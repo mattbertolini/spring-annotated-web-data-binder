@@ -70,14 +70,14 @@ class HeaderParameterMapRequestPropertyResolverTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    void returnsMultiValueMap() {
+    void returnsMultiValueMap() throws Exception {
         MockServerHttpRequest request = MockServerHttpRequest.post("/irrelevant")
             .header("header_param_one", "one")
             .header("header_param_two", "two")
             .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
-        Mono<Object> objectMono = resolver.resolve(typeDescriptor(MultiValueMap.class, annotation(null)), exchange);
+        Mono<Object> objectMono = resolver.resolve(typeDescriptor(MultiValueMap.class, annotation(null)), bindingProperty("annotated", TestingBean.class), exchange);
         Object actual = objectMono.block();
         assertThat(actual).isInstanceOf(MultiValueMap.class);
         MultiValueMap<String, String> map = (MultiValueMap<String, String>) actual;
@@ -87,14 +87,14 @@ class HeaderParameterMapRequestPropertyResolverTest {
     }
     
     @Test
-    void returnsHttpHeadersObject() {
+    void returnsHttpHeadersObject() throws Exception {
         MockServerHttpRequest request = MockServerHttpRequest.post("/irrelevant")
             .header("header_param_one", "one")
             .header("header_param_two", "two")
             .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
-        Mono<Object> objectMono = resolver.resolve(typeDescriptor(HttpHeaders.class, annotation(null)), exchange);
+        Mono<Object> objectMono = resolver.resolve(typeDescriptor(HttpHeaders.class, annotation(null)), bindingProperty("httpHeaders", TestingBean.class), exchange);
         Object actual = objectMono.block();
         assertThat(actual).isInstanceOf(HttpHeaders.class);
         HttpHeaders headers = (HttpHeaders) actual;
@@ -105,13 +105,13 @@ class HeaderParameterMapRequestPropertyResolverTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    void returnsMapWithFirstValue() {
+    void returnsMapWithFirstValue() throws Exception {
         MockServerHttpRequest request = MockServerHttpRequest.post("/irrelevant")
             .header("header_param", "one", "two", "three")
             .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
-        Mono<Object> objectMono = resolver.resolve(typeDescriptor(Map.class, annotation(null)), exchange);
+        Mono<Object> objectMono = resolver.resolve(typeDescriptor(Map.class, annotation(null)), bindingProperty("annotated", TestingBean.class), exchange);
         Object actual = objectMono.block();
         assertThat(actual).isInstanceOf(Map.class);
         Map<String, String> map = (Map<String, String>) actual;
@@ -156,6 +156,12 @@ class HeaderParameterMapRequestPropertyResolverTest {
 
         private Map<String, String> notAnnotated;
 
+        @HeaderParameter
+        private MultiValueMap<String, String> multivalue;
+
+        @HeaderParameter
+        private HttpHeaders httpHeaders;
+
         @HeaderParameter("irrelevant")
         private String withValue;
 
@@ -176,6 +182,22 @@ class HeaderParameterMapRequestPropertyResolverTest {
 
         public void setNotAnnotated(Map<String, String> notAnnotated) {
             this.notAnnotated = notAnnotated;
+        }
+
+        public MultiValueMap<String, String> getMultivalue() {
+            return multivalue;
+        }
+
+        public void setMultivalue(MultiValueMap<String, String> multivalue) {
+            this.multivalue = multivalue;
+        }
+
+        public HttpHeaders getHttpHeaders() {
+            return httpHeaders;
+        }
+
+        public void setHttpHeaders(HttpHeaders httpHeaders) {
+            this.httpHeaders = httpHeaders;
         }
 
         public String getWithValue() {

@@ -70,13 +70,13 @@ class FormParameterMapRequestPropertyResolverTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    void returnsMultiValueMap() {
+    void returnsMultiValueMap() throws Exception {
         MockServerHttpRequest request = MockServerHttpRequest.post("/irrelevant")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .body("form_param_one=one&form_param_two=two&form_param_three=three");
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
         
-        Mono<Object> objectMono = resolver.resolve(typeDescriptor(MultiValueMap.class, annotation(null)), exchange);
+        Mono<Object> objectMono = resolver.resolve(typeDescriptor(MultiValueMap.class, annotation(null)), bindingProperty("multivalue", TestingBean.class), exchange);
         Object actual = objectMono.block();
         assertThat(actual).isInstanceOf(MultiValueMap.class);
         MultiValueMap<String, String> map = (MultiValueMap<String, String>) actual;
@@ -88,13 +88,13 @@ class FormParameterMapRequestPropertyResolverTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    void returnsMapWithFirstValue() {
+    void returnsMapWithFirstValue() throws Exception {
         MockServerHttpRequest request = MockServerHttpRequest.post("/irrelevant")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .body("form_param=one&form_param=two&form_param=three");
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
         
-        Mono<Object> objectMono = resolver.resolve(typeDescriptor(Map.class, annotation(null)), exchange);
+        Mono<Object> objectMono = resolver.resolve(typeDescriptor(Map.class, annotation(null)), bindingProperty("annotated", TestingBean.class), exchange);
         Object actual = objectMono.block();
         assertThat(actual).isInstanceOf(Map.class);
         Map<String, String> map = (Map<String, String>) actual;
@@ -139,6 +139,9 @@ class FormParameterMapRequestPropertyResolverTest {
 
         private Map<String, String> notAnnotated;
 
+        @FormParameter
+        private MultiValueMap<String, String> multivalue;
+
         @FormParameter("name")
         private String withName;
 
@@ -159,6 +162,14 @@ class FormParameterMapRequestPropertyResolverTest {
 
         public void setNotAnnotated(Map<String, String> notAnnotated) {
             this.notAnnotated = notAnnotated;
+        }
+
+        public MultiValueMap<String, String> getMultivalue() {
+            return multivalue;
+        }
+
+        public void setMultivalue(MultiValueMap<String, String> multivalue) {
+            this.multivalue = multivalue;
         }
 
         public String getWithName() {

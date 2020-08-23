@@ -64,11 +64,11 @@ class PathParameterRequestPropertyResolverTest {
     }
 
     @Test
-    void returnsValuePathParameter() {
+    void returnsValuePathParameter() throws Exception {
         String expected = "pathValue";
         String parameterName = "pathParamName";
         MockServerWebExchange exchange = makePathParamMap(parameterName, expected);
-        Mono<Object> actual = resolver.resolve(typeDescriptor(new StubbingAnnotation(parameterName)), exchange);
+        Mono<Object> actual = resolver.resolve(typeDescriptor(new StubbingAnnotation(parameterName)), bindingProperty("annotated", TestingBean.class), exchange);
         assertThat(actual.block()).isEqualTo(expected);
     }
 
@@ -79,23 +79,23 @@ class PathParameterRequestPropertyResolverTest {
             .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
         assertThatExceptionOfType(IllegalStateException.class)
-            .isThrownBy(() -> resolver.resolve(typeDescriptor(), exchange));
+            .isThrownBy(() -> resolver.resolve(typeDescriptor(), bindingProperty("notAnnotated", TestingBean.class), exchange));
     }
 
     @Test
-    void returnsNullIfNoPathVariableFound() {
+    void returnsNullIfNoPathVariableFound() throws Exception {
         String parameterName = "pathParamName";
         MockServerWebExchange exchange = emptyPathParamMap();
-        Mono<Object> actual = resolver.resolve(typeDescriptor(new StubbingAnnotation(parameterName)), exchange);
+        Mono<Object> actual = resolver.resolve(typeDescriptor(new StubbingAnnotation(parameterName)), bindingProperty("annotated", TestingBean.class), exchange);
         assertThat(actual.block()).isNull();
     }
 
     @Test
-    void returnsNullIfNoPathVariablesMapExistsOnRequest() {
+    void returnsNullIfNoPathVariablesMapExistsOnRequest() throws Exception {
         String parameterName = "pathParamName";
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant").build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
-        Mono<Object> actual = resolver.resolve(typeDescriptor(new StubbingAnnotation(parameterName)), exchange);
+        Mono<Object> actual = resolver.resolve(typeDescriptor(new StubbingAnnotation(parameterName)), bindingProperty("annotated", TestingBean.class), exchange);
         assertThat(actual.block()).isNull();
     }
 
@@ -146,7 +146,7 @@ class PathParameterRequestPropertyResolverTest {
 
     @SuppressWarnings("unused")
     private static class TestingBean {
-        @PathParameter("irrelevant")
+        @PathParameter("pathParamName")
         private String annotated;
 
         private String notAnnotated;

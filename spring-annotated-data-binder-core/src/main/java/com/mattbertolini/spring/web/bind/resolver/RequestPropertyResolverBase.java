@@ -32,5 +32,5 @@ public interface RequestPropertyResolverBase<T, R> {
     boolean supports(@NonNull BindingProperty bindingProperty);
     
     @Nullable
-    R resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull T request);
+    R resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, @NonNull T request);
 }

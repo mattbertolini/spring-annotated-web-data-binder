@@ -21,14 +21,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.lang.NonNull;
 
+import java.beans.PropertyDescriptor;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AbstractNamedRequestPropertyResolverTest {
     @SuppressWarnings("unchecked")
     @Test
-    void resolveUsesResolveWithNameMethod() {
-        TestingResolver resolver = new TestingResolver("expected");         
-        Object actual = resolver.resolve(TypeDescriptor.valueOf(String.class), new Object());
+    void resolveUsesResolveWithNameMethod() throws Exception {
+        TestingResolver resolver = new TestingResolver("expected");
+        BindingProperty bindingProperty = BindingProperty.forPropertyDescriptor(new PropertyDescriptor("property", TestingBean.class));
+        Object actual = resolver.resolve(TypeDescriptor.valueOf(String.class), bindingProperty, new Object());
         assertThat(actual).isEqualTo("expected");
     }
 
@@ -43,18 +46,30 @@ class AbstractNamedRequestPropertyResolverTest {
 
         @Override
         @NonNull
-        protected String getName(@NonNull TypeDescriptor typeDescriptor) {
+        protected String getName(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty) {
             return name;
         }
 
         @Override
-        protected Object resolveWithName(@NonNull TypeDescriptor typeDescriptor, String name, @NonNull Object request) {
+        protected Object resolveWithName(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, String name, @NonNull Object request) {
             return name;
         }
 
         @Override
         public boolean supports(@NonNull BindingProperty bindingProperty) {
             return true;
+        }
+    }
+
+    private static class TestingBean {
+        private String property;
+
+        public String getProperty() {
+            return property;
+        }
+
+        public void setProperty(String property) {
+            this.property = property;
         }
     }
 }

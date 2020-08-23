@@ -364,7 +364,7 @@ class BeanParameterMethodArgumentResolverTest {
         }
 
         @Override
-        public Object resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull NativeWebRequest request) {
+        public Object resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, @NonNull NativeWebRequest request) {
             if (exception != null) {
                 throw exception;
             }

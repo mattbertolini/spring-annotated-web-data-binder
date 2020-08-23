@@ -31,7 +31,7 @@ public class SessionParameterRequestPropertyResolver implements RequestPropertyR
     }
 
     @Override
-    public Object resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull NativeWebRequest request) {
+    public Object resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, @NonNull NativeWebRequest request) {
         SessionParameter annotation = typeDescriptor.getAnnotation(SessionParameter.class);
         Assert.state(annotation != null, "No SessionParameter annotation found on type");
         return request.getAttribute(annotation.value(), RequestAttributes.SCOPE_SESSION);

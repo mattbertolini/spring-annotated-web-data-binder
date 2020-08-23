@@ -80,7 +80,7 @@ class ResolvedPropertyDataTest {
         }
 
         @Override
-        public Object resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull Object request) {
+        public Object resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, @NonNull Object request) {
             return null;
         }
     }

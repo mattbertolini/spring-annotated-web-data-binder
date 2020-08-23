@@ -64,42 +64,42 @@ class CookieParameterRequestPropertyResolverTest {
     }
 
     @Test
-    void throwsExceptionIfResolveCalledWithNoAnnotation() {
+    void throwsExceptionIfResolveCalledWithNoAnnotation() throws Exception {
         // Unlikely to happen as the library always checks the supports method.
         assertThatExceptionOfType(IllegalStateException.class)
-            .isThrownBy(() -> resolver.resolve(typeDescriptor(String.class), request));
+            .isThrownBy(() -> resolver.resolve(typeDescriptor(String.class), bindingProperty("notAnnotated", TestingBean.class), request));
     }
 
     @Test
-    void throwsExceptionWhenNativeRequestDoesNotWrapServletRequest() {
+    void throwsExceptionWhenNativeRequestDoesNotWrapServletRequest() throws Exception {
         NativeWebRequest webRequest = mock(NativeWebRequest.class);
         when(webRequest.getNativeRequest()).thenReturn(null);
-        assertThatThrownBy(() -> resolver.resolve(typeDescriptor(HttpServletRequest.class), webRequest))
+        assertThatThrownBy(() -> resolver.resolve(typeDescriptor(HttpServletRequest.class), bindingProperty("annotated", TestingBean.class), webRequest))
             .isInstanceOf(IllegalStateException.class);
     }
 
     @Test
-    void returnsValueFromCookie() {
+    void returnsValueFromCookie() throws Exception{
         String expected = "expectedValue";
-        String cookieName = "cookie_name";
+        String cookieName = "the_cookie";
         Cookie cookie = new Cookie(cookieName, expected);
         servletRequest.setCookies(cookie);
-        Object actual = resolver.resolve(typeDescriptor(String.class, new StubbingAnnotation(cookieName)), request);
+        Object actual = resolver.resolve(typeDescriptor(String.class, new StubbingAnnotation(cookieName)), bindingProperty("annotated", TestingBean.class), request);
         assertThat(actual).isEqualTo(expected);
     }
 
     @Test
-    void returnsCookieObjectWhenTypeMatches() {
+    void returnsCookieObjectWhenTypeMatches() throws Exception {
         String cookieName = "the_cookie";
         Cookie expected = new Cookie(cookieName, "aValue");
         servletRequest.setCookies(expected);
-        Object actual = resolver.resolve(typeDescriptor(Cookie.class, new StubbingAnnotation(cookieName)), request);
+        Object actual = resolver.resolve(typeDescriptor(Cookie.class, new StubbingAnnotation(cookieName)), bindingProperty("cookieObject", TestingBean.class), request);
         assertThat(actual).isEqualTo(expected);
     }
 
     @Test
-    void returnsNullWhenNoCookieFound() {
-        Object notFound = resolver.resolve(typeDescriptor(Integer.class, new StubbingAnnotation("not_found")), request);
+    void returnsNullWhenNoCookieFound() throws Exception {
+        Object notFound = resolver.resolve(typeDescriptor(Integer.class, new StubbingAnnotation("not_found")), bindingProperty("annotated", TestingBean.class), request);
         assertThat(notFound).isNull();
     }
 
@@ -132,10 +132,13 @@ class CookieParameterRequestPropertyResolverTest {
 
     @SuppressWarnings("unused")
     private static class TestingBean {
-        @CookieParameter("irrelevant")
+        @CookieParameter("the_cookie")
         private String annotated;
 
         private String notAnnotated;
+
+        @CookieParameter("the_cookie")
+        private Cookie cookieObject;
 
         public String getAnnotated() {
             return annotated;
@@ -151,6 +154,14 @@ class CookieParameterRequestPropertyResolverTest {
 
         public void setNotAnnotated(String notAnnotated) {
             this.notAnnotated = notAnnotated;
+        }
+
+        public Cookie getCookieObject() {
+            return cookieObject;
+        }
+
+        public void setCookieObject(Cookie cookieObject) {
+            this.cookieObject = cookieObject;
         }
     }
 }

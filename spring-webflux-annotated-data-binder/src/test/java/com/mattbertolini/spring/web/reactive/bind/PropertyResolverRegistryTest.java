@@ -54,7 +54,7 @@ class PropertyResolverRegistryTest {
 
         @NonNull
         @Override
-        public Mono<Object> resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull ServerWebExchange exchange) {
+        public Mono<Object> resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, @NonNull ServerWebExchange exchange) {
             return Mono.empty();
         }
     }

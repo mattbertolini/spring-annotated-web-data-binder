@@ -72,9 +72,9 @@ class FormParameterMapRequestPropertyResolverTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    void returnsMultiValueMap() {
+    void returnsMultiValueMap() throws Exception {
         servletRequest.addParameter("form_param", "one", "two", "three");
-        Object actual = resolver.resolve(typeDescriptor(MultiValueMap.class, annotation(null)), request);
+        Object actual = resolver.resolve(typeDescriptor(MultiValueMap.class, annotation(null)), bindingProperty("multivalue", TestingBean.class), request);
         assertThat(actual).isInstanceOf(MultiValueMap.class);
         MultiValueMap<String, String> map = (MultiValueMap<String, String>) actual;
         assertThat(map).containsEntry("form_param", Arrays.asList("one", "two", "three"));
@@ -82,9 +82,9 @@ class FormParameterMapRequestPropertyResolverTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    void returnsMapWithFirstValue() {
+    void returnsMapWithFirstValue() throws Exception {
         servletRequest.addParameter("form_param", "one", "two", "three");
-        Object actual = resolver.resolve(typeDescriptor(Map.class, annotation(null)), request);
+        Object actual = resolver.resolve(typeDescriptor(Map.class, annotation(null)), bindingProperty("annotated", TestingBean.class), request);
         assertThat(actual).isInstanceOf(Map.class);
         Map<String, String> map = (Map<String, String>) actual;
         assertThat(map).containsEntry("form_param", "one");
@@ -128,6 +128,9 @@ class FormParameterMapRequestPropertyResolverTest {
 
         private Map<String, String> notAnnotated;
 
+        @FormParameter
+        private MultiValueMap<String, String> multivalue;
+
         @FormParameter("name")
         private String withName;
 
@@ -148,6 +151,14 @@ class FormParameterMapRequestPropertyResolverTest {
 
         public void setNotAnnotated(Map<String, String> notAnnotated) {
             this.notAnnotated = notAnnotated;
+        }
+
+        public MultiValueMap<String, String> getMultivalue() {
+            return multivalue;
+        }
+
+        public void setMultivalue(MultiValueMap<String, String> multivalue) {
+            this.multivalue = multivalue;
         }
 
         public String getWithName() {

@@ -34,7 +34,7 @@ public class CookieParameterRequestPropertyResolver implements RequestPropertyRe
     }
 
     @Override
-    public Object resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull NativeWebRequest request) {
+    public Object resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, @NonNull NativeWebRequest request) {
         HttpServletRequest servletRequest = request.getNativeRequest(HttpServletRequest.class);
         Assert.state(servletRequest != null, "A HttpServletRequest is required for this resolver and none found.");
         CookieParameter annotation = typeDescriptor.getAnnotation(CookieParameter.class);

@@ -63,11 +63,11 @@ class CookieParameterRequestPropertyResolverTest {
             .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
         assertThatExceptionOfType(IllegalStateException.class)
-            .isThrownBy(() -> resolver.resolve(typeDescriptor(String.class), exchange));
+            .isThrownBy(() -> resolver.resolve(typeDescriptor(String.class), bindingProperty("notAnnotated", TestingBean.class), exchange));
     }
 
     @Test
-    void returnsValueFromCookie() {
+    void returnsValueFromCookie() throws Exception {
         String expected = "expectedValue";
         String cookieName = "cookie_name";
 
@@ -75,12 +75,12 @@ class CookieParameterRequestPropertyResolverTest {
             .cookie(new HttpCookie(cookieName, expected)).build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
-        Mono<Object> actual = resolver.resolve(typeDescriptor(String.class, new StubbingAnnotation(cookieName)), exchange);
+        Mono<Object> actual = resolver.resolve(typeDescriptor(String.class, new StubbingAnnotation(cookieName)), bindingProperty("annotated", TestingBean.class), exchange);
         assertThat(actual.block()).isEqualTo(expected);
     }
 
     @Test
-    void returnsHttpCookieObjectWhenTypeMatches() {
+    void returnsHttpCookieObjectWhenTypeMatches() throws Exception {
         String cookieName = "the_cookie";
         HttpCookie expected = new HttpCookie(cookieName, "aValue");
 
@@ -88,16 +88,16 @@ class CookieParameterRequestPropertyResolverTest {
             .cookie(expected).build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
-        Mono<Object> actual = resolver.resolve(typeDescriptor(HttpCookie.class, new StubbingAnnotation(cookieName)), exchange);
+        Mono<Object> actual = resolver.resolve(typeDescriptor(HttpCookie.class, new StubbingAnnotation(cookieName)), bindingProperty("cookieObject", TestingBean.class), exchange);
         assertThat(actual.block()).isEqualTo(expected);
     }
 
     @Test
-    void returnsNullWhenNoCookieFound() {
+    void returnsNullWhenNoCookieFound() throws Exception {
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant").build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
-        Mono<Object> notFound = resolver.resolve(typeDescriptor(Integer.class, new StubbingAnnotation("not_found")), exchange);
+        Mono<Object> notFound = resolver.resolve(typeDescriptor(Integer.class, new StubbingAnnotation("not_found")), bindingProperty("annotated", TestingBean.class), exchange);
         assertThat(notFound.block()).isNull();
     }
 
@@ -130,10 +130,13 @@ class CookieParameterRequestPropertyResolverTest {
 
     @SuppressWarnings("unused")
     private static class TestingBean {
-        @CookieParameter("irrelevant")
+        @CookieParameter("the_cookie")
         private String annotated;
 
         private String notAnnotated;
+
+        @CookieParameter("the_cookie")
+        private HttpCookie cookieObject;
 
         public String getAnnotated() {
             return annotated;
@@ -149,6 +152,14 @@ class CookieParameterRequestPropertyResolverTest {
 
         public void setNotAnnotated(String notAnnotated) {
             this.notAnnotated = notAnnotated;
+        }
+
+        public HttpCookie getCookieObject() {
+            return cookieObject;
+        }
+
+        public void setCookieObject(HttpCookie cookieObject) {
+            this.cookieObject = cookieObject;
         }
     }
 }

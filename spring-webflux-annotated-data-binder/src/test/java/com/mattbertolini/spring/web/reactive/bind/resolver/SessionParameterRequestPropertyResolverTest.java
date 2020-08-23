@@ -61,11 +61,11 @@ class SessionParameterRequestPropertyResolverTest {
             .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
         assertThatExceptionOfType(IllegalStateException.class)
-            .isThrownBy(() -> resolver.resolve(typeDescriptor(String.class), exchange));
+            .isThrownBy(() -> resolver.resolve(typeDescriptor(String.class), bindingProperty("notAnnotated", TestingBean.class), exchange));
     }
 
     @Test
-    void returnsValueFromSession() {
+    void returnsValueFromSession() throws Exception {
         String expected = "expectedValue";
         String sessionKey = "sessionKey";
 
@@ -76,25 +76,25 @@ class SessionParameterRequestPropertyResolverTest {
             .session(webSession)
             .build();
 
-        Mono<Object> actual = resolver.resolve(typeDescriptor(String.class, new StubbingAnnotation(sessionKey)), exchange);
+        Mono<Object> actual = resolver.resolve(typeDescriptor(String.class, new StubbingAnnotation(sessionKey)), bindingProperty("annotated", TestingBean.class), exchange);
         assertThat(actual.block()).isEqualTo(expected);
     }
 
     @Test
-    void returnsNullWhenNoKeyFound() {
+    void returnsNullWhenNoKeyFound() throws Exception {
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant").build();
         MockWebSession webSession = new MockWebSession();
         webSession.getAttributes().clear();
         MockServerWebExchange exchange = MockServerWebExchange.builder(request).session(webSession).build();
-        Mono<Object> actual = resolver.resolve(typeDescriptor(Integer.class, new StubbingAnnotation("not_found")), exchange);
+        Mono<Object> actual = resolver.resolve(typeDescriptor(Integer.class, new StubbingAnnotation("not_found")), bindingProperty("annotated", TestingBean.class), exchange);
         assertThat(actual.block()).isNull();
     }
 
     @Test
-    void returnsNullWhenNoSessionExists() {
+    void returnsNullWhenNoSessionExists() throws Exception {
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant").build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
-        Mono<Object> actual = resolver.resolve(typeDescriptor(String.class, new StubbingAnnotation("no_session")), exchange);
+        Mono<Object> actual = resolver.resolve(typeDescriptor(String.class, new StubbingAnnotation("no_session")), bindingProperty("annotated", TestingBean.class), exchange);
         assertThat(actual.block()).isNull();
     }
 
@@ -127,7 +127,7 @@ class SessionParameterRequestPropertyResolverTest {
 
     @SuppressWarnings("unused")
     private static class TestingBean {
-        @SessionParameter("irrelevant")
+        @SessionParameter("sessionKey")
         private String annotated;
 
         private String notAnnotated;

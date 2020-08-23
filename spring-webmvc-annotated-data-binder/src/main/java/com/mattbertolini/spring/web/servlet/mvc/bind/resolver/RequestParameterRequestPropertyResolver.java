@@ -35,13 +35,13 @@ public class RequestParameterRequestPropertyResolver extends AbstractNamedReques
     }
 
     @Override
-    protected Object resolveWithName(@NonNull TypeDescriptor typeDescriptor, String name, @NonNull NativeWebRequest request) {
+    protected Object resolveWithName(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, String name, @NonNull NativeWebRequest request) {
         return request.getParameterValues(name);
     }
     
     @Override
     @NonNull
-    protected String getName(@NonNull TypeDescriptor typeDescriptor) {
+    protected String getName(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty) {
         RequestParameter annotation = typeDescriptor.getAnnotation(RequestParameter.class);
         Assert.state(annotation != null, "No RequestParameter annotation found on type");
         return annotation.value();

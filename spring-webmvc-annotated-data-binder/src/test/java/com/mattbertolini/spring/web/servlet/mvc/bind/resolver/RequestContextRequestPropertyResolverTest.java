@@ -60,7 +60,6 @@ class RequestContextRequestPropertyResolverTest {
 
     @Test
     void doesNotSupportTypesNotAnnotatedWithRequestContext() throws Exception {
-        TypeDescriptor typeDescriptor = new TypeDescriptor(ResolvableType.forClass(WebRequest.class), null, null);
         assertThat(resolver.supports(bindingProperty("notAnnotated", TestingBean.class))).isFalse();
     }
 
@@ -70,53 +69,59 @@ class RequestContextRequestPropertyResolverTest {
     }
 
     @Test
-    void throwsExceptionOnUnknownType() {
-        assertThatThrownBy(() -> resolver.resolve(typeDescriptor(NotKnown.class), request))
+    void throwsExceptionOnUnknownType() throws Exception {
+        BindingProperty bindingProperty = bindingProperty("notKnown", TestingBean.class);
+        assertThatThrownBy(() -> resolver.resolve(typeDescriptor(NotKnown.class), bindingProperty, request))
             .isInstanceOf(UnsupportedOperationException.class);
     }
 
     @Test
-    void throwsExceptionWhenNativeRequestDoesNotWrapServletRequest() {
+    void throwsExceptionWhenNativeRequestDoesNotWrapServletRequest() throws Exception {
+        BindingProperty bindingProperty = bindingProperty("nativeWebRequest", TestingBean.class);
         NativeWebRequest webRequest = mock(NativeWebRequest.class);
         when(webRequest.getNativeRequest()).thenReturn(null);
-        assertThatThrownBy(() -> resolver.resolve(typeDescriptor(HttpServletRequest.class), webRequest))
+        assertThatThrownBy(() -> resolver.resolve(typeDescriptor(HttpServletRequest.class), bindingProperty, webRequest))
             .isInstanceOf(IllegalStateException.class);
     }
 
     @Test
     void resolvesWebRequestType() throws Exception {
-        assertThat(resolver.supports(bindingProperty("webRequest", TestingBean.class))).isTrue();
+        BindingProperty bindingProperty = bindingProperty("webRequest", TestingBean.class);
+        assertThat(resolver.supports(bindingProperty)).isTrue();
 
-        Object actual = resolver.resolve(typeDescriptor(WebRequest.class), request);
+        Object actual = resolver.resolve(typeDescriptor(WebRequest.class), bindingProperty, request);
         assertThat(actual).isNotNull();
         assertThat(actual).isInstanceOf(WebRequest.class);
     }
 
     @Test
     void resolvesServletRequest() throws Exception {
-        assertThat(resolver.supports(bindingProperty("servletRequest", TestingBean.class))).isTrue();
+        BindingProperty bindingProperty = bindingProperty("servletRequest", TestingBean.class);
+        assertThat(resolver.supports(bindingProperty)).isTrue();
 
-        Object actual = resolver.resolve(typeDescriptor(ServletRequest.class), request);
+        Object actual = resolver.resolve(typeDescriptor(ServletRequest.class), bindingProperty, request);
         assertThat(actual).isNotNull();
         assertThat(actual).isInstanceOf(ServletRequest.class);
     }
 
     @Test
     void resolvesHttpSession() throws Exception {
-        assertThat(resolver.supports(bindingProperty("httpSession", TestingBean.class))).isTrue();
+        BindingProperty bindingProperty = bindingProperty("httpSession", TestingBean.class);
+        assertThat(resolver.supports(bindingProperty)).isTrue();
 
         servletRequest.setSession(new MockHttpSession());
-        Object actual = resolver.resolve(typeDescriptor(HttpSession.class), request);
+        Object actual = resolver.resolve(typeDescriptor(HttpSession.class), bindingProperty, request);
         assertThat(actual).isNotNull();
         assertThat(actual).isInstanceOf(HttpSession.class);
     }
 
     @Test
     void resolvesHttpMethod() throws Exception {
-        assertThat(resolver.supports(bindingProperty("httpMethod", TestingBean.class))).isTrue();
+        BindingProperty bindingProperty = bindingProperty("httpMethod", TestingBean.class);
+        assertThat(resolver.supports(bindingProperty)).isTrue();
 
         servletRequest.setMethod("POST");
-        Object actual = resolver.resolve(typeDescriptor(HttpMethod.class), request);
+        Object actual = resolver.resolve(typeDescriptor(HttpMethod.class), bindingProperty, request);
         assertThat(actual).isNotNull();
         assertThat(actual).isInstanceOf(HttpMethod.class);
         assertThat(actual).isEqualTo(HttpMethod.POST);
@@ -124,10 +129,11 @@ class RequestContextRequestPropertyResolverTest {
 
     @Test
     void resolvesLocale() throws Exception {
-        assertThat(resolver.supports(bindingProperty("locale", TestingBean.class))).isTrue();
+        BindingProperty bindingProperty = bindingProperty("locale", TestingBean.class);
+        assertThat(resolver.supports(bindingProperty)).isTrue();
 
         servletRequest.addHeader("Accept-Language", "en-US");
-        Object actual = resolver.resolve(typeDescriptor(Locale.class), request);
+        Object actual = resolver.resolve(typeDescriptor(Locale.class), bindingProperty, request);
         assertThat(actual).isNotNull();
         assertThat(actual).isInstanceOf(Locale.class);
         assertThat(actual).isEqualTo(Locale.US);
@@ -135,20 +141,22 @@ class RequestContextRequestPropertyResolverTest {
 
     @Test
     void resolvesTimeZone() throws Exception {
-        assertThat(resolver.supports(bindingProperty("timeZone", TestingBean.class))).isTrue();
+        BindingProperty bindingProperty = bindingProperty("timeZone", TestingBean.class);
+        assertThat(resolver.supports(bindingProperty)).isTrue();
 
         TimeZone expected = TimeZone.getTimeZone("America/New_York");
         servletRequest.setAttribute(DispatcherServlet.LOCALE_RESOLVER_ATTRIBUTE, new FixedLocaleResolver(Locale.US, expected));
-        Object actual = resolver.resolve(typeDescriptor(TimeZone.class), request);
+        Object actual = resolver.resolve(typeDescriptor(TimeZone.class), bindingProperty, request);
         assertThat(actual).isNotNull();
         assertThat(actual).isInstanceOf(TimeZone.class);
         assertThat(actual).isEqualTo(expected);
     }
 
     @Test
-    void resolvesTimeZoneWithDefault() {
+    void resolvesTimeZoneWithDefault() throws Exception {
+        BindingProperty bindingProperty = bindingProperty("timeZone", TestingBean.class);
         TimeZone expected = TimeZone.getDefault();
-        Object actual = resolver.resolve(typeDescriptor(TimeZone.class), request);
+        Object actual = resolver.resolve(typeDescriptor(TimeZone.class), bindingProperty, request);
         assertThat(actual).isNotNull();
         assertThat(actual).isInstanceOf(TimeZone.class);
         assertThat(actual).isEqualTo(expected);
@@ -156,22 +164,24 @@ class RequestContextRequestPropertyResolverTest {
 
     @Test
     void resolvesZoneId() throws Exception {
-        assertThat(resolver.supports(bindingProperty("zoneId", TestingBean.class))).isTrue();
+        BindingProperty bindingProperty = bindingProperty("zoneId", TestingBean.class);
+        assertThat(resolver.supports(bindingProperty)).isTrue();
 
         TimeZone timeZone = TimeZone.getTimeZone("America/New_York");
         ZoneId expected = timeZone.toZoneId();
         servletRequest.setAttribute(DispatcherServlet.LOCALE_RESOLVER_ATTRIBUTE, new FixedLocaleResolver(Locale.US, timeZone));
-        Object actual = resolver.resolve(typeDescriptor(ZoneId.class), request);
+        Object actual = resolver.resolve(typeDescriptor(ZoneId.class), bindingProperty, request);
         assertThat(actual).isNotNull();
         assertThat(actual).isInstanceOf(ZoneId.class);
         assertThat(actual).isEqualTo(expected);
     }
 
     @Test
-    void resolvesZoneIdWithDefault() {
+    void resolvesZoneIdWithDefault() throws Exception {
+        BindingProperty bindingProperty = bindingProperty("zoneId", TestingBean.class);
         TimeZone timeZone = TimeZone.getDefault();
         ZoneId expected = timeZone.toZoneId();
-        Object actual = resolver.resolve(typeDescriptor(ZoneId.class), request);
+        Object actual = resolver.resolve(typeDescriptor(ZoneId.class), bindingProperty, request);
         assertThat(actual).isNotNull();
         assertThat(actual).isInstanceOf(ZoneId.class);
         assertThat(actual).isEqualTo(expected);
@@ -201,6 +211,9 @@ class RequestContextRequestPropertyResolverTest {
 
         @RequestContext
         private NotKnown notKnown;
+
+        @RequestContext
+        private NativeWebRequest nativeWebRequest;
 
         @RequestContext
         private ServletRequest servletRequest;
@@ -237,6 +250,14 @@ class RequestContextRequestPropertyResolverTest {
 
         public void setNotKnown(NotKnown notKnown) {
             this.notKnown = notKnown;
+        }
+
+        public NativeWebRequest getNativeWebRequest() {
+            return nativeWebRequest;
+        }
+
+        public void setNativeWebRequest(NativeWebRequest nativeWebRequest) {
+            this.nativeWebRequest = nativeWebRequest;
         }
 
         public ServletRequest getServletRequest() {

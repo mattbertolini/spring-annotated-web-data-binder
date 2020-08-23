@@ -70,11 +70,11 @@ class HeaderParameterRequestPropertyResolverTest {
             .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
         assertThatExceptionOfType(IllegalStateException.class)
-            .isThrownBy(() -> resolver.resolve(typeDescriptor(String.class), exchange));
+            .isThrownBy(() -> resolver.resolve(typeDescriptor(String.class), bindingProperty("notAnnotated", TestingBean.class), exchange));
     }
 
     @Test
-    void returnsValueFromHeader() {
+    void returnsValueFromHeader() throws Exception {
         List<String> expected = Collections.singletonList("headerValue");
         String headerName = "X-HeaderName";
 
@@ -84,20 +84,20 @@ class HeaderParameterRequestPropertyResolverTest {
             .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
-        Mono<Object> actual = resolver.resolve(typeDescriptor(String.class, new StubbingAnnotation(headerName)), exchange);
+        Mono<Object> actual = resolver.resolve(typeDescriptor(String.class, new StubbingAnnotation(headerName)), bindingProperty("annotated", TestingBean.class), exchange);
         assertThat(actual.block()).isEqualTo(expected);
     }
 
     @Test
-    void returnsNullWhenNoValueFound() {
+    void returnsNullWhenNoValueFound() throws Exception {
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant").build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
-        Mono<Object> actual = resolver.resolve(typeDescriptor(Integer.class, new StubbingAnnotation("X-NotFound")), exchange);
+        Mono<Object> actual = resolver.resolve(typeDescriptor(Integer.class, new StubbingAnnotation("X-NotFound")), bindingProperty("annotated", TestingBean.class), exchange);
         assertThat(actual.block()).isNull();
     }
 
     @Test
-    void returnsMultipleValues() {
+    void returnsMultipleValues() throws Exception {
         List<String> expected = Arrays.asList("one", "two", "three");
         String headerName = "X-Multiple";
 
@@ -106,7 +106,7 @@ class HeaderParameterRequestPropertyResolverTest {
             .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
         
-        Mono<Object> actual = resolver.resolve(typeDescriptor(List.class, new StubbingAnnotation(headerName)), exchange);
+        Mono<Object> actual = resolver.resolve(typeDescriptor(List.class, new StubbingAnnotation(headerName)), bindingProperty("multipleValues", TestingBean.class), exchange);
         assertThat(actual.block()).isEqualTo(expected);
     }
 
@@ -140,13 +140,16 @@ class HeaderParameterRequestPropertyResolverTest {
 
     @SuppressWarnings("unused")
     private static class TestingBean {
-        @HeaderParameter("irrelevant")
+        @HeaderParameter("X-HeaderName")
         private String annotated;
 
         private String notAnnotated;
 
         @HeaderParameter
         private String missingValue;
+
+        @HeaderParameter("X-Multiple")
+        private List<String> multipleValues;
 
         public String getAnnotated() {
             return annotated;
@@ -170,6 +173,14 @@ class HeaderParameterRequestPropertyResolverTest {
 
         public void setMissingValue(String missingValue) {
             this.missingValue = missingValue;
+        }
+
+        public List<String> getMultipleValues() {
+            return multipleValues;
+        }
+
+        public void setMultipleValues(List<String> multipleValues) {
+            this.multipleValues = multipleValues;
         }
     }
 }

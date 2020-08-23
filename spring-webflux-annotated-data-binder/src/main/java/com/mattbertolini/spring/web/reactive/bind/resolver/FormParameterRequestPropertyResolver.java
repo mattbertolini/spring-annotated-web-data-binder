@@ -34,7 +34,7 @@ public class FormParameterRequestPropertyResolver implements RequestPropertyReso
 
     @NonNull
     @Override
-    public Mono<Object> resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull ServerWebExchange exchange) {
+    public Mono<Object> resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, @NonNull ServerWebExchange exchange) {
         FormParameter annotation = typeDescriptor.getAnnotation(FormParameter.class);
         Assert.state(annotation != null, "No FormParameter annotation found on type");
         return exchange.getFormData()

@@ -39,7 +39,7 @@ public class PathParameterMapRequestPropertyResolver implements RequestPropertyR
 
     @SuppressWarnings("unchecked")
     @Override
-    public Object resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull NativeWebRequest request) {
+    public Object resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull BindingProperty bindingProperty, @NonNull NativeWebRequest request) {
         Map<String, String> uriTemplateVariables = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE, RequestAttributes.SCOPE_REQUEST);
         if (uriTemplateVariables == null) {
             return Collections.emptyMap();

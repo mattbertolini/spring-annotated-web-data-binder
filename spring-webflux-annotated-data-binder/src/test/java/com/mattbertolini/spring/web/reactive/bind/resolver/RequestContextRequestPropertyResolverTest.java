@@ -63,7 +63,8 @@ class RequestContextRequestPropertyResolverTest {
     @Test
     void throwsExceptionOnUnknownType() throws Exception {
         BindingProperty bindingProperty = bindingProperty("notKnown");
-        assertThatThrownBy(() -> resolver.resolve(bindingProperty, MockServerWebExchange.from(MockServerHttpRequest.get("/irrelevant").build())))
+        MockServerWebExchange exchange = MockServerWebExchange.from(MockServerHttpRequest.get("/irrelevant").build());
+        assertThatThrownBy(() -> resolver.resolve(bindingProperty, exchange))
             .isInstanceOf(UnsupportedOperationException.class);
     }
 
@@ -77,8 +78,7 @@ class RequestContextRequestPropertyResolverTest {
 
         Mono<Object> objectMono = resolver.resolve(bindingProperty, exchange);
         Object actual = objectMono.block(Duration.ofSeconds(5));
-        assertThat(actual).isNotNull();
-        assertThat(actual).isInstanceOf(ServerWebExchange.class);
+        assertThat(actual).isNotNull().isInstanceOf(ServerWebExchange.class);
     }
 
     @Test
@@ -91,8 +91,7 @@ class RequestContextRequestPropertyResolverTest {
 
         Mono<Object> objectMono = resolver.resolve(bindingProperty, exchange);
         Object actual = objectMono.block(Duration.ofSeconds(5));
-        assertThat(actual).isNotNull();
-        assertThat(actual).isInstanceOf(ServerHttpRequest.class);
+        assertThat(actual).isNotNull().isInstanceOf(ServerHttpRequest.class);
     }
 
     @Test
@@ -109,8 +108,7 @@ class RequestContextRequestPropertyResolverTest {
 
         Mono<Object> objectMono = resolver.resolve(bindingProperty, exchange);
         Object actual = objectMono.block(Duration.ofSeconds(5));
-        assertThat(actual).isNotNull();
-        assertThat(actual).isInstanceOf(WebSession.class);
+        assertThat(actual).isNotNull().isInstanceOf(WebSession.class);
     }
 
     @Test
@@ -123,9 +121,9 @@ class RequestContextRequestPropertyResolverTest {
         
         Mono<Object> objectMono = resolver.resolve(bindingProperty, exchange);
         Object actual = objectMono.block(Duration.ofSeconds(5));
-        assertThat(actual).isNotNull();
-        assertThat(actual).isInstanceOf(HttpMethod.class);
-        assertThat(actual).isEqualTo(HttpMethod.POST);
+        assertThat(actual).isNotNull()
+            .isInstanceOf(HttpMethod.class)
+            .isEqualTo(HttpMethod.POST);
     }
 
     @Test
@@ -140,9 +138,9 @@ class RequestContextRequestPropertyResolverTest {
 
         Mono<Object> objecMono = resolver.resolve(bindingProperty, exchange);
         Object actual = objecMono.block(Duration.ofSeconds(5));
-        assertThat(actual).isNotNull();
-        assertThat(actual).isInstanceOf(Locale.class);
-        assertThat(actual).isEqualTo(Locale.US);
+        assertThat(actual).isNotNull()
+            .isInstanceOf(Locale.class)
+            .isEqualTo(Locale.US);
     }
 
     @Test
@@ -157,9 +155,9 @@ class RequestContextRequestPropertyResolverTest {
 
         Mono<Object> objectMono = resolver.resolve(bindingProperty, serverWebExchange);
         Object actual = objectMono.block(Duration.ofSeconds(5));
-        assertThat(actual).isNotNull();
-        assertThat(actual).isInstanceOf(TimeZone.class);
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual).isNotNull()
+            .isInstanceOf(TimeZone.class)
+            .isEqualTo(expected);
     }
 
     @Test
@@ -172,9 +170,9 @@ class RequestContextRequestPropertyResolverTest {
 
         Mono<Object> objectMono = resolver.resolve(bindingProperty, exchange);
         Object actual = objectMono.block(Duration.ofSeconds(5));
-        assertThat(actual).isNotNull();
-        assertThat(actual).isInstanceOf(TimeZone.class);
-        assertThat(actual).isEqualTo(TimeZone.getDefault());
+        assertThat(actual).isNotNull()
+            .isInstanceOf(TimeZone.class)
+            .isEqualTo(TimeZone.getDefault());
     }
 
     @Test
@@ -190,9 +188,9 @@ class RequestContextRequestPropertyResolverTest {
 
         Mono<Object> objectMono = resolver.resolve(bindingProperty, serverWebExchange);
         Object actual = objectMono.block(Duration.ofSeconds(5));
-        assertThat(actual).isNotNull();
-        assertThat(actual).isInstanceOf(ZoneId.class);
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual).isNotNull()
+            .isInstanceOf(ZoneId.class)
+            .isEqualTo(expected);
     }
 
     @Test
@@ -205,9 +203,9 @@ class RequestContextRequestPropertyResolverTest {
         
         Mono<Object> objectMono = resolver.resolve(bindingProperty, exchange);
         Object actual = objectMono.block(Duration.ofSeconds(5));
-        assertThat(actual).isNotNull();
-        assertThat(actual).isInstanceOf(ZoneId.class);
-        assertThat(actual).isEqualTo(ZoneId.systemDefault());
+        assertThat(actual).isNotNull()
+            .isInstanceOf(ZoneId.class)
+            .isEqualTo(ZoneId.systemDefault());
     }
 
     private BindingProperty bindingProperty(String property) throws IntrospectionException {

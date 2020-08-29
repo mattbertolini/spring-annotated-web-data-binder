@@ -96,7 +96,8 @@ class RequestBodyRequestPropertyResolverTest {
         RequestResponseBodyMethodProcessor processor = mock(RequestResponseBodyMethodProcessor.class);
         when(processor.resolveArgument(any(), any(), any(), any())).thenThrow(new NullPointerException());
         RequestBodyRequestPropertyResolver propertyResolver = new RequestBodyRequestPropertyResolver(processor);
-        assertThatThrownBy(() -> propertyResolver.resolve(bindingProperty("annotated"), request)).isInstanceOf(PropertyResolutionException.class);
+        BindingProperty bindingProperty = bindingProperty("annotated");
+        assertThatThrownBy(() -> propertyResolver.resolve(bindingProperty, request)).isInstanceOf(PropertyResolutionException.class);
     }
 
     private BindingProperty bindingProperty(String property) throws IntrospectionException {

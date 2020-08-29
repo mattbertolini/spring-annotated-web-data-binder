@@ -87,8 +87,7 @@ class RequestContextRequestPropertyResolverTest {
         assertThat(resolver.supports(bindingProperty)).isTrue();
 
         Object actual = resolver.resolve(bindingProperty, request);
-        assertThat(actual).isNotNull();
-        assertThat(actual).isInstanceOf(WebRequest.class);
+        assertThat(actual).isNotNull().isInstanceOf(WebRequest.class);
     }
 
     @Test
@@ -97,8 +96,7 @@ class RequestContextRequestPropertyResolverTest {
         assertThat(resolver.supports(bindingProperty)).isTrue();
 
         Object actual = resolver.resolve(bindingProperty, request);
-        assertThat(actual).isNotNull();
-        assertThat(actual).isInstanceOf(ServletRequest.class);
+        assertThat(actual).isNotNull().isInstanceOf(ServletRequest.class);
     }
 
     @Test
@@ -108,8 +106,7 @@ class RequestContextRequestPropertyResolverTest {
 
         servletRequest.setSession(new MockHttpSession());
         Object actual = resolver.resolve(bindingProperty, request);
-        assertThat(actual).isNotNull();
-        assertThat(actual).isInstanceOf(HttpSession.class);
+        assertThat(actual).isNotNull().isInstanceOf(HttpSession.class);
     }
 
     @Test
@@ -119,9 +116,9 @@ class RequestContextRequestPropertyResolverTest {
 
         servletRequest.setMethod("POST");
         Object actual = resolver.resolve(bindingProperty, request);
-        assertThat(actual).isNotNull();
-        assertThat(actual).isInstanceOf(HttpMethod.class);
-        assertThat(actual).isEqualTo(HttpMethod.POST);
+        assertThat(actual).isNotNull()
+            .isInstanceOf(HttpMethod.class)
+            .isEqualTo(HttpMethod.POST);
     }
 
     @Test
@@ -131,9 +128,9 @@ class RequestContextRequestPropertyResolverTest {
 
         servletRequest.addHeader("Accept-Language", "en-US");
         Object actual = resolver.resolve(bindingProperty, request);
-        assertThat(actual).isNotNull();
-        assertThat(actual).isInstanceOf(Locale.class);
-        assertThat(actual).isEqualTo(Locale.US);
+        assertThat(actual).isNotNull()
+            .isInstanceOf(Locale.class)
+            .isEqualTo(Locale.US);
     }
 
     @Test
@@ -144,9 +141,9 @@ class RequestContextRequestPropertyResolverTest {
         TimeZone expected = TimeZone.getTimeZone("America/New_York");
         servletRequest.setAttribute(DispatcherServlet.LOCALE_RESOLVER_ATTRIBUTE, new FixedLocaleResolver(Locale.US, expected));
         Object actual = resolver.resolve(bindingProperty, request);
-        assertThat(actual).isNotNull();
-        assertThat(actual).isInstanceOf(TimeZone.class);
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual).isNotNull()
+            .isInstanceOf(TimeZone.class)
+            .isEqualTo(expected);
     }
 
     @Test
@@ -154,9 +151,9 @@ class RequestContextRequestPropertyResolverTest {
         BindingProperty bindingProperty = bindingProperty("timeZone");
         TimeZone expected = TimeZone.getDefault();
         Object actual = resolver.resolve(bindingProperty, request);
-        assertThat(actual).isNotNull();
-        assertThat(actual).isInstanceOf(TimeZone.class);
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual).isNotNull()
+            .isInstanceOf(TimeZone.class)
+            .isEqualTo(expected);
     }
 
     @Test
@@ -168,9 +165,9 @@ class RequestContextRequestPropertyResolverTest {
         ZoneId expected = timeZone.toZoneId();
         servletRequest.setAttribute(DispatcherServlet.LOCALE_RESOLVER_ATTRIBUTE, new FixedLocaleResolver(Locale.US, timeZone));
         Object actual = resolver.resolve(bindingProperty, request);
-        assertThat(actual).isNotNull();
-        assertThat(actual).isInstanceOf(ZoneId.class);
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual).isNotNull()
+            .isInstanceOf(ZoneId.class)
+            .isEqualTo(expected);
     }
 
     @Test
@@ -179,9 +176,9 @@ class RequestContextRequestPropertyResolverTest {
         TimeZone timeZone = TimeZone.getDefault();
         ZoneId expected = timeZone.toZoneId();
         Object actual = resolver.resolve(bindingProperty, request);
-        assertThat(actual).isNotNull();
-        assertThat(actual).isInstanceOf(ZoneId.class);
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual).isNotNull()
+            .isInstanceOf(ZoneId.class)
+            .isEqualTo(expected);
     }
 
     private BindingProperty bindingProperty(String property) throws IntrospectionException {

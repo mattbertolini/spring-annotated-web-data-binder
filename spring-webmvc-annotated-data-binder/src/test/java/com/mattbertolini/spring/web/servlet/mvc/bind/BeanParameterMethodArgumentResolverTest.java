@@ -136,9 +136,8 @@ class BeanParameterMethodArgumentResolverTest {
         assertThat(actual).isNotNull();
         assertThat(actual.getClass()).isEqualTo(Optional.class);
         Optional<?> optional = (Optional<?>) actual;
-        assertThat(optional.isPresent()).isTrue();
-        Object unwrapped = optional.get();
-        assertThat(unwrapped.getClass()).isEqualTo(ABeanClass.class);
+        assertThat(optional).isPresent()
+            .containsInstanceOf(ABeanClass.class);
     }
 
     @Test

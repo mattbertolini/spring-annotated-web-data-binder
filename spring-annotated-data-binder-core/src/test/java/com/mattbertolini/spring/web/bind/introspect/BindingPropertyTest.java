@@ -80,8 +80,9 @@ class BindingPropertyTest {
         }
 
         @Test
-        void throwsIllegalStateExceptionWhenNoGetterOrSetterPresent() {
-            assertThrows(IllegalStateException.class, () -> BindingProperty.forPropertyDescriptor(aPropertyDescriptor("noGettersOrSetters", null, null)));
+        void throwsIllegalStateExceptionWhenNoGetterOrSetterPresent() throws Exception {
+            PropertyDescriptor propertyDescriptor = aPropertyDescriptor("noGettersOrSetters", null, null);
+            assertThrows(IllegalStateException.class, () -> BindingProperty.forPropertyDescriptor(propertyDescriptor));
         }
     }
 

@@ -34,7 +34,6 @@ import com.mattbertolini.spring.web.reactive.bind.resolver.RequestParameterMapRe
 import com.mattbertolini.spring.web.reactive.bind.resolver.RequestParameterRequestPropertyResolver;
 import com.mattbertolini.spring.web.reactive.bind.resolver.RequestPropertyResolver;
 import com.mattbertolini.spring.web.reactive.bind.resolver.SessionParameterRequestPropertyResolver;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.ReactiveAdapterRegistry;
@@ -137,7 +136,7 @@ public class BinderConfiguration implements BeanPostProcessor {
     }
 
     @Override
-    public Object postProcessBeforeInitialization(@NonNull Object bean, @NonNull String beanName) throws BeansException {
+    public Object postProcessBeforeInitialization(@NonNull Object bean, @NonNull String beanName) {
         if (!(bean instanceof RequestMappingHandlerAdapter)) {
             return bean;
         }

@@ -157,12 +157,10 @@ class BeanParameterMethodArgumentResolverTest {
         );
 
         MethodParameter methodParameter = createMethodParameter("anAnnotatedMethod", ABeanClass.class);
-
         when(introspector.getResolversFor(ABeanClass.class)).thenReturn(propertyData);
-        assertThatThrownBy(() -> {
-            Mono<Object> objectMono = resolver.resolveArgument(methodParameter, bindingContext, exchange);
-            objectMono.block();
-        })
+
+        Mono<Object> objectMono = resolver.resolveArgument(methodParameter, bindingContext, exchange);
+        assertThatThrownBy(objectMono::block)
             .isInstanceOf(RuntimeException.class);
     }
 
@@ -232,10 +230,8 @@ class BeanParameterMethodArgumentResolverTest {
         dataBinder.setBindingResult(bindingResult);
         when(bindingContext.createDataBinder(eq(exchange), any(ABeanClass.class), anyString())).thenReturn(dataBinder);
 
-        WebExchangeBindException exception = catchThrowableOfType(() -> {
-            Mono<Object> objectMono = resolver.resolveArgument(methodParameter, bindingContext, exchange);
-            objectMono.block();
-        }, WebExchangeBindException.class);
+        Mono<Object> objectMono = resolver.resolveArgument(methodParameter, bindingContext, exchange);
+        WebExchangeBindException exception = catchThrowableOfType(objectMono::block, WebExchangeBindException.class);
         assertThat(exception.getBindingResult()).isEqualTo(bindingResult);
     }
 

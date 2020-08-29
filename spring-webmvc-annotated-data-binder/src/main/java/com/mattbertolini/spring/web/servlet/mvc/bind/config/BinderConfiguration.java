@@ -34,7 +34,6 @@ import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.RequestParameterMa
 import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.RequestParameterRequestPropertyResolver;
 import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.RequestPropertyResolver;
 import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.SessionParameterRequestPropertyResolver;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.lang.NonNull;
@@ -47,6 +46,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+@SuppressWarnings("UnusedReturnValue")
 public class BinderConfiguration implements BeanPostProcessor {
     private final Set<String> packagesToScan;
     private final PropertyResolverRegistry propertyResolverRegistry;
@@ -90,7 +90,7 @@ public class BinderConfiguration implements BeanPostProcessor {
     }
 
     @Override
-    public Object postProcessBeforeInitialization(@NonNull Object bean, @NonNull String beanName) throws BeansException {
+    public Object postProcessBeforeInitialization(@NonNull Object bean, @NonNull String beanName) {
         if (!(bean instanceof RequestMappingHandlerAdapter)) {
             return bean;
         }

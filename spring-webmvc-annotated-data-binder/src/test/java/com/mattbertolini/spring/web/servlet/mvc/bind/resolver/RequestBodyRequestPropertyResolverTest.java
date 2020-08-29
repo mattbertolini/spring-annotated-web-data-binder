@@ -1,15 +1,16 @@
 package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
 
+import com.mattbertolini.spring.web.bind.PropertyResolutionException;
 import com.mattbertolini.spring.web.bind.annotation.RequestBody;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -19,6 +20,10 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class RequestBodyRequestPropertyResolverTest {
     private RequestBodyRequestPropertyResolver resolver;
@@ -33,18 +38,6 @@ class RequestBodyRequestPropertyResolverTest {
         resolver = new RequestBodyRequestPropertyResolver(converters);
         servletRequest = new MockHttpServletRequest();
         request = new ServletWebRequest(servletRequest);
-    }
-
-    @Test
-    void supportsParameterMethodAlwaysReturnsFalse() throws Exception {
-        MethodParameter methodParameter = bindingProperty("annotated").getMethodParameter();
-        assertThat(resolver.supportsParameter(methodParameter)).isFalse();
-    }
-
-    @Test
-    void supportsReturnTypeMethodAlwaysReturnsFalse() throws Exception {
-        MethodParameter methodParameter = bindingProperty("annotated").getMethodParameter();
-        assertThat(resolver.supportsReturnType(methodParameter)).isFalse();
     }
 
     @Test
@@ -79,6 +72,14 @@ class RequestBodyRequestPropertyResolverTest {
     void returnsNullWhenNoValueFound() throws Exception {
         Object actual = resolver.resolve(bindingProperty("annotated"), request);
         assertThat(actual).isNull();
+    }
+
+    @Test
+    void throwsExceptionWhenDelegateProcessorThrowsException() throws Exception {
+        RequestResponseBodyMethodProcessor processor = mock(RequestResponseBodyMethodProcessor.class);
+        when(processor.resolveArgument(any(), any(), any(), any())).thenThrow(new NullPointerException());
+        RequestBodyRequestPropertyResolver propertyResolver = new RequestBodyRequestPropertyResolver(processor);
+        assertThatThrownBy(() -> propertyResolver.resolve(bindingProperty("annotated"), request)).isInstanceOf(PropertyResolutionException.class);
     }
 
     private BindingProperty bindingProperty(String property) throws IntrospectionException {

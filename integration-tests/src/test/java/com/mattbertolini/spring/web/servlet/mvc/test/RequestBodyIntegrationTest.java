@@ -49,6 +49,37 @@ class RequestBodyIntegrationTest {
             .andExpect(content().string("expectedValue"));
     }
 
+    @Test
+    void hasBindingResult() throws Exception {
+        makeRequest("/bindingResult")
+            .andExpect(status().isOk())
+            .andExpect(content().string("0"));
+    }
+
+    @Test
+    void validationErrorThatThrowsException() throws Exception {
+        mockMvc.perform(post("/validated")
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.TEXT_PLAIN))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void validationErrorThatUsesBindingResult() throws Exception {
+        mockMvc.perform(post("/validatedWithBindingResult")
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.TEXT_PLAIN))
+            .andExpect(status().isOk())
+            .andExpect(content().string("notValid"));
+    }
+
+    @Test
+    void bindsNestedBean() throws Exception {
+        makeRequest("/nested")
+            .andExpect(status().isOk())
+            .andExpect(content().string("expectedValue"));
+    }
+
     private ResultActions makeRequest(String path) throws Exception {
         return mockMvc.perform(post(path)
             .contentType(MediaType.APPLICATION_JSON)

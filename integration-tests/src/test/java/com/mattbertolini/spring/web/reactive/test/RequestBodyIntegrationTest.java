@@ -45,6 +45,37 @@ class RequestBodyIntegrationTest {
             .expectBody(String.class).isEqualTo("expectedValue");
     }
 
+    @Test
+    void hasBindingResult() {
+        makeRequest("/bindingResult")
+            .expectStatus().isOk()
+            .expectBody(String.class).isEqualTo("0");
+    }
+
+    @Test
+    void validationErrorThatThrowsException() {
+        webTestClient.post().uri("/validated")
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.TEXT_PLAIN).exchange()
+            .expectStatus().isBadRequest();
+    }
+
+    @Test
+    void validationErrorThatUsesBindingResult() {
+        webTestClient.post().uri("/validatedWithBindingResult")
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.TEXT_PLAIN).exchange()
+            .expectStatus().isOk()
+            .expectBody(String.class).isEqualTo("notValid");
+    }
+
+    @Test
+    void bindsNestedBean() {
+        makeRequest("/nested")
+            .expectStatus().isOk()
+            .expectBody(String.class).isEqualTo("expectedValue");
+    }
+
     private WebTestClient.ResponseSpec makeRequest(String path) {
         return webTestClient.post()
             .uri(uriBuilder -> uriBuilder.path(path)

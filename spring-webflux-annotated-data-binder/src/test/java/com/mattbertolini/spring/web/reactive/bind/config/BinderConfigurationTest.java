@@ -37,8 +37,7 @@ class BinderConfigurationTest {
     @Test
     void returnsBeanIfNotHandlerAdapter() {
         Object obj = config.postProcessBeforeInitialization(new Object(), "irrelevant");
-        assertThat(obj).isNotNull();
-        assertThat(obj).isInstanceOf(Object.class);
+        assertThat(obj).isNotNull().isInstanceOf(Object.class);
     }
 
     @Test

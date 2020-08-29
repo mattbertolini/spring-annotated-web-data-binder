@@ -16,11 +16,11 @@ import org.springframework.web.reactive.config.EnableWebFlux;
 import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 
 @SpringJUnitWebConfig(classes = {RequestBodyIntegrationTest.Context.class})
-public class RequestBodyIntegrationTest {
+class RequestBodyIntegrationTest {
     private WebTestClient webTestClient;
 
     @BeforeEach
-    public void setUp(WebApplicationContext webApplicationContext) {
+    void setUp(WebApplicationContext webApplicationContext) {
         webTestClient = WebTestClient.bindToApplicationContext(webApplicationContext).build();
     }
 

@@ -68,13 +68,14 @@ class RequestBodyRequestPropertyResolverTest {
     }
 
     @Test
-    void throwsExceptionIfResolveCalledWithNoAnnotation() {
+    void throwsExceptionIfResolveCalledWithNoAnnotation() throws Exception {
         // Unlikely to happen as the library always checks the supports method.
         MockServerHttpRequest request = MockServerHttpRequest.post("/irrelevant")
             .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
+        BindingProperty bindingProperty = bindingProperty("notAnnotated");
         assertThatExceptionOfType(IllegalStateException.class)
-            .isThrownBy(() -> resolver.resolve(bindingProperty("notAnnotated"), exchange));
+            .isThrownBy(() -> resolver.resolve(bindingProperty, exchange));
     }
 
     @Test

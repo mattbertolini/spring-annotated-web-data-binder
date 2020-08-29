@@ -22,14 +22,14 @@ class PropertyResolverRegistryTest {
 
     @Test
     void addsResolversFromSet() {
-        assertThat(registry.getPropertyResolvers().size()).isEqualTo(0);
+        assertThat(registry.getPropertyResolvers().size()).isZero();
         registry.addResolvers(Collections.singleton(new FakeResolver()));
         assertThat(registry.getPropertyResolvers().size()).isEqualTo(1);
     }
 
     @Test
     void addsSingleResolver() {
-        assertThat(registry.getPropertyResolvers().size()).isEqualTo(0);
+        assertThat(registry.getPropertyResolvers().size()).isZero();
         registry.addResolver(new FakeResolver());
         assertThat(registry.getPropertyResolvers().size()).isEqualTo(1);
     }
@@ -38,7 +38,7 @@ class PropertyResolverRegistryTest {
     void addsResolversFromRegistry() {
         PropertyResolverRegistry anotherRegistry = new PropertyResolverRegistry();
         anotherRegistry.addResolver(new FakeResolver());
-        assertThat(registry.getPropertyResolvers().size()).isEqualTo(0);
+        assertThat(registry.getPropertyResolvers().size()).isZero();
         registry.addResolvers(anotherRegistry);
         assertThat(registry.getPropertyResolvers().size()).isEqualTo(1);
     }

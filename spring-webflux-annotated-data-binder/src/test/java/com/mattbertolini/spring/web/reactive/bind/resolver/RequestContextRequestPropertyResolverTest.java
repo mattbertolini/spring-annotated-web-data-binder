@@ -61,8 +61,9 @@ class RequestContextRequestPropertyResolverTest {
     }
 
     @Test
-    void throwsExceptionOnUnknownType() {
-        assertThatThrownBy(() -> resolver.resolve(bindingProperty("notKnown"), MockServerWebExchange.from(MockServerHttpRequest.get("/irrelevant").build())))
+    void throwsExceptionOnUnknownType() throws Exception {
+        BindingProperty bindingProperty = bindingProperty("notKnown");
+        assertThatThrownBy(() -> resolver.resolve(bindingProperty, MockServerWebExchange.from(MockServerHttpRequest.get("/irrelevant").build())))
             .isInstanceOf(UnsupportedOperationException.class);
     }
 

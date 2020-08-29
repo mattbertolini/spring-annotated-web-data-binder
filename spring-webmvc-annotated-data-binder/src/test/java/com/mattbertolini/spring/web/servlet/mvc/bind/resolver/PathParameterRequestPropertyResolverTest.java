@@ -64,10 +64,11 @@ class PathParameterRequestPropertyResolverTest {
     }
 
     @Test
-    void throwsExceptionIfResolveCalledWithNoAnnotation() {
+    void throwsExceptionIfResolveCalledWithNoAnnotation() throws Exception {
         // Unlikely to happen as the library always checks the supports method.
+        BindingProperty bindingProperty = bindingProperty("notAnnotated");
         assertThatExceptionOfType(IllegalStateException.class)
-            .isThrownBy(() -> resolver.resolve(bindingProperty("notAnnotated"), request));
+            .isThrownBy(() -> resolver.resolve(bindingProperty, request));
     }
 
     @Test

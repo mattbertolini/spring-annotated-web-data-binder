@@ -97,8 +97,8 @@ public class BinderConfiguration implements BeanPostProcessor {
 
         RequestMappingHandlerAdapter adapter = (RequestMappingHandlerAdapter) bean;
 
-        PropertyResolverRegistry propertyResolverRegistry = createPropertyResolverRegistry(adapter);
-        AnnotatedRequestBeanIntrospector introspector = createIntrospector(propertyResolverRegistry);
+        PropertyResolverRegistry resolverRegistry = createPropertyResolverRegistry(adapter);
+        AnnotatedRequestBeanIntrospector introspector = createIntrospector(resolverRegistry);
         BeanParameterMethodArgumentResolver resolver = createResolver(introspector);
 
         addCustomResolverToHandlerAdapter(adapter, resolver);

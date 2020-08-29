@@ -150,8 +150,8 @@ public class BinderConfiguration implements BeanPostProcessor {
                 throw new BeanInitializationException("Unable to initialize BeanParameterMethodArgumentResolver. ReactiveAdapterRegistry is null.");
             }
 
-            PropertyResolverRegistry propertyResolverRegistry = createPropertyResolverRegistry(adapter, reactiveAdapterRegistry);
-            AnnotatedRequestBeanIntrospector introspector = createIntrospector(propertyResolverRegistry);
+            PropertyResolverRegistry resolverRegistry = createPropertyResolverRegistry(adapter, reactiveAdapterRegistry);
+            AnnotatedRequestBeanIntrospector introspector = createIntrospector(resolverRegistry);
             BeanParameterMethodArgumentResolver resolver = createResolver(introspector, reactiveAdapterRegistry);
 
             resolverConfigurer.addCustomResolver(resolver);

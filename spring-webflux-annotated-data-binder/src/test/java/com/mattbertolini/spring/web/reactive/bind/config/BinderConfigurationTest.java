@@ -7,6 +7,7 @@ import com.mattbertolini.spring.web.reactive.bind.resolver.RequestPropertyResolv
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ReactiveAdapterRegistry;
+import org.springframework.http.codec.FormHttpMessageReader;
 import org.springframework.web.reactive.result.method.annotation.ArgumentResolverConfigurer;
 import org.springframework.web.reactive.result.method.annotation.RequestMappingHandlerAdapter;
 
@@ -29,6 +30,7 @@ class BinderConfigurationTest {
     void setUp() {
         config = new BinderConfiguration();
         adapter = mock(RequestMappingHandlerAdapter.class);
+        when(adapter.getMessageReaders()).thenReturn(Collections.singletonList(new FormHttpMessageReader()));
         when(adapter.getReactiveAdapterRegistry()).thenReturn(new ReactiveAdapterRegistry());
     }
 

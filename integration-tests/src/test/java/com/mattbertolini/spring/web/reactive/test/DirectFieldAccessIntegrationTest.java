@@ -34,6 +34,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.reactive.config.WebFluxConfigurationSupport;
 
 import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
+import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 
 @SpringJUnitWebConfig(classes = {DirectFieldAccessIntegrationTest.Context.class})
 class DirectFieldAccessIntegrationTest {
@@ -104,6 +105,18 @@ class DirectFieldAccessIntegrationTest {
         webTestClient.mutateWith(SessionMutator.session()
             .attribute("session_parameter", "expectedValue"))
             .get().uri("/sessionParameter")
+            .accept(MediaType.TEXT_PLAIN)
+            .exchange()
+            .expectStatus().isOk()
+            .expectBody(String.class).isEqualTo("expectedValue");
+    }
+
+    @Test
+    void requestBody() {
+        webTestClient.post()
+            .uri("/requestBody")
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(fromValue("{\"json_property\":  \"expectedValue\"}"))
             .accept(MediaType.TEXT_PLAIN)
             .exchange()
             .expectStatus().isOk()

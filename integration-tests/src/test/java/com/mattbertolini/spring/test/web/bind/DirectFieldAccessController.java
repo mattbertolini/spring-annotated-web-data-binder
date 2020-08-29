@@ -54,4 +54,9 @@ public class DirectFieldAccessController {
     public String sessionParameter(@BeanParameter DirectFieldAccessBean directFieldAccessBean) {
         return directFieldAccessBean.getSessionParameter();
     }
+
+    @PostMapping(value = "/requestBody", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    public String requestBody(@BeanParameter DirectFieldAccessBean.RequestBodyBean directFieldAccessBean) {
+        return directFieldAccessBean.getRequestBody().getProperty();
+    }
 }

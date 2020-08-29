@@ -28,6 +28,7 @@ import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.HeaderParameterMap
 import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.HeaderParameterRequestPropertyResolver;
 import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.PathParameterMapRequestPropertyResolver;
 import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.PathParameterRequestPropertyResolver;
+import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.RequestBodyRequestPropertyResolver;
 import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.RequestContextRequestPropertyResolver;
 import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.RequestParameterMapRequestPropertyResolver;
 import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.RequestParameterRequestPropertyResolver;
@@ -36,6 +37,7 @@ import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.SessionParameterRe
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.lang.NonNull;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
@@ -88,14 +90,14 @@ public class BinderConfiguration implements BeanPostProcessor {
     }
 
     @Override
-    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+    public Object postProcessBeforeInitialization(@NonNull Object bean, @NonNull String beanName) throws BeansException {
         if (!(bean instanceof RequestMappingHandlerAdapter)) {
             return bean;
         }
 
         RequestMappingHandlerAdapter adapter = (RequestMappingHandlerAdapter) bean;
 
-        PropertyResolverRegistry propertyResolverRegistry = createPropertyResolverRegistry();
+        PropertyResolverRegistry propertyResolverRegistry = createPropertyResolverRegistry(adapter);
         AnnotatedRequestBeanIntrospector introspector = createIntrospector(propertyResolverRegistry);
         BeanParameterMethodArgumentResolver resolver = createResolver(introspector);
 
@@ -104,7 +106,7 @@ public class BinderConfiguration implements BeanPostProcessor {
         return adapter;
     }
 
-    private PropertyResolverRegistry createPropertyResolverRegistry() {
+    private PropertyResolverRegistry createPropertyResolverRegistry(RequestMappingHandlerAdapter adapter) {
         PropertyResolverRegistry registry = new PropertyResolverRegistry();
 
         registry.addResolver(new RequestParameterRequestPropertyResolver());
@@ -118,6 +120,7 @@ public class BinderConfiguration implements BeanPostProcessor {
         registry.addResolver(new HeaderParameterMapRequestPropertyResolver());
         registry.addResolver(new SessionParameterRequestPropertyResolver());
         registry.addResolver(new RequestContextRequestPropertyResolver());
+        registry.addResolver(new RequestBodyRequestPropertyResolver(adapter.getMessageConverters()));
         
         registry.addResolvers(propertyResolverRegistry);
 

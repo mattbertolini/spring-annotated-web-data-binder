@@ -28,6 +28,7 @@ import com.mattbertolini.spring.web.reactive.bind.resolver.HeaderParameterMapReq
 import com.mattbertolini.spring.web.reactive.bind.resolver.HeaderParameterRequestPropertyResolver;
 import com.mattbertolini.spring.web.reactive.bind.resolver.PathParameterMapRequestPropertyResolver;
 import com.mattbertolini.spring.web.reactive.bind.resolver.PathParameterRequestPropertyResolver;
+import com.mattbertolini.spring.web.reactive.bind.resolver.RequestBodyRequestPropertyResolver;
 import com.mattbertolini.spring.web.reactive.bind.resolver.RequestContextRequestPropertyResolver;
 import com.mattbertolini.spring.web.reactive.bind.resolver.RequestParameterMapRequestPropertyResolver;
 import com.mattbertolini.spring.web.reactive.bind.resolver.RequestParameterRequestPropertyResolver;
@@ -149,7 +150,7 @@ public class BinderConfiguration implements BeanPostProcessor {
                 throw new BeanInitializationException("Unable to initialize BeanParameterMethodArgumentResolver. ReactiveAdapterRegistry is null.");
             }
 
-            PropertyResolverRegistry propertyResolverRegistry = createPropertyResolverRegistry();
+            PropertyResolverRegistry propertyResolverRegistry = createPropertyResolverRegistry(adapter, reactiveAdapterRegistry);
             AnnotatedRequestBeanIntrospector introspector = createIntrospector(propertyResolverRegistry);
             BeanParameterMethodArgumentResolver resolver = createResolver(introspector, reactiveAdapterRegistry);
 
@@ -158,7 +159,7 @@ public class BinderConfiguration implements BeanPostProcessor {
         return adapter;
     }
     
-    private PropertyResolverRegistry createPropertyResolverRegistry() {
+    private PropertyResolverRegistry createPropertyResolverRegistry(RequestMappingHandlerAdapter adapter, ReactiveAdapterRegistry reactiveAdapterRegistry) {
         PropertyResolverRegistry registry = new PropertyResolverRegistry();
 
         registry.addResolver(new RequestParameterRequestPropertyResolver());
@@ -172,6 +173,7 @@ public class BinderConfiguration implements BeanPostProcessor {
         registry.addResolver(new HeaderParameterMapRequestPropertyResolver());
         registry.addResolver(new SessionParameterRequestPropertyResolver());
         registry.addResolver(new RequestContextRequestPropertyResolver());
+        registry.addResolver(new RequestBodyRequestPropertyResolver(adapter.getMessageReaders(), reactiveAdapterRegistry));
 
         registry.addResolvers(propertyResolverRegistry);
 

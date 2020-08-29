@@ -105,6 +105,16 @@ class DirectFieldAccessIntegrationTest {
             .andExpect(content().string("expectedValue"));
     }
 
+    @Test
+    void requestBody() throws Exception {
+        mockMvc.perform(post("/requestBody")
+            .accept(MediaType.TEXT_PLAIN)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{\"json_property\":  \"expectedValue\"}"))
+            .andExpect(status().isOk())
+            .andExpect(content().string("expectedValue"));
+    }
+
     @Configuration
     static class Context extends WebMvcConfigurationSupport {
 

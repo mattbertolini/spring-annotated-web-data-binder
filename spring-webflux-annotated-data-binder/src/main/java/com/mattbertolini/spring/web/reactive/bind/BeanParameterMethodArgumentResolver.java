@@ -59,6 +59,7 @@ public class BeanParameterMethodArgumentResolver extends ModelAttributeMethodArg
     @Override
     @NonNull
     protected Mono<Void> bindRequestParameters(WebExchangeDataBinder binder, @NonNull ServerWebExchange exchange) {
+        Assert.state(binder != null, "A WebExchangeDataBinder must not be null");
         Assert.state(binder.getTarget() != null, "WebExchangeDataBinder must have a target object");
         List<ResolvedPropertyData> propertyData = introspector.getResolversFor(binder.getTarget().getClass());
         return getValuesToBind(propertyData, exchange)

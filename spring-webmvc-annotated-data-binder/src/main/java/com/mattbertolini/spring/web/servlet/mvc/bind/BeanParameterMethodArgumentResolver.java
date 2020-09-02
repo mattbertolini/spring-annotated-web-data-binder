@@ -53,6 +53,7 @@ public class BeanParameterMethodArgumentResolver extends ModelAttributeMethodPro
 
     @Override
     protected void bindRequestParameters(WebDataBinder binder, @NonNull NativeWebRequest request) {
+        Assert.state(binder != null, "A WebDataBinder must not be null");
         Assert.state(binder.getTarget() != null, "WebDataBinder must have a target object");
         PropertyValues propertyValues = makePropertyValues(binder.getTarget().getClass(), request);
         binder.bind(propertyValues);

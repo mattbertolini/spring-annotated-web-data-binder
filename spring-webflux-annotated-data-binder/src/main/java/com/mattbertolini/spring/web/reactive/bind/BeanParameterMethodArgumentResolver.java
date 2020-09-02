@@ -33,6 +33,8 @@ import org.springframework.web.reactive.result.method.annotation.ModelAttributeM
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
+import reactor.util.function.Tuples;
 
 import java.util.List;
 import java.util.Map;
@@ -67,13 +69,12 @@ public class BeanParameterMethodArgumentResolver extends ModelAttributeMethodArg
 
     @NonNull
     private Mono<Map<String, Object>> getValuesToBind(@NonNull List<ResolvedPropertyData> propertyData, @NonNull ServerWebExchange exchange) {
-        return Flux.fromIterable(propertyData).collectMap(ResolvedPropertyData::getPropertyName, data -> {
+        return Flux.fromIterable(propertyData).flatMap(data -> {
             BindingProperty bindingProperty = data.getBindingProperty();
             RequestPropertyResolver resolver = (RequestPropertyResolver) data.getResolver();
-            // TODO: Not sure how to do this without the block. I would love some suggestions.
-            //noinspection ReactiveStreamsNullableInLambdaInTransform
-            return resolver.resolve(bindingProperty, exchange).toProcessor().block();
-        }).onErrorMap(e -> new RequestPropertyBindingException("Unable to resolve property. " + e.getMessage(), e))
+            return resolver.resolve(bindingProperty, exchange).map(resolvedValue -> Tuples.of(data.getPropertyName(), resolvedValue));
+        }).collectMap(Tuple2::getT1, Tuple2::getT2)
+            .onErrorMap(e -> new RequestPropertyBindingException("Unable to resolve property. " + e.getMessage(), e))
             .doOnSuccess(valuesMap -> valuesMap.values().removeIf(Objects::isNull));
     }
 }

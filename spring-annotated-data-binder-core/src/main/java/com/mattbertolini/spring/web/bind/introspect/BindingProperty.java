@@ -83,7 +83,7 @@ public final class BindingProperty {
     }
 
     /**
-     * This method is more or less the same as found in {@link Property} but those are not exposed publcally so I
+     * This method is more or less the same as found in {@link Property} but those are not exposed publicly so I
      * needed to replicate it.
      */
     @NonNull

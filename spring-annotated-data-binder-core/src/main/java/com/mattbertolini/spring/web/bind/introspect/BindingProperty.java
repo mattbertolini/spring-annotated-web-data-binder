@@ -70,7 +70,7 @@ public final class BindingProperty {
      * @return A new BindingProperty object.
      */
     @NonNull
-    public static BindingProperty forPropertyDescriptor(PropertyDescriptor propertyDescriptor) {
+    public static BindingProperty forPropertyDescriptor(@NonNull PropertyDescriptor propertyDescriptor) {
         Property property = new Property(
             propertyDescriptor.getPropertyType(),
             propertyDescriptor.getReadMethod(),
@@ -86,7 +86,8 @@ public final class BindingProperty {
      * This method is more or less the same as found in {@link Property} but those are not exposed publcally so I
      * needed to replicate it.
      */
-    private static MethodParameter resolveMethodParameter(Property property) {
+    @NonNull
+    private static MethodParameter resolveMethodParameter(@NonNull Property property) {
         MethodParameter readMethodParameter = resolveReadMethodParameter(property);
         MethodParameter writeMethodParameter = resolveWriteMethodParameter(property);
         if (writeMethodParameter == null) {
@@ -106,7 +107,7 @@ public final class BindingProperty {
     }
 
     @Nullable
-    private static MethodParameter resolveReadMethodParameter(Property property) {
+    private static MethodParameter resolveReadMethodParameter(@NonNull Property property) {
         if (property.getReadMethod() == null) {
             return null;
         }
@@ -114,7 +115,7 @@ public final class BindingProperty {
     }
 
     @Nullable
-    private static MethodParameter resolveWriteMethodParameter(Property property) {
+    private static MethodParameter resolveWriteMethodParameter(@NonNull Property property) {
         if (property.getWriteMethod() == null) {
             return null;
         }

@@ -23,7 +23,7 @@ subprojects {
     apply plugin: 'org.sonarqube'
 
     group 'com.mattbertolini'
-    version '0.2.0-SNAPSHOT'
+    version '0.2.0'
     
     sourceCompatibility = 1.8
 

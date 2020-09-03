@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 0.2.0
-In progress
+Released 2020-09-02
 
 - Add support for binding request payloads using the `@RequestBody` annotation.
 

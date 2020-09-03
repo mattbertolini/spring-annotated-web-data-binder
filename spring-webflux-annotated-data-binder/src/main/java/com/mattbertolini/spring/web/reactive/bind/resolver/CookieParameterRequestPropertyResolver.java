@@ -17,7 +17,7 @@
 package com.mattbertolini.spring.web.reactive.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.CookieParameter;
-import org.springframework.core.convert.TypeDescriptor;
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.springframework.http.HttpCookie;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
@@ -27,18 +27,18 @@ import reactor.core.publisher.Mono;
 
 public class CookieParameterRequestPropertyResolver implements RequestPropertyResolver {
     @Override
-    public boolean supports(@NonNull TypeDescriptor typeDescriptor) {
-        return typeDescriptor.hasAnnotation(CookieParameter.class);
+    public boolean supports(@NonNull BindingProperty bindingProperty) {
+        return bindingProperty.hasAnnotation(CookieParameter.class);
     }
 
     @NonNull
     @Override
-    public Mono<Object> resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull ServerWebExchange exchange) {
+    public Mono<Object> resolve(@NonNull BindingProperty bindingProperty, @NonNull ServerWebExchange exchange) {
         MultiValueMap<String, HttpCookie> cookies = exchange.getRequest().getCookies();
-        CookieParameter annotation = typeDescriptor.getAnnotation(CookieParameter.class);
+        CookieParameter annotation = bindingProperty.getAnnotation(CookieParameter.class);
         Assert.state(annotation != null, "No CookieParameter annotation found on type");
         HttpCookie cookie = cookies.getFirst(annotation.value());
-        if (HttpCookie.class.isAssignableFrom(typeDescriptor.getType())) {
+        if (HttpCookie.class.isAssignableFrom(bindingProperty.getType())) {
             return Mono.justOrEmpty(cookie);
         }
         return cookie != null ? Mono.justOrEmpty(cookie.getValue()) : Mono.empty();

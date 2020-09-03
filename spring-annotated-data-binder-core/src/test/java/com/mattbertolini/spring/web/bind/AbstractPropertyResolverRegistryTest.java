@@ -16,11 +16,13 @@
 
 package com.mattbertolini.spring.web.bind;
 
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import com.mattbertolini.spring.web.bind.resolver.RequestPropertyResolverBase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.convert.TypeDescriptor;
 
+import java.beans.PropertyDescriptor;
 import java.util.Collections;
 import java.util.Set;
 
@@ -38,18 +40,18 @@ class AbstractPropertyResolverRegistryTest {
     }
 
     @Test
-    void findsResolvers() {
+    void findsResolvers() throws Exception {
         TestingResolver resolverOne = mock(TestingResolver.class);
         TestingResolver resolverTwo = mock(TestingResolver.class);
         TestingResolver resolverThree = mock(TestingResolver.class);
 
-        when(resolverTwo.supports(any(TypeDescriptor.class))).thenReturn(true);
+        when(resolverTwo.supports(any(BindingProperty.class))).thenReturn(true);
 
         registry.addResolver(resolverOne);
         registry.addResolver(resolverTwo);
         registry.addResolver(resolverThree);
 
-        TestingResolver actual = registry.findResolverFor(TypeDescriptor.valueOf(String.class));
+        TestingResolver actual = registry.findResolverFor(BindingProperty.forPropertyDescriptor(new PropertyDescriptor("property", TestingClass.class)));
         assertThat(actual).isEqualTo(resolverTwo);
     }
 
@@ -96,4 +98,17 @@ class AbstractPropertyResolverRegistryTest {
 
     private interface TestingResolver extends RequestPropertyResolverBase<Object, Object> {}
     private static class TestingRegistry extends AbstractPropertyResolverRegistry<TestingResolver> {}
+
+    @SuppressWarnings("unused")
+    private static class TestingClass {
+        private String property;
+
+        public String getProperty() {
+            return property;
+        }
+
+        public void setProperty(String property) {
+            this.property = property;
+        }
+    }
 }

@@ -17,15 +17,15 @@
 package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.PathParameter;
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.core.ResolvableType;
-import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.servlet.HandlerMapping;
 
-import java.lang.annotation.Annotation;
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,39 +44,39 @@ class PathParameterMapRequestPropertyResolverTest {
     }
 
     @Test
-    void supportsReturnsTrueOnPresenceOfAnnotation() {
-        boolean result = resolver.supports(typeDescriptor(Map.class, new StubbingAnnotation(null)));
+    void supportsReturnsTrueOnPresenceOfAnnotation() throws Exception {
+        boolean result = resolver.supports(bindingProperty("annotated"));
         assertThat(result).isTrue();
     }
 
     @Test
-    void supportsReturnsFalseOnMissingAnnotation() {
-        boolean result = resolver.supports(typeDescriptor(Map.class));
+    void supportsReturnsFalseOnMissingAnnotation() throws Exception {
+        boolean result = resolver.supports(bindingProperty("notAnnotated"));
         assertThat(result).isFalse();
     }
 
     @Test
-    void supportsReturnsFalseWhenAnnotationValueIsPresent() {
-        boolean result = resolver.supports(typeDescriptor(Map.class, new StubbingAnnotation("name")));
+    void supportsReturnsFalseWhenAnnotationValueIsPresent() throws Exception {
+        boolean result = resolver.supports(bindingProperty("withValue"));
         assertThat(result).isFalse();
     }
 
     @Test
-    void supportsReturnsFalseWhenTypeIsNotMap() {
-        boolean result = resolver.supports(typeDescriptor(String.class, new StubbingAnnotation(null)));
+    void supportsReturnsFalseWhenTypeIsNotMap() throws Exception {
+        boolean result = resolver.supports(bindingProperty("notAMap"));
         assertThat(result).isFalse();
     }
 
     @SuppressWarnings("unchecked")
     @Test
-    void returnsMapPathParameter() {
+    void returnsMapPathParameter() throws Exception {
         Map<String, String> pathVarsMap = new HashMap<>();
         pathVarsMap.put("path_one", "one");
         pathVarsMap.put("path_two", "two");
         pathVarsMap.put("path_three", "three");
         servletRequest.setAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE, pathVarsMap);
 
-        Object actual = resolver.resolve(typeDescriptor(Map.class, new StubbingAnnotation(null)), request);
+        Object actual = resolver.resolve(bindingProperty("annotated"), request);
         assertThat(actual).isInstanceOf(Map.class);
         Map<String, String> map = (Map<String, String>) actual;
         assertThat(map)
@@ -87,33 +87,60 @@ class PathParameterMapRequestPropertyResolverTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    void returnsEmptyMapWhenNoPathVariables() {
-        Object actual = resolver.resolve(typeDescriptor(Map.class, new StubbingAnnotation(null)), request);
+    void returnsEmptyMapWhenNoPathVariables() throws Exception {
+        Object actual = resolver.resolve(bindingProperty("annotated"), request);
         assertThat(actual).isInstanceOf(Map.class);
         Map<String, String> map = (Map<String, String>) actual;
         assertThat(map).isEmpty();
     }
 
-    private TypeDescriptor typeDescriptor(Class<?> clazz, Annotation... annotations) {
-        return new TypeDescriptor(ResolvableType.forClass(clazz), null, annotations);
+    private BindingProperty bindingProperty(String property) throws IntrospectionException {
+        return BindingProperty.forPropertyDescriptor(new PropertyDescriptor(property, TestingBean.class));
     }
 
-    @SuppressWarnings("ClassExplicitlyAnnotation")
-    private static class StubbingAnnotation implements PathParameter {
-        private final String name;
+    @SuppressWarnings("unused")
+    private static class TestingBean {
+        @PathParameter
+        private Map<String, String> annotated;
 
-        private StubbingAnnotation(String name) {
-            this.name = name == null ? "" : name;
+        private Map<String, String> notAnnotated;
+
+        @PathParameter("irrelevant")
+        private String withValue;
+
+        @PathParameter
+        private String notAMap;
+
+        public Map<String, String> getAnnotated() {
+            return annotated;
         }
 
-        @Override
-        public String value() {
-            return name;
+        public void setAnnotated(Map<String, String> annotated) {
+            this.annotated = annotated;
         }
 
-        @Override
-        public Class<? extends Annotation> annotationType() {
-            return PathParameter.class;
+        public Map<String, String> getNotAnnotated() {
+            return notAnnotated;
+        }
+
+        public void setNotAnnotated(Map<String, String> notAnnotated) {
+            this.notAnnotated = notAnnotated;
+        }
+
+        public String getWithValue() {
+            return withValue;
+        }
+
+        public void setWithValue(String withValue) {
+            this.withValue = withValue;
+        }
+
+        public String getNotAMap() {
+            return notAMap;
+        }
+
+        public void setNotAMap(String notAMap) {
+            this.notAMap = notAMap;
         }
     }
 }

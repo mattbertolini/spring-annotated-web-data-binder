@@ -17,7 +17,7 @@
 package com.mattbertolini.spring.web.reactive.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.FormParameter;
-import org.springframework.core.convert.TypeDescriptor;
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.springframework.lang.NonNull;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
@@ -29,16 +29,16 @@ import java.util.function.Function;
 
 public class FormParameterMapRequestPropertyResolver implements RequestPropertyResolver {
     @Override
-    public boolean supports(@NonNull TypeDescriptor typeDescriptor) {
-        FormParameter annotation = typeDescriptor.getAnnotation(FormParameter.class);
+    public boolean supports(@NonNull BindingProperty bindingProperty) {
+        FormParameter annotation = bindingProperty.getAnnotation(FormParameter.class);
         return annotation != null && !StringUtils.hasText(annotation.value()) &&
-            Map.class.isAssignableFrom(typeDescriptor.getType());
+            Map.class.isAssignableFrom(bindingProperty.getType());
     }
 
     @Override
     @NonNull
-    public Mono<Object> resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull ServerWebExchange exchange) {
-        if (MultiValueMap.class.isAssignableFrom(typeDescriptor.getType())) {
+    public Mono<Object> resolve(@NonNull BindingProperty bindingProperty, @NonNull ServerWebExchange exchange) {
+        if (MultiValueMap.class.isAssignableFrom(bindingProperty.getType())) {
             return exchange.getFormData().map(Function.identity());
         }
         return exchange.getFormData().map(MultiValueMap::toSingleValueMap);

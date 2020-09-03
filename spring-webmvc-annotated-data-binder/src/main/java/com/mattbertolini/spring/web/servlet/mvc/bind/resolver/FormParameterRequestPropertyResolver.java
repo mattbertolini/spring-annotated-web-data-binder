@@ -17,22 +17,22 @@
 package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.FormParameter;
-import org.springframework.core.convert.TypeDescriptor;
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 public class FormParameterRequestPropertyResolver extends RequestParameterRequestPropertyResolver {
     @Override
-    public boolean supports(@NonNull TypeDescriptor typeDescriptor) {
-        FormParameter annotation = typeDescriptor.getAnnotation(FormParameter.class);
+    public boolean supports(@NonNull BindingProperty bindingProperty) {
+        FormParameter annotation = bindingProperty.getAnnotation(FormParameter.class);
         return annotation != null && StringUtils.hasText(annotation.value());
     }
     
     @Override
     @NonNull
-    protected String getName(@NonNull TypeDescriptor typeDescriptor) {
-        FormParameter annotation = typeDescriptor.getAnnotation(FormParameter.class);
+    protected String getName(@NonNull BindingProperty bindingProperty) {
+        FormParameter annotation = bindingProperty.getAnnotation(FormParameter.class);
         Assert.state(annotation != null, "No FormParameter annotation found on type");
         return annotation.value();
     }

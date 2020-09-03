@@ -42,6 +42,10 @@ public class CustomRequestBean {
     @RequestContext    
     private ZoneId timeZone;
 
+    // Request body parsed by Spring HTTP MessageReaders
+    @RequestBody
+    private JsonBody requestBody;
+
     // A nested Java bean with additional annotated properties
     @BeanParameter
     private NestedBean nestedBean;

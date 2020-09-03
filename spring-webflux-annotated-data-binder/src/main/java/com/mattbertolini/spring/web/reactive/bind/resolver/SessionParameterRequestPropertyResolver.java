@@ -17,7 +17,7 @@
 package com.mattbertolini.spring.web.reactive.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.SessionParameter;
-import org.springframework.core.convert.TypeDescriptor;
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 import org.springframework.web.server.ServerWebExchange;
@@ -25,14 +25,14 @@ import reactor.core.publisher.Mono;
 
 public class SessionParameterRequestPropertyResolver implements RequestPropertyResolver {
     @Override
-    public boolean supports(@NonNull TypeDescriptor typeDescriptor) {
-        return typeDescriptor.hasAnnotation(SessionParameter.class);
+    public boolean supports(@NonNull BindingProperty bindingProperty) {
+        return bindingProperty.hasAnnotation(SessionParameter.class);
     }
 
     @NonNull
     @Override
-    public Mono<Object> resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull ServerWebExchange exchange) {
-        SessionParameter annotation = typeDescriptor.getAnnotation(SessionParameter.class);
+    public Mono<Object> resolve(@NonNull BindingProperty bindingProperty, @NonNull ServerWebExchange exchange) {
+        SessionParameter annotation = bindingProperty.getAnnotation(SessionParameter.class);
         Assert.state(annotation != null, "No SessionParameter annotation found on type");
         //noinspection ReactiveStreamsNullableInLambdaInTransform
         return exchange.getSession()

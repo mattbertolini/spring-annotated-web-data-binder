@@ -17,7 +17,7 @@
 package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.SessionParameter;
-import org.springframework.core.convert.TypeDescriptor;
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -25,13 +25,13 @@ import org.springframework.web.context.request.RequestAttributes;
 
 public class SessionParameterRequestPropertyResolver implements RequestPropertyResolver {
     @Override
-    public boolean supports(@NonNull TypeDescriptor typeDescriptor) {
-        return typeDescriptor.hasAnnotation(SessionParameter.class);
+    public boolean supports(@NonNull BindingProperty bindingProperty) {
+        return bindingProperty.hasAnnotation(SessionParameter.class);
     }
 
     @Override
-    public Object resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull NativeWebRequest request) {
-        SessionParameter annotation = typeDescriptor.getAnnotation(SessionParameter.class);
+    public Object resolve(@NonNull BindingProperty bindingProperty, @NonNull NativeWebRequest request) {
+        SessionParameter annotation = bindingProperty.getAnnotation(SessionParameter.class);
         Assert.state(annotation != null, "No SessionParameter annotation found on type");
         return request.getAttribute(annotation.value(), RequestAttributes.SCOPE_SESSION);
     }

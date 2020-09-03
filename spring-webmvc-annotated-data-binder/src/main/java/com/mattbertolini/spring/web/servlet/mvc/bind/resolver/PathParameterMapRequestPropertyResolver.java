@@ -17,7 +17,7 @@
 package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.PathParameter;
-import org.springframework.core.convert.TypeDescriptor;
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.springframework.lang.NonNull;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -30,15 +30,15 @@ import java.util.Map;
 
 public class PathParameterMapRequestPropertyResolver implements RequestPropertyResolver {
     @Override
-    public boolean supports(@NonNull TypeDescriptor typeDescriptor) {
-        PathParameter annotation = typeDescriptor.getAnnotation(PathParameter.class);
+    public boolean supports(@NonNull BindingProperty bindingProperty) {
+        PathParameter annotation = bindingProperty.getAnnotation(PathParameter.class);
         return annotation != null && !StringUtils.hasText(annotation.value()) &&
-            Map.class.isAssignableFrom(typeDescriptor.getType());
+            Map.class.isAssignableFrom(bindingProperty.getType());
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public Object resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull NativeWebRequest request) {
+    public Object resolve(@NonNull BindingProperty bindingProperty, @NonNull NativeWebRequest request) {
         Map<String, String> uriTemplateVariables = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE, RequestAttributes.SCOPE_REQUEST);
         if (uriTemplateVariables == null) {
             return Collections.emptyMap();

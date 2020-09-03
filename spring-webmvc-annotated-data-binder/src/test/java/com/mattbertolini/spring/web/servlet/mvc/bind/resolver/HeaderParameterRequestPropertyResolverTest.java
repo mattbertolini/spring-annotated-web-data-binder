@@ -17,14 +17,14 @@
 package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.HeaderParameter;
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.core.ResolvableType;
-import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.ServletWebRequest;
 
-import java.lang.annotation.Annotation;
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,77 +43,104 @@ class HeaderParameterRequestPropertyResolverTest {
     }
 
     @Test
-    void supportsReturnsTrueOnPresenceOfAnnotation() {
-        boolean result = resolver.supports(typeDescriptor(String.class, new StubbingAnnotation("name")));
+    void supportsReturnsTrueOnPresenceOfAnnotation() throws Exception {
+        boolean result = resolver.supports(bindingProperty("annotated"));
         assertThat(result).isTrue();
     }
 
     @Test
-    void supportsReturnsFalseOnMissingAnnotation() {
-        boolean result = resolver.supports(typeDescriptor(String.class));
+    void supportsReturnsFalseOnMissingAnnotation() throws Exception {
+        boolean result = resolver.supports(bindingProperty("notAnnotated"));
         assertThat(result).isFalse();
     }
 
     @Test
-    void supportsReturnsFalseOnMissingAnnotationValue() {
-        boolean result = resolver.supports(typeDescriptor(String.class, new StubbingAnnotation(null)));
+    void supportsReturnsFalseOnMissingAnnotationValue() throws Exception {
+        boolean result = resolver.supports(bindingProperty("missingValue"));
         assertThat(result).isFalse();
     }
 
     @Test
-    void throwsExceptionIfResolveCalledWithNoAnnotation() {
+    void throwsExceptionIfResolveCalledWithNoAnnotation() throws Exception {
         // Unlikely to happen as the library always checks the supports method.
+        BindingProperty bindingProperty = bindingProperty("notAnnotated");
         assertThatExceptionOfType(IllegalStateException.class)
-            .isThrownBy(() -> resolver.resolve(typeDescriptor(String.class), request));
+            .isThrownBy(() -> resolver.resolve(bindingProperty, request));
     }
 
     @Test
-    void returnsValueFromHeader() {
+    void returnsValueFromHeader() throws Exception {
         String[] expected = {"headerValue"};
         String headerName = "X-HeaderName";
         servletRequest.addHeader(headerName, expected);
-        Object actual = resolver.resolve(typeDescriptor(String.class, new StubbingAnnotation(headerName)), request);
+        Object actual = resolver.resolve(bindingProperty("annotated"), request);
         assertThat(actual).isEqualTo(expected);
     }
 
     @Test
-    void returnsNullWhenNoValueFound() {
-        Object actual = resolver.resolve(typeDescriptor(Integer.class, new StubbingAnnotation("X-NotFound")), request);
+    void returnsNullWhenNoValueFound() throws Exception {
+        Object actual = resolver.resolve(bindingProperty("annotated"), request);
         assertThat(actual).isNull();
     }
 
     @Test
-    void returnsMultipleValues() {
+    void returnsMultipleValues() throws Exception {
         String[] expected = {"one", "two", "three"};
         String headerName = "X-Multiple";
         servletRequest.addHeader(headerName, "one");
         servletRequest.addHeader(headerName, "two");
         servletRequest.addHeader(headerName, "three");
-        Object actual = resolver.resolve(typeDescriptor(List.class, new StubbingAnnotation(headerName)), request);
+        Object actual = resolver.resolve(bindingProperty("multipleValues"), request);
         assertThat(actual).isEqualTo(expected);
     }
 
-    private TypeDescriptor typeDescriptor(Class<?> clazz, Annotation... annotations) {
-        return new TypeDescriptor(ResolvableType.forClass(clazz), null, annotations);
+    private BindingProperty bindingProperty(String property) throws IntrospectionException {
+        return BindingProperty.forPropertyDescriptor(new PropertyDescriptor(property, TestingBean.class));
     }
 
-    @SuppressWarnings("ClassExplicitlyAnnotation")
-    private static class StubbingAnnotation implements HeaderParameter {
+    @SuppressWarnings("unused")
+    private static class TestingBean {
+        @HeaderParameter("X-HeaderName")
+        private String annotated;
 
-        private final String value;
+        private String notAnnotated;
 
-        private StubbingAnnotation(String value) {
-            this.value = value == null ? "" : value;
+        @HeaderParameter
+        private String missingValue;
+
+        @HeaderParameter("X-Multiple")
+        private List<String> multipleValues;
+
+        public String getAnnotated() {
+            return annotated;
         }
 
-        @Override
-        public String value() {
-            return value;
+        public void setAnnotated(String annotated) {
+            this.annotated = annotated;
         }
 
-        @Override
-        public Class<? extends Annotation> annotationType() {
-            return HeaderParameter.class;
+        public String getNotAnnotated() {
+            return notAnnotated;
+        }
+
+        public void setNotAnnotated(String notAnnotated) {
+            this.notAnnotated = notAnnotated;
+        }
+
+        public String getMissingValue() {
+            return missingValue;
+        }
+
+        public void setMissingValue(String missingValue) {
+            this.missingValue = missingValue;
+        }
+
+        public List<String> getMultipleValues() {
+            return multipleValues;
+        }
+
+        public void setMultipleValues(List<String> multipleValues) {
+            this.multipleValues = multipleValues;
         }
     }
 }

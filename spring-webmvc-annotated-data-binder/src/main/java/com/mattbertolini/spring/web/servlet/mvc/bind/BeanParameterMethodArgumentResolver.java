@@ -52,7 +52,7 @@ public class BeanParameterMethodArgumentResolver extends ModelAttributeMethodPro
     }
 
     @Override
-    protected void bindRequestParameters(WebDataBinder binder, @NonNull NativeWebRequest request) {
+    protected void bindRequestParameters(@NonNull WebDataBinder binder, @NonNull NativeWebRequest request) {
         Assert.state(binder.getTarget() != null, "WebDataBinder must have a target object");
         PropertyValues propertyValues = makePropertyValues(binder.getTarget().getClass(), request);
         binder.bind(propertyValues);
@@ -66,7 +66,7 @@ public class BeanParameterMethodArgumentResolver extends ModelAttributeMethodPro
             String propertyName = data.getPropertyName();
             RequestPropertyResolver resolver = (RequestPropertyResolver) data.getResolver();
             try {
-                Object value = resolver.resolve(data.getTypeDescriptor(), request);
+                Object value = resolver.resolve(data.getBindingProperty(), request);
                 if (value != null) {
                     propertyValues.add(propertyName, value);
                 }

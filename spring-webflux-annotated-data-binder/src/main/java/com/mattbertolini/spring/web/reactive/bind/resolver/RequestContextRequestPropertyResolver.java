@@ -17,9 +17,9 @@
 package com.mattbertolini.spring.web.reactive.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.RequestContext;
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.springframework.context.i18n.LocaleContext;
 import org.springframework.context.i18n.TimeZoneAwareLocaleContext;
-import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.lang.NonNull;
@@ -34,9 +34,9 @@ import java.util.TimeZone;
 
 public class RequestContextRequestPropertyResolver implements RequestPropertyResolver {
     @Override
-    public boolean supports(@NonNull TypeDescriptor typeDescriptor) {
-        Class<?> type = typeDescriptor.getType();
-        return typeDescriptor.hasAnnotation(RequestContext.class) && (
+    public boolean supports(@NonNull BindingProperty bindingProperty) {
+        Class<?> type = bindingProperty.getType();
+        return bindingProperty.hasAnnotation(RequestContext.class) && (
             ServerWebExchange.class.isAssignableFrom(type) ||
                 ServerHttpRequest.class.isAssignableFrom(type) ||
                 WebSession.class.isAssignableFrom(type) ||
@@ -49,8 +49,8 @@ public class RequestContextRequestPropertyResolver implements RequestPropertyRes
 
     @NonNull
     @Override
-    public Mono<Object> resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull ServerWebExchange exchange) {
-        Class<?> type = typeDescriptor.getType();
+    public Mono<Object> resolve(@NonNull BindingProperty bindingProperty, @NonNull ServerWebExchange exchange) {
+        Class<?> type = bindingProperty.getType();
 
         if (ServerWebExchange.class.isAssignableFrom(type)) {
             return Mono.just(exchange);

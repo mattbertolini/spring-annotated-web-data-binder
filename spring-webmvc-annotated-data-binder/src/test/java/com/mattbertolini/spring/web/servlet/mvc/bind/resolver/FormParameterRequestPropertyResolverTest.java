@@ -17,14 +17,14 @@
 package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.FormParameter;
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.core.ResolvableType;
-import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.ServletWebRequest;
 
-import java.lang.annotation.Annotation;
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,80 +43,104 @@ class FormParameterRequestPropertyResolverTest {
     }
 
     @Test
-    void supportsReturnsTrueOnPresenceOfAnnotation() {
-        boolean result = resolver.supports(typeDescriptor(String.class, annotation("name")));
+    void supportsReturnsTrueOnPresenceOfAnnotation() throws Exception {
+        boolean result = resolver.supports(bindingProperty("annotated"));
         assertThat(result).isTrue();
     }
 
     @Test
-    void supportsReturnsFalseOnMissingAnnotation() {
-        boolean result = resolver.supports(typeDescriptor(String.class));
+    void supportsReturnsFalseOnMissingAnnotation() throws Exception {
+        boolean result = resolver.supports(bindingProperty("notAnnotated"));
         assertThat(result).isFalse();
     }
     
     @Test
-    void supportsReturnsFalseOnMissingAnnotationValue() {
-        boolean result = resolver.supports(typeDescriptor(String.class, annotation(null)));
+    void supportsReturnsFalseOnMissingAnnotationValue() throws Exception {
+        boolean result = resolver.supports(bindingProperty("missingValue"));
         assertThat(result).isFalse();
     }
 
     @Test
-    void throwsExceptionIfResolveCalledWithNoAnnotation() {
+    void throwsExceptionIfResolveCalledWithNoAnnotation() throws Exception {
         // Unlikely to happen as the library always checks the supports method.
+        BindingProperty bindingProperty = bindingProperty("notAnnotated");
         assertThatExceptionOfType(IllegalStateException.class)
-            .isThrownBy(() -> resolver.resolve(typeDescriptor(String.class), request));
+            .isThrownBy(() -> resolver.resolve(bindingProperty, request));
     }
 
     @Test
-    void returnsValueFromHttpRequest() {
+    void returnsValueFromHttpRequest() throws Exception {
         String[] expected = {"expected value"};
         String parameterName = "testing";
         servletRequest.addParameter(parameterName, expected);
-        Object actual = resolver.resolve(typeDescriptor(String.class, annotation(parameterName)), request);
+        Object actual = resolver.resolve(bindingProperty("annotated"), request);
         assertThat(actual).isEqualTo(expected);
     }
 
     @Test
-    void returnsNullWhenNoValueFound() {
-        Object actual = resolver.resolve(typeDescriptor(Integer.class, annotation("not_found")), request);
+    void returnsNullWhenNoValueFound() throws Exception {
+        Object actual = resolver.resolve(bindingProperty("annotated"), request);
         assertThat(actual).isNull();
     }
 
     @Test
-    void returnsMultipleValues() {
+    void returnsMultipleValues() throws Exception {
         String[] expected = {"one", "two", "three"};
         String parameterName = "multiple_values";
         servletRequest.addParameter(parameterName, "one");
         servletRequest.addParameter(parameterName, "two");
         servletRequest.addParameter(parameterName, "three");
-        Object actual = resolver.resolve(typeDescriptor(List.class, annotation(parameterName)), request);
+        Object actual = resolver.resolve(bindingProperty("multipleValues"), request);
         assertThat(actual).isEqualTo(expected);
     }
 
-    private StubbingRequestParameter annotation(String parameterName) {
-        return new StubbingRequestParameter(parameterName);
+    private BindingProperty bindingProperty(String property) throws IntrospectionException {
+        return BindingProperty.forPropertyDescriptor(new PropertyDescriptor(property, TestingBean.class));
     }
 
-    private TypeDescriptor typeDescriptor(Class<?> clazz, Annotation... annotations) {
-        return new TypeDescriptor(ResolvableType.forClass(clazz), null, annotations);
-    }
+    @SuppressWarnings("unused")
+    private static class TestingBean {
+        @FormParameter("testing")
+        private String annotated;
 
-    @SuppressWarnings("ClassExplicitlyAnnotation")
-    private static class StubbingRequestParameter implements FormParameter {
-        private final String name;
+        private String notAnnotated;
 
-        private StubbingRequestParameter(String name) {
-            this.name = name == null ? "" : name;
+        @FormParameter("multiple_values")
+        private List<String> multipleValues;
+
+        @FormParameter
+        private String missingValue;
+
+        public String getAnnotated() {
+            return annotated;
         }
 
-        @Override
-        public String value() {
-            return name;
+        public void setAnnotated(String annotated) {
+            this.annotated = annotated;
         }
 
-        @Override
-        public Class<? extends Annotation> annotationType() {
-            return FormParameter.class;
+        public String getNotAnnotated() {
+            return notAnnotated;
+        }
+
+        public void setNotAnnotated(String notAnnotated) {
+            this.notAnnotated = notAnnotated;
+        }
+
+        public List<String> getMultipleValues() {
+            return multipleValues;
+        }
+
+        public void setMultipleValues(List<String> multipleValues) {
+            this.multipleValues = multipleValues;
+        }
+
+        public String getMissingValue() {
+            return missingValue;
+        }
+
+        public void setMissingValue(String missingValue) {
+            this.missingValue = missingValue;
         }
     }
 }

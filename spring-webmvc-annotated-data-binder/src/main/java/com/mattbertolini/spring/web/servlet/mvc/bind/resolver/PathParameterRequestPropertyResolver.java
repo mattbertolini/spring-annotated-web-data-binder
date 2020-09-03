@@ -17,7 +17,7 @@
 package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.PathParameter;
-import org.springframework.core.convert.TypeDescriptor;
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -30,15 +30,15 @@ import java.util.Map;
 public class PathParameterRequestPropertyResolver implements RequestPropertyResolver {
 
     @Override
-    public boolean supports(@NonNull TypeDescriptor typeDescriptor) {
-        PathParameter annotation = typeDescriptor.getAnnotation(PathParameter.class);
+    public boolean supports(@NonNull BindingProperty bindingProperty) {
+        PathParameter annotation = bindingProperty.getAnnotation(PathParameter.class);
         return annotation != null && StringUtils.hasText(annotation.value());
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public Object resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull NativeWebRequest request) {
-        PathParameter annotation = typeDescriptor.getAnnotation(PathParameter.class);
+    public Object resolve(@NonNull BindingProperty bindingProperty, @NonNull NativeWebRequest request) {
+        PathParameter annotation = bindingProperty.getAnnotation(PathParameter.class);
         Assert.state(annotation != null, "No PathParameter annotation found on type");
 
         Map<String, String> uriTemplateVariables = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE, RequestAttributes.SCOPE_REQUEST);

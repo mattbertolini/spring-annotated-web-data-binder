@@ -16,8 +16,8 @@
 
 package com.mattbertolini.spring.web.bind;
 
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import com.mattbertolini.spring.web.bind.resolver.RequestPropertyResolverBase;
-import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
@@ -38,9 +38,9 @@ public abstract class AbstractPropertyResolverRegistry<T extends RequestProperty
     }
 
     @Nullable
-    public T findResolverFor(@NonNull TypeDescriptor typeDescriptor) {
+    public T findResolverFor(@NonNull BindingProperty bindingProperty) {
         for (T resolver : propertyResolvers) {
-            if (resolver.supports(typeDescriptor)) {
+            if (resolver.supports(bindingProperty)) {
                 return resolver;
             }
         }

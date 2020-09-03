@@ -17,7 +17,7 @@
 package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.CookieParameter;
-import org.springframework.core.convert.TypeDescriptor;
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -28,21 +28,21 @@ import javax.servlet.http.HttpServletRequest;
 
 public class CookieParameterRequestPropertyResolver implements RequestPropertyResolver {
     @Override
-    public boolean supports(@NonNull TypeDescriptor typeDescriptor) {
-        return typeDescriptor.hasAnnotation(CookieParameter.class);
+    public boolean supports(@NonNull BindingProperty bindingProperty) {
+        return bindingProperty.hasAnnotation(CookieParameter.class);
     }
 
     @Override
-    public Object resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull NativeWebRequest request) {
+    public Object resolve(@NonNull BindingProperty bindingProperty, @NonNull NativeWebRequest request) {
         HttpServletRequest servletRequest = request.getNativeRequest(HttpServletRequest.class);
         Assert.state(servletRequest != null, "A HttpServletRequest is required for this resolver and none found.");
-        CookieParameter annotation = typeDescriptor.getAnnotation(CookieParameter.class);
+        CookieParameter annotation = bindingProperty.getAnnotation(CookieParameter.class);
         Assert.state(annotation != null, "No CookieParameter annotation found on type");
         Cookie cookie = WebUtils.getCookie(servletRequest, annotation.value());
         if (cookie == null) {
             return null;
         }
-        if (Cookie.class == typeDescriptor.getObjectType()) {
+        if (Cookie.class == bindingProperty.getObjectType()) {
             return cookie;
         }
         return cookie.getValue();

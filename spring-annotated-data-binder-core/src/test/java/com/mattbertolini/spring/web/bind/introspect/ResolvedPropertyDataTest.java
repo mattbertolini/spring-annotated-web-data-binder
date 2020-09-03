@@ -23,14 +23,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.lang.NonNull;
 
+import java.beans.PropertyDescriptor;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ResolvedPropertyDataTest {
     private ResolvedPropertyData propertyData;
 
     @BeforeEach
-    void setUp() {
-        propertyData = new ResolvedPropertyData("name", TypeDescriptor.valueOf(String.class), new StubResolver());
+    void setUp() throws Exception {
+        propertyData = new ResolvedPropertyData(
+            "name",
+            BindingProperty.forPropertyDescriptor(new PropertyDescriptor("property", TestingClass.class)),
+            new StubResolver());
     }
 
     @Test
@@ -39,8 +44,10 @@ class ResolvedPropertyDataTest {
     }
 
     @Test
-    void returnsTypeDescriptor() {
-        assertThat(propertyData.getTypeDescriptor()).isEqualTo(TypeDescriptor.valueOf(String.class));
+    void returnsBindingProperty() throws Exception {
+        BindingProperty expected = BindingProperty.forPropertyDescriptor(
+            new PropertyDescriptor("property", TestingClass.class));
+        assertThat(propertyData.getBindingProperty()).isEqualTo(expected);
     }
 
     @Test
@@ -50,22 +57,48 @@ class ResolvedPropertyDataTest {
     }
 
     @Test
-    void equalsContract() {
+    void equalsContract() throws Exception {
         EqualsVerifier.forClass(ResolvedPropertyData.class)
             .withPrefabValues(TypeDescriptor.class, TypeDescriptor.valueOf(String.class), TypeDescriptor.valueOf(Integer.class))
+            .withPrefabValues(BindingProperty.class,
+                BindingProperty.forPropertyDescriptor(new PropertyDescriptor("property", TestingClass.class)),
+                BindingProperty.forPropertyDescriptor(new PropertyDescriptor("another", TestingClass.class)))
             .verify();
     }
 
     private static class StubResolver implements RequestPropertyResolverBase<Object, Object> {
 
         @Override
-        public boolean supports(@NonNull TypeDescriptor typeDescriptor) {
+        public boolean supports(@NonNull BindingProperty bindingProperty) {
             return false;
         }
 
         @Override
-        public Object resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull Object request) {
+        public Object resolve(@NonNull BindingProperty bindingProperty, @NonNull Object request) {
             return null;
+        }
+    }
+
+    @SuppressWarnings("unused")
+    private static class TestingClass {
+        private String property;
+
+        private String another;
+
+        public String getProperty() {
+            return property;
+        }
+
+        public void setProperty(String property) {
+            this.property = property;
+        }
+
+        public String getAnother() {
+            return another;
+        }
+
+        public void setAnother(String another) {
+            this.another = another;
         }
     }
 }

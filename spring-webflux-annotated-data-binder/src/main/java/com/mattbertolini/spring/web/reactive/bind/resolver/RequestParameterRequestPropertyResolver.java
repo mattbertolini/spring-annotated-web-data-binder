@@ -17,7 +17,7 @@
 package com.mattbertolini.spring.web.reactive.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.RequestParameter;
-import org.springframework.core.convert.TypeDescriptor;
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 import org.springframework.util.MultiValueMap;
@@ -27,15 +27,15 @@ import reactor.core.publisher.Mono;
 
 public class RequestParameterRequestPropertyResolver implements RequestPropertyResolver {
     @Override
-    public boolean supports(@NonNull TypeDescriptor typeDescriptor) {
-        RequestParameter annotation = typeDescriptor.getAnnotation(RequestParameter.class);
+    public boolean supports(@NonNull BindingProperty bindingProperty) {
+        RequestParameter annotation = bindingProperty.getAnnotation(RequestParameter.class);
         return annotation != null && StringUtils.hasText(annotation.value());
     }
 
     @NonNull
     @Override
-    public Mono<Object> resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull ServerWebExchange serverWebExchange) {
-        RequestParameter annotation = typeDescriptor.getAnnotation(RequestParameter.class);
+    public Mono<Object> resolve(@NonNull BindingProperty bindingProperty, @NonNull ServerWebExchange serverWebExchange) {
+        RequestParameter annotation = bindingProperty.getAnnotation(RequestParameter.class);
         Assert.state(annotation != null, "No RequestParameter annotation found on type");
         MultiValueMap<String, String> queryParams = serverWebExchange.getRequest().getQueryParams();
         return Mono.justOrEmpty(queryParams.get(annotation.value()));

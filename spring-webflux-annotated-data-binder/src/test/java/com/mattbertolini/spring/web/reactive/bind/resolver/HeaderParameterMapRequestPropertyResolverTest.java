@@ -17,17 +17,17 @@
 package com.mattbertolini.spring.web.reactive.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.HeaderParameter;
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.core.ResolvableType;
-import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
 import org.springframework.mock.web.server.MockServerWebExchange;
 import org.springframework.util.MultiValueMap;
 import reactor.core.publisher.Mono;
 
-import java.lang.annotation.Annotation;
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.util.Collections;
 import java.util.Map;
 
@@ -42,39 +42,39 @@ class HeaderParameterMapRequestPropertyResolverTest {
     }
 
     @Test
-    void supportsReturnsTrueOnPresenceOfAnnotation() {
-        boolean result = resolver.supports(typeDescriptor(Map.class, annotation(null)));
+    void supportsReturnsTrueOnPresenceOfAnnotation() throws Exception {
+        boolean result = resolver.supports(bindingProperty("annotated"));
         assertThat(result).isTrue();
     }
 
     @Test
-    void supportsReturnsFalseOnMissingAnnotation() {
-        boolean result = resolver.supports(typeDescriptor(Map.class));
+    void supportsReturnsFalseOnMissingAnnotation() throws Exception {
+        boolean result = resolver.supports(bindingProperty("notAnnotated"));
         assertThat(result).isFalse();
     }
 
     @Test
-    void supportsReturnsFalseWhenAnnotationValueIsPresent() {
-        boolean result = resolver.supports(typeDescriptor(Map.class, annotation("name")));
+    void supportsReturnsFalseWhenAnnotationValueIsPresent() throws Exception {
+        boolean result = resolver.supports(bindingProperty("withValue"));
         assertThat(result).isFalse();
     }
 
     @Test
-    void supportsReturnsFalseWhenTypeIsNotMap() {
-        boolean result = resolver.supports(typeDescriptor(String.class, annotation(null)));
+    void supportsReturnsFalseWhenTypeIsNotMap() throws Exception {
+        boolean result = resolver.supports(bindingProperty("notAMap"));
         assertThat(result).isFalse();
     }
 
     @SuppressWarnings("unchecked")
     @Test
-    void returnsMultiValueMap() {
+    void returnsMultiValueMap() throws Exception {
         MockServerHttpRequest request = MockServerHttpRequest.post("/irrelevant")
             .header("header_param_one", "one")
             .header("header_param_two", "two")
             .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
-        Mono<Object> objectMono = resolver.resolve(typeDescriptor(MultiValueMap.class, annotation(null)), exchange);
+        Mono<Object> objectMono = resolver.resolve(bindingProperty("multivalue"), exchange);
         Object actual = objectMono.block();
         assertThat(actual).isInstanceOf(MultiValueMap.class);
         MultiValueMap<String, String> map = (MultiValueMap<String, String>) actual;
@@ -84,14 +84,14 @@ class HeaderParameterMapRequestPropertyResolverTest {
     }
     
     @Test
-    void returnsHttpHeadersObject() {
+    void returnsHttpHeadersObject() throws Exception {
         MockServerHttpRequest request = MockServerHttpRequest.post("/irrelevant")
             .header("header_param_one", "one")
             .header("header_param_two", "two")
             .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
-        Mono<Object> objectMono = resolver.resolve(typeDescriptor(HttpHeaders.class, annotation(null)), exchange);
+        Mono<Object> objectMono = resolver.resolve(bindingProperty("httpHeaders"), exchange);
         Object actual = objectMono.block();
         assertThat(actual).isInstanceOf(HttpHeaders.class);
         HttpHeaders headers = (HttpHeaders) actual;
@@ -102,43 +102,88 @@ class HeaderParameterMapRequestPropertyResolverTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    void returnsMapWithFirstValue() {
+    void returnsMapWithFirstValue() throws Exception {
         MockServerHttpRequest request = MockServerHttpRequest.post("/irrelevant")
             .header("header_param", "one", "two", "three")
             .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
-        Mono<Object> objectMono = resolver.resolve(typeDescriptor(Map.class, annotation(null)), exchange);
+        Mono<Object> objectMono = resolver.resolve(bindingProperty("annotated"), exchange);
         Object actual = objectMono.block();
         assertThat(actual).isInstanceOf(Map.class);
         Map<String, String> map = (Map<String, String>) actual;
         assertThat(map).containsEntry("header_param", "one");
     }
 
-    private StubbingHeaderParameter annotation(String parameterName) {
-        return new StubbingHeaderParameter(parameterName);
+    private BindingProperty bindingProperty(String property) throws IntrospectionException {
+        return BindingProperty.forPropertyDescriptor(new PropertyDescriptor(property, TestingBean.class));
     }
 
-    private TypeDescriptor typeDescriptor(Class<?> clazz, Annotation... annotations) {
-        return new TypeDescriptor(ResolvableType.forClass(clazz), null, annotations);
-    }
+    @SuppressWarnings("unused")
+    private static class TestingBean {
+        @HeaderParameter
+        private Map<String, String> annotated;
 
-    @SuppressWarnings("ClassExplicitlyAnnotation")
-    private static class StubbingHeaderParameter implements HeaderParameter {
-        private final String name;
+        private Map<String, String> notAnnotated;
 
-        private StubbingHeaderParameter(String name) {
-            this.name = name == null ? "" : name;
+        @HeaderParameter
+        private MultiValueMap<String, String> multivalue;
+
+        @HeaderParameter
+        private HttpHeaders httpHeaders;
+
+        @HeaderParameter("irrelevant")
+        private String withValue;
+
+        @HeaderParameter
+        private String notAMap;
+
+        public Map<String, String> getAnnotated() {
+            return annotated;
         }
 
-        @Override
-        public String value() {
-            return name;
+        public void setAnnotated(Map<String, String> annotated) {
+            this.annotated = annotated;
         }
 
-        @Override
-        public Class<? extends Annotation> annotationType() {
-            return HeaderParameter.class;
+        public Map<String, String> getNotAnnotated() {
+            return notAnnotated;
+        }
+
+        public void setNotAnnotated(Map<String, String> notAnnotated) {
+            this.notAnnotated = notAnnotated;
+        }
+
+        public MultiValueMap<String, String> getMultivalue() {
+            return multivalue;
+        }
+
+        public void setMultivalue(MultiValueMap<String, String> multivalue) {
+            this.multivalue = multivalue;
+        }
+
+        public HttpHeaders getHttpHeaders() {
+            return httpHeaders;
+        }
+
+        public void setHttpHeaders(HttpHeaders httpHeaders) {
+            this.httpHeaders = httpHeaders;
+        }
+
+        public String getWithValue() {
+            return withValue;
+        }
+
+        public void setWithValue(String withValue) {
+            this.withValue = withValue;
+        }
+
+        public String getNotAMap() {
+            return notAMap;
+        }
+
+        public void setNotAMap(String notAMap) {
+            this.notAMap = notAMap;
         }
     }
 }

@@ -17,15 +17,15 @@
 package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.RequestParameter;
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.core.ResolvableType;
-import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.request.ServletWebRequest;
 
-import java.lang.annotation.Annotation;
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -44,34 +44,34 @@ class RequestParameterMapRequestPropertyResolverTest {
     }
 
     @Test
-    void supportsReturnsTrueOnPresenceOfAnnotation() {
-        boolean result = resolver.supports(typeDescriptor(Map.class, annotation(null)));
+    void supportsReturnsTrueOnPresenceOfAnnotation() throws Exception {
+        boolean result = resolver.supports(bindingProperty("annotated"));
         assertThat(result).isTrue();
     }
 
     @Test
-    void supportsReturnsFalseOnMissingAnnotation() {
-        boolean result = resolver.supports(typeDescriptor(Map.class));
+    void supportsReturnsFalseOnMissingAnnotation() throws Exception {
+        boolean result = resolver.supports(bindingProperty("notAnnotated"));
         assertThat(result).isFalse();
     }
 
     @Test
-    void supportsReturnsFalseWhenAnnotationValueIsPresent() {
-        boolean result = resolver.supports(typeDescriptor(Map.class, annotation("name")));
+    void supportsReturnsFalseWhenAnnotationValueIsPresent() throws Exception {
+        boolean result = resolver.supports(bindingProperty("valuePresent"));
         assertThat(result).isFalse();
     }
 
     @Test
-    void supportsReturnsFalseWhenTypeIsNotMap() {
-        boolean result = resolver.supports(typeDescriptor(String.class, annotation(null)));
+    void supportsReturnsFalseWhenTypeIsNotMap() throws Exception {
+        boolean result = resolver.supports(bindingProperty("notAMap"));
         assertThat(result).isFalse();
     }
 
     @SuppressWarnings("unchecked")
     @Test
-    void returnsMultiValueMap() {
+    void returnsMultiValueMap() throws Exception {
         servletRequest.addParameter("request_param", "one", "two", "three");
-        Object actual = resolver.resolve(typeDescriptor(MultiValueMap.class, annotation(null)), request);
+        Object actual = resolver.resolve(bindingProperty("multivalue"), request);
         assertThat(actual).isInstanceOf(MultiValueMap.class);
         MultiValueMap<String, String> map = (MultiValueMap<String, String>) actual;
         assertThat(map).containsEntry("request_param", Arrays.asList("one", "two", "three"));
@@ -79,38 +79,72 @@ class RequestParameterMapRequestPropertyResolverTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    void returnsMapWithFirstValue() {
+    void returnsMapWithFirstValue() throws Exception {
         servletRequest.addParameter("request_param", "one", "two", "three");
-        Object actual = resolver.resolve(typeDescriptor(Map.class, annotation(null)), request);
+        Object actual = resolver.resolve(bindingProperty("annotated"), request);
         assertThat(actual).isInstanceOf(Map.class);
         Map<String, String> map = (Map<String, String>) actual;
         assertThat(map).containsEntry("request_param", "one");
     }
 
-    private StubbingRequestParameter annotation(String parameterName) {
-        return new StubbingRequestParameter(parameterName);
+    private BindingProperty bindingProperty(String property) throws IntrospectionException {
+        return BindingProperty.forPropertyDescriptor(new PropertyDescriptor(property, TestingBean.class));
     }
 
-    private TypeDescriptor typeDescriptor(Class<?> clazz, Annotation... annotations) {
-        return new TypeDescriptor(ResolvableType.forClass(clazz), null, annotations);
-    }
+    @SuppressWarnings("unused")
+    private static class TestingBean {
+        @RequestParameter
+        private Map<String, String> annotated;
 
-    @SuppressWarnings("ClassExplicitlyAnnotation")
-    private static class StubbingRequestParameter implements RequestParameter {
-        private final String name;
+        private Map<String, String> notAnnotated;
 
-        private StubbingRequestParameter(String name) {
-            this.name = name == null ? "" : name;
+        @RequestParameter
+        private MultiValueMap<String, String> multivalue;
+
+        @RequestParameter
+        private String notAMap;
+
+        @RequestParameter("irrelevant")
+        private Map<String, String> valuePresent;
+
+        public Map<String, String> getAnnotated() {
+            return annotated;
         }
 
-        @Override
-        public String value() {
-            return name;
+        public void setAnnotated(Map<String, String> annotated) {
+            this.annotated = annotated;
         }
 
-        @Override
-        public Class<? extends Annotation> annotationType() {
-            return RequestParameter.class;
+        public Map<String, String> getNotAnnotated() {
+            return notAnnotated;
+        }
+
+        public void setNotAnnotated(Map<String, String> notAnnotated) {
+            this.notAnnotated = notAnnotated;
+        }
+
+        public MultiValueMap<String, String> getMultivalue() {
+            return multivalue;
+        }
+
+        public void setMultivalue(MultiValueMap<String, String> multivalue) {
+            this.multivalue = multivalue;
+        }
+
+        public String getNotAMap() {
+            return notAMap;
+        }
+
+        public void setNotAMap(String notAMap) {
+            this.notAMap = notAMap;
+        }
+
+        public Map<String, String> getValuePresent() {
+            return valuePresent;
+        }
+
+        public void setValuePresent(Map<String, String> valuePresent) {
+            this.valuePresent = valuePresent;
         }
     }
 }

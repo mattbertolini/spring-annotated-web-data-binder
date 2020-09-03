@@ -17,15 +17,15 @@
 package com.mattbertolini.spring.web.reactive.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.RequestParameter;
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.core.ResolvableType;
-import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
 import org.springframework.mock.web.server.MockServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import java.lang.annotation.Annotation;
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -42,35 +42,36 @@ class RequestParameterRequestPropertyResolverTest {
     }
 
     @Test
-    void supportsReturnsTrueOnPresenceOfAnnotation() {
-        boolean result = resolver.supports(typeDescriptor(String.class, annotation("name")));
+    void supportsReturnsTrueOnPresenceOfAnnotation() throws Exception {
+        boolean result = resolver.supports(bindingProperty("annotated"));
         assertThat(result).isTrue();
     }
 
     @Test
-    void supportsReturnsFalseOnMissingAnnotation() {
-        boolean result = resolver.supports(typeDescriptor(String.class));
+    void supportsReturnsFalseOnMissingAnnotation() throws Exception {
+        boolean result = resolver.supports(bindingProperty("notAnnotated"));
         assertThat(result).isFalse();
     }
 
     @Test
-    void supportsReturnsFalseOnMissingAnnotationValue() {
-        boolean result = resolver.supports(typeDescriptor(String.class, annotation(null)));
+    void supportsReturnsFalseOnMissingAnnotationValue() throws Exception {
+        boolean result = resolver.supports(bindingProperty("missingValue"));
         assertThat(result).isFalse();
     }
 
     @Test
-    void throwsExceptionIfResolveCalledWithNoAnnotation() {
+    void throwsExceptionIfResolveCalledWithNoAnnotation() throws Exception {
         // Unlikely to happen as the library always checks the supports method.
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant")
             .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
+        BindingProperty bindingProperty = bindingProperty("notAnnotated");
         assertThatExceptionOfType(IllegalStateException.class)
-            .isThrownBy(() -> resolver.resolve(typeDescriptor(String.class), exchange));
+            .isThrownBy(() -> resolver.resolve(bindingProperty, exchange));
     }
 
     @Test
-    void returnsValueFromHttpRequest() {
+    void returnsValueFromHttpRequest() throws Exception {
         List<String> expected = Collections.singletonList("expected value");
         String parameterName = "testing";
 
@@ -79,20 +80,20 @@ class RequestParameterRequestPropertyResolverTest {
             .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
-        Mono<Object> actual = resolver.resolve(typeDescriptor(String.class, annotation(parameterName)), exchange);
+        Mono<Object> actual = resolver.resolve(bindingProperty("annotated"), exchange);
         assertThat(actual.block()).isEqualTo(expected);
     }
 
     @Test
-    void returnsNullWhenNoValueFound() {
+    void returnsNullWhenNoValueFound() throws Exception {
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant").build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
-        Mono<Object> actual = resolver.resolve(typeDescriptor(Integer.class, annotation("not_found")), exchange);
+        Mono<Object> actual = resolver.resolve(bindingProperty("annotated"), exchange);
         assertThat(actual.block()).isNull();
     }
 
     @Test
-    void returnsMultipleValues() {
+    void returnsMultipleValues() throws Exception {
         List<String> expected = Arrays.asList("one", "two", "three");
         String parameterName = "multiple_values";
 
@@ -101,38 +102,57 @@ class RequestParameterRequestPropertyResolverTest {
             .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
-        Mono<Object> actual = resolver.resolve(typeDescriptor(List.class, annotation(parameterName)), exchange);
+        Mono<Object> actual = resolver.resolve(bindingProperty("multipleValues"), exchange);
         assertThat(actual.block()).isEqualTo(expected);
     }
 
-    private StubbingRequestParameter annotation(String parameterName) {
-        return new StubbingRequestParameter(parameterName);
+    private BindingProperty bindingProperty(String property) throws IntrospectionException {
+        return BindingProperty.forPropertyDescriptor(new PropertyDescriptor(property, TestingBean.class));
     }
 
-    private TypeDescriptor typeDescriptor(Class<?> clazz, Annotation... annotations) {
-        return new TypeDescriptor(ResolvableType.forClass(clazz), null, annotations);
-    }
+    @SuppressWarnings("unused")
+    private static class TestingBean {
+        @RequestParameter("testing")
+        private String annotated;
 
-    @SuppressWarnings("ClassExplicitlyAnnotation")
-    private static class StubbingRequestParameter implements RequestParameter {
-        private final String name;
+        private String notAnnotated;
 
-        private StubbingRequestParameter(String name) {
-            if (name == null) {
-                this.name = "";
-            } else {
-                this.name = name;
-            }
+        @RequestParameter
+        private String missingValue;
+
+        @RequestParameter("multiple_values")
+        private List<String> multipleValues;
+
+        public String getAnnotated() {
+            return annotated;
         }
 
-        @Override
-        public String value() {
-            return name;
+        public void setAnnotated(String annotated) {
+            this.annotated = annotated;
         }
 
-        @Override
-        public Class<? extends Annotation> annotationType() {
-            return RequestParameter.class;
+        public String getNotAnnotated() {
+            return notAnnotated;
+        }
+
+        public void setNotAnnotated(String notAnnotated) {
+            this.notAnnotated = notAnnotated;
+        }
+
+        public String getMissingValue() {
+            return missingValue;
+        }
+
+        public void setMissingValue(String missingValue) {
+            this.missingValue = missingValue;
+        }
+
+        public List<String> getMultipleValues() {
+            return multipleValues;
+        }
+
+        public void setMultipleValues(List<String> multipleValues) {
+            this.multipleValues = multipleValues;
         }
     }
 }

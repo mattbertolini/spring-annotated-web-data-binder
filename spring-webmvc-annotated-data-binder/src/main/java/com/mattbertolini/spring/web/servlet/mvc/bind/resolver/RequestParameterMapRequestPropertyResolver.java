@@ -17,7 +17,7 @@
 package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.RequestParameter;
-import org.springframework.core.convert.TypeDescriptor;
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.springframework.lang.NonNull;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -31,17 +31,17 @@ import java.util.Map;
 
 public class RequestParameterMapRequestPropertyResolver implements RequestPropertyResolver {
     @Override
-    public boolean supports(@NonNull TypeDescriptor typeDescriptor) {
-        RequestParameter annotation = typeDescriptor.getAnnotation(RequestParameter.class);
+    public boolean supports(@NonNull BindingProperty bindingProperty) {
+        RequestParameter annotation = bindingProperty.getAnnotation(RequestParameter.class);
         return annotation != null && !StringUtils.hasText(annotation.value()) &&
-            Map.class.isAssignableFrom(typeDescriptor.getType());
+            Map.class.isAssignableFrom(bindingProperty.getType());
     }
 
     @Override
-    public Object resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull NativeWebRequest request) {
+    public Object resolve(@NonNull BindingProperty bindingProperty, @NonNull NativeWebRequest request) {
         Map<String, String[]> parameterMap = request.getParameterMap();
 
-        if (MultiValueMap.class.isAssignableFrom(typeDescriptor.getType())) {
+        if (MultiValueMap.class.isAssignableFrom(bindingProperty.getType())) {
             MultiValueMap<String, String> ret = new LinkedMultiValueMap<>(parameterMap.size());
             for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
                 ret.put(entry.getKey(), new LinkedList<>(Arrays.asList(entry.getValue())));

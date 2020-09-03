@@ -5,6 +5,7 @@ import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.RequestContextRequ
 import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.RequestPropertyResolver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
 import java.util.Arrays;
@@ -12,12 +13,12 @@ import java.util.Collections;
 import java.util.HashSet;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class BinderConfigurationTest {
     private BinderConfiguration config;
@@ -27,34 +28,25 @@ class BinderConfigurationTest {
     void setUp() {
         config = new BinderConfiguration();
         adapter = mock(RequestMappingHandlerAdapter.class);
+        when(adapter.getMessageConverters()).thenReturn(Collections.singletonList(new FormHttpMessageConverter()));
     }
 
     @Test
-    void returnsBeanIfNotHandlerAdapter() throws Exception {
-        config.afterPropertiesSet();
+    void returnsBeanIfNotHandlerAdapter() {
         Object obj = config.postProcessBeforeInitialization(new Object(), "irrelevant");
-        assertThat(obj).isNotNull();
-        assertThat(obj).isInstanceOf(Object.class);
+        assertThat(obj).isNotNull().isInstanceOf(Object.class);
     }
 
     @Test
-    void returnsAdapterBeanIfCorrectType() throws Exception {
-        config.afterPropertiesSet();
+    void returnsAdapterBeanIfCorrectType() {
         Object obj = config.postProcessBeforeInitialization(adapter, "irrelevant");
         assertThat(obj).isInstanceOf(RequestMappingHandlerAdapter.class);
     }
 
     @Test
-    void setsCustomerResolver() throws Exception {
-        config.afterPropertiesSet();
+    void setsCustomerResolver() {
         config.postProcessBeforeInitialization(adapter, "irrelevant");
         verify(adapter).setCustomArgumentResolvers(anyList());
-    }
-
-    @Test
-    void throwsExceptionIfResolverIsNull() {
-        assertThatThrownBy(() -> config.postProcessBeforeInitialization(adapter, "irrelevant"))
-            .isInstanceOf(IllegalStateException.class);
     }
 
     @Test

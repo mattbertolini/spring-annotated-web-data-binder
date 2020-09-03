@@ -20,6 +20,7 @@ import com.mattbertolini.spring.web.bind.annotation.CookieParameter;
 import com.mattbertolini.spring.web.bind.annotation.FormParameter;
 import com.mattbertolini.spring.web.bind.annotation.HeaderParameter;
 import com.mattbertolini.spring.web.bind.annotation.PathParameter;
+import com.mattbertolini.spring.web.bind.annotation.RequestBody;
 import com.mattbertolini.spring.web.bind.annotation.RequestParameter;
 import com.mattbertolini.spring.web.bind.annotation.SessionParameter;
 
@@ -65,5 +66,14 @@ public class DirectFieldAccessBean {
 
     public String getSessionParameter() {
         return sessionParameter;
+    }
+
+    public static class RequestBodyBean {
+        @RequestBody
+        private JsonBody requestBody;
+
+        public JsonBody getRequestBody() {
+            return requestBody;
+        }
     }
 }

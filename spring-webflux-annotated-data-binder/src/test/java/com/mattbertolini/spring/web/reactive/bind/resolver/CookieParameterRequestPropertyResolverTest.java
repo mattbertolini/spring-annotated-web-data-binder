@@ -17,16 +17,16 @@
 package com.mattbertolini.spring.web.reactive.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.CookieParameter;
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.core.ResolvableType;
-import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.http.HttpCookie;
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
 import org.springframework.mock.web.server.MockServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import java.lang.annotation.Annotation;
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -42,42 +42,43 @@ class CookieParameterRequestPropertyResolverTest {
     }
 
     @Test
-    void supportsReturnsTrueOnPresenceOfAnnotation() {
-        boolean result = resolver.supports(typeDescriptor(String.class, new StubbingAnnotation("name")));
+    void supportsReturnsTrueOnPresenceOfAnnotation() throws Exception {
+        boolean result = resolver.supports(bindingProperty("annotated"));
         assertThat(result).isTrue();
     }
 
     @Test
-    void supportsReturnsFalseOnMissingAnnotation() {
-        boolean result = resolver.supports(typeDescriptor(String.class));
+    void supportsReturnsFalseOnMissingAnnotation() throws Exception {
+        boolean result = resolver.supports(bindingProperty("notAnnotated"));
         assertThat(result).isFalse();
     }
 
     @Test
-    void throwsExceptionIfResolveCalledWithNoAnnotation() {
+    void throwsExceptionIfResolveCalledWithNoAnnotation() throws Exception {
         // Unlikely to happen as the library always checks the supports method.
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant")
             .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
+        BindingProperty bindingProperty = bindingProperty("notAnnotated");
         assertThatExceptionOfType(IllegalStateException.class)
-            .isThrownBy(() -> resolver.resolve(typeDescriptor(String.class), exchange));
+            .isThrownBy(() -> resolver.resolve(bindingProperty, exchange));
     }
 
     @Test
-    void returnsValueFromCookie() {
+    void returnsValueFromCookie() throws Exception {
         String expected = "expectedValue";
-        String cookieName = "cookie_name";
+        String cookieName = "the_cookie";
 
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant")
             .cookie(new HttpCookie(cookieName, expected)).build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
-        Mono<Object> actual = resolver.resolve(typeDescriptor(String.class, new StubbingAnnotation(cookieName)), exchange);
+        Mono<Object> actual = resolver.resolve(bindingProperty("annotated"), exchange);
         assertThat(actual.block()).isEqualTo(expected);
     }
 
     @Test
-    void returnsHttpCookieObjectWhenTypeMatches() {
+    void returnsHttpCookieObjectWhenTypeMatches() throws Exception {
         String cookieName = "the_cookie";
         HttpCookie expected = new HttpCookie(cookieName, "aValue");
 
@@ -85,40 +86,55 @@ class CookieParameterRequestPropertyResolverTest {
             .cookie(expected).build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
-        Mono<Object> actual = resolver.resolve(typeDescriptor(HttpCookie.class, new StubbingAnnotation(cookieName)), exchange);
+        Mono<Object> actual = resolver.resolve(bindingProperty("cookieObject"), exchange);
         assertThat(actual.block()).isEqualTo(expected);
     }
 
     @Test
-    void returnsNullWhenNoCookieFound() {
+    void returnsNullWhenNoCookieFound() throws Exception {
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant").build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
-        Mono<Object> notFound = resolver.resolve(typeDescriptor(Integer.class, new StubbingAnnotation("not_found")), exchange);
+        Mono<Object> notFound = resolver.resolve(bindingProperty("annotated"), exchange);
         assertThat(notFound.block()).isNull();
     }
 
-    private TypeDescriptor typeDescriptor(Class<?> clazz, Annotation... annotations) {
-        return new TypeDescriptor(ResolvableType.forClass(clazz), null, annotations);
+    private BindingProperty bindingProperty(String property) throws IntrospectionException {
+        return BindingProperty.forPropertyDescriptor(new PropertyDescriptor(property, TestingBean.class));
     }
 
+    @SuppressWarnings("unused")
+    private static class TestingBean {
+        @CookieParameter("the_cookie")
+        private String annotated;
 
-    @SuppressWarnings("ClassExplicitlyAnnotation")
-    private static class StubbingAnnotation implements CookieParameter {
-        private final String value;
+        private String notAnnotated;
 
-        private StubbingAnnotation(String value) {
-            this.value = value;
+        @CookieParameter("the_cookie")
+        private HttpCookie cookieObject;
+
+        public String getAnnotated() {
+            return annotated;
         }
 
-        @Override
-        public String value() {
-            return value;
+        public void setAnnotated(String annotated) {
+            this.annotated = annotated;
         }
 
-        @Override
-        public Class<? extends Annotation> annotationType() {
-            return CookieParameter.class;
+        public String getNotAnnotated() {
+            return notAnnotated;
+        }
+
+        public void setNotAnnotated(String notAnnotated) {
+            this.notAnnotated = notAnnotated;
+        }
+
+        public HttpCookie getCookieObject() {
+            return cookieObject;
+        }
+
+        public void setCookieObject(HttpCookie cookieObject) {
+            this.cookieObject = cookieObject;
         }
     }
 }

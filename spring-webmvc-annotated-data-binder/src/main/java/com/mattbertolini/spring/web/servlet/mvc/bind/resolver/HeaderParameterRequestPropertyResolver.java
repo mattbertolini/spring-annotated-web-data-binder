@@ -17,7 +17,7 @@
 package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.HeaderParameter;
-import org.springframework.core.convert.TypeDescriptor;
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -29,14 +29,14 @@ import org.springframework.web.context.request.NativeWebRequest;
 public class HeaderParameterRequestPropertyResolver implements RequestPropertyResolver {
 
     @Override
-    public boolean supports(@NonNull TypeDescriptor typeDescriptor) {
-        HeaderParameter annotation = typeDescriptor.getAnnotation(HeaderParameter.class);
+    public boolean supports(@NonNull BindingProperty bindingProperty) {
+        HeaderParameter annotation = bindingProperty.getAnnotation(HeaderParameter.class);
         return annotation != null && StringUtils.hasText(annotation.value());
     }
 
     @Override
-    public Object resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull NativeWebRequest request) {
-        HeaderParameter annotation = typeDescriptor.getAnnotation(HeaderParameter.class);
+    public Object resolve(@NonNull BindingProperty bindingProperty, @NonNull NativeWebRequest request) {
+        HeaderParameter annotation = bindingProperty.getAnnotation(HeaderParameter.class);
         Assert.state(annotation != null, "No HeaderParameter annotation found on type");
         return request.getHeaderValues(annotation.value());
     }

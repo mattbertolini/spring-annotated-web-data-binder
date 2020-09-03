@@ -17,7 +17,7 @@
 package com.mattbertolini.spring.web.reactive.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.HeaderParameter;
-import org.springframework.core.convert.TypeDescriptor;
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.springframework.lang.NonNull;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
@@ -28,17 +28,17 @@ import java.util.Map;
 
 public class HeaderParameterMapRequestPropertyResolver implements RequestPropertyResolver {
     @Override
-    public boolean supports(@NonNull TypeDescriptor typeDescriptor) {
-        HeaderParameter annotation = typeDescriptor.getAnnotation(HeaderParameter.class);
+    public boolean supports(@NonNull BindingProperty bindingProperty) {
+        HeaderParameter annotation = bindingProperty.getAnnotation(HeaderParameter.class);
         return annotation != null && !StringUtils.hasText(annotation.value()) &&
-            Map.class.isAssignableFrom(typeDescriptor.getType());
+            Map.class.isAssignableFrom(bindingProperty.getType());
     }
 
     @Override
     @NonNull
-    public Mono<Object> resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull ServerWebExchange exchange) {
+    public Mono<Object> resolve(@NonNull BindingProperty bindingProperty, @NonNull ServerWebExchange exchange) {
         // HttpHeaders class extends from MultiValueMap
-        if (MultiValueMap.class.isAssignableFrom(typeDescriptor.getType())) {
+        if (MultiValueMap.class.isAssignableFrom(bindingProperty.getType())) {
             return Mono.just(exchange.getRequest().getHeaders());
         }
         return Mono.just(exchange.getRequest().getHeaders().toSingleValueMap());

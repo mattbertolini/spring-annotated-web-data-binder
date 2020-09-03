@@ -17,7 +17,7 @@
 package com.mattbertolini.spring.web.reactive.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.FormParameter;
-import org.springframework.core.convert.TypeDescriptor;
+import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -26,15 +26,15 @@ import reactor.core.publisher.Mono;
 
 public class FormParameterRequestPropertyResolver implements RequestPropertyResolver {
     @Override
-    public boolean supports(@NonNull TypeDescriptor typeDescriptor) {
-        FormParameter annotation = typeDescriptor.getAnnotation(FormParameter.class);
+    public boolean supports(@NonNull BindingProperty bindingProperty) {
+        FormParameter annotation = bindingProperty.getAnnotation(FormParameter.class);
         return annotation != null && StringUtils.hasText(annotation.value());
     }
 
     @NonNull
     @Override
-    public Mono<Object> resolve(@NonNull TypeDescriptor typeDescriptor, @NonNull ServerWebExchange exchange) {
-        FormParameter annotation = typeDescriptor.getAnnotation(FormParameter.class);
+    public Mono<Object> resolve(@NonNull BindingProperty bindingProperty, @NonNull ServerWebExchange exchange) {
+        FormParameter annotation = bindingProperty.getAnnotation(FormParameter.class);
         Assert.state(annotation != null, "No FormParameter annotation found on type");
         return exchange.getFormData()
             .filter(multiValueMap -> multiValueMap.getFirst(annotation.value()) != null)

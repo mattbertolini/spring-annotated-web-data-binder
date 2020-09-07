@@ -29,7 +29,7 @@ import java.util.Objects;
 /**
  * An abstraction around a Java bean property that contains reflection information used by the data binder. This class
  * is needed because the spring web framework need both the {@link MethodParameter} type and the {@link TypeDescriptor}
- * type. This class contains both derived from the same Java {@link PropertyDescriptor}.
+ * type. This class contains both types derived from the same Java {@link PropertyDescriptor}.
  */
 public final class BindingProperty {
     private final TypeDescriptor typeDescriptor;

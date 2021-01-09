@@ -1,6 +1,6 @@
 # Spring Annotated Web Data Binder
 
-[![Build Status](https://travis-ci.org/mattbertolini/spring-annotated-web-data-binder.svg?branch=master)](https://travis-ci.org/mattbertolini/spring-annotated-web-data-binder)
+[![Build Status](https://travis-ci.com/mattbertolini/spring-annotated-web-data-binder.svg?branch=main)](https://travis-ci.com/mattbertolini/spring-annotated-web-data-binder)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=mattbertolini_spring-annotated-web-data-binder&metric=coverage)](https://sonarcloud.io/dashboard?id=mattbertolini_spring-annotated-web-data-binder)
 [![Spring MVC Annotated Data Binder](https://img.shields.io/maven-central/v/com.mattbertolini/spring-webmvc-annotated-data-binder.svg?label=Spring%20MVC%20Annotated%20Data%20Binder)](https://search.maven.org/search?q=g:%22com.mattbertolini%22%20AND%20a:%22spring-webmvc-annotated-data-binder%22)
 [![Spring WebFlux Annotated Data Binder](https://img.shields.io/maven-central/v/com.mattbertolini/spring-webflux-annotated-data-binder.svg?label=Spring%20WebFlux%20Annotated%20Data%20Binder)](https://search.maven.org/search?q=g:%22com.mattbertolini%22%20AND%20a:%22spring-webflux-annotated-data-binder%22)

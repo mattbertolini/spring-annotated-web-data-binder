@@ -70,11 +70,10 @@ Full documentation is coming soon.
 
 ## Status
 
-This library is in beta status until the version reaches 1.0.0. This is because I would like to see how the API works 
-in the real world before it is considered stable. This means that the API can change without notice until version 1.0.0.
-After version 1.0.0 I will do my best to keep breaking changes to major version changes only.
-
-That being said, the library is tested and usable in a production environment.
+This library is tested and stable for use in a production environment. Until the version reaches 1.0.0 the API can 
+change because I would like to see how the API works in the real world before it is considered fully stable. At 
+version 1.0.0 I will do my best to keep breaking changes to major version changes only. If you encounter any bugs, 
+please file them in the issue tracker above.
 
 ## Background
 

@@ -63,11 +63,11 @@ public class BeanParameterMethodArgumentResolver extends ModelAttributeMethodPro
         MutablePropertyValues propertyValues = new MutablePropertyValues();
         List<ResolvedPropertyData> propertyData = introspector.getResolversFor(targetType);
         for (ResolvedPropertyData data : propertyData) {
-            String propertyName = data.getPropertyName();
             RequestPropertyResolver resolver = (RequestPropertyResolver) data.getResolver();
             try {
                 Object value = resolver.resolve(data.getBindingProperty(), request);
                 if (value != null) {
+                    String propertyName = data.getPropertyName();
                     propertyValues.add(propertyName, value);
                 }
             } catch (Exception e) {

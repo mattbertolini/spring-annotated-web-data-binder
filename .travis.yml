@@ -10,7 +10,7 @@ jobs:
   include:
     - name: OpenJDK 8
       jdk: openjdk8
-      script: ./gradlew jacocoTestReport
+      script: ./gradlew jacocoTestReport check
     - name: OpenJDK 11
       jdk: openjdk11
       script: ./gradlew jacocoTestReport sonarqube

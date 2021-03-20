@@ -33,7 +33,7 @@ import java.util.Set;
 public abstract class AbstractPropertyResolverRegistry<T extends RequestPropertyResolverBase<?, ?>> {
     private final Set<T> propertyResolvers;
 
-    public AbstractPropertyResolverRegistry() {
+    protected AbstractPropertyResolverRegistry() {
         propertyResolvers = new LinkedHashSet<>();
     }
 

@@ -10,6 +10,7 @@ session data to a Java bean. It has built-in support for nested beans, type conv
 a more advanced `@ModelAttribute`.  
 
 ```java
+@RequestBean // Annotate class for introspection at application startup
 public class CustomRequestBean {
     // Query parameters
     @RequestParameter("different_name")

@@ -4,6 +4,8 @@ plugins {
     id 'org.sonarqube' version '2.8'
 }
 
+def springVersion = '5.2.6.RELEASE'
+
 ext {
     projectsWithCoverage = []
     rootJacocoDir = "${rootProject.buildDir}/reports/jacoco/test"
@@ -15,7 +17,7 @@ ext {
 ext.javadocLinks = [
     'https://docs.oracle.com/javase/8/docs/api/',
     'https://docs.oracle.com/javaee/7/api/',
-    'https://docs.spring.io/spring/docs/5.2.6.RELEASE/javadoc-api/'
+    "https://docs.spring.io/spring/docs/$springVersion/javadoc-api/"
 ] as String[]
 
 subprojects {
@@ -32,7 +34,7 @@ subprojects {
     }
 
     dependencies {
-        implementation platform('org.springframework:spring-framework-bom:5.2.6.RELEASE')
+        implementation platform("org.springframework:spring-framework-bom:$springVersion")
         implementation platform('javax.servlet:javax.servlet-api:3.1.0')
         implementation platform('com.google.code.findbugs:jsr305:3.0.2')
 

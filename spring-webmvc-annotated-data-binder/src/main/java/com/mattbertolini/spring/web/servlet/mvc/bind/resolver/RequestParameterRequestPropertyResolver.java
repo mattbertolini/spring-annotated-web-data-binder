@@ -16,6 +16,7 @@
 
 package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
 
+import com.mattbertolini.spring.web.bind.PropertyResolutionException;
 import com.mattbertolini.spring.web.bind.annotation.RequestParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import com.mattbertolini.spring.web.bind.resolver.AbstractNamedRequestPropertyResolver;
@@ -24,6 +25,9 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.multipart.MultipartRequest;
+import org.springframework.web.multipart.support.MultipartResolutionDelegate;
+
+import javax.servlet.http.HttpServletRequest;
 
 public class RequestParameterRequestPropertyResolver extends AbstractNamedRequestPropertyResolver<NativeWebRequest, Object>
     implements RequestPropertyResolver {
@@ -36,10 +40,18 @@ public class RequestParameterRequestPropertyResolver extends AbstractNamedReques
 
     @Override
     protected Object resolveWithName(@NonNull BindingProperty bindingProperty, String name, @NonNull NativeWebRequest request) {
-        MultipartRequest multipartRequest = request.getNativeRequest(MultipartRequest.class);
-        if (multipartRequest != null) {
-            return multipartRequest.getFiles(name);
+        HttpServletRequest servletRequest = request.getNativeRequest(HttpServletRequest.class);
+        if (servletRequest != null) {
+            try {
+                Object value = MultipartResolutionDelegate.resolveMultipartArgument(name, bindingProperty.getMethodParameter(), servletRequest);
+                if (MultipartResolutionDelegate.UNRESOLVABLE != value) {
+                    return value;
+                }
+            } catch (Exception e) {
+                throw new PropertyResolutionException("Exception resolving multipart argument", e);
+            }
         }
+        
         return request.getParameterValues(name);
     }
     

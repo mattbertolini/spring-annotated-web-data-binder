@@ -21,6 +21,7 @@ import com.mattbertolini.spring.web.bind.annotation.FormParameter;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.Part;
 import javax.validation.constraints.NotEmpty;
 import java.util.Map;
 
@@ -44,6 +45,9 @@ public class FormParameterBean {
 
     @FormParameter("file")
     private MultipartFile multipartFile;
+
+    @FormParameter("part")
+    private Part part;
 
     @BeanParameter
     private NestedBean nestedBean;
@@ -104,6 +108,14 @@ public class FormParameterBean {
 
     public void setMultipartFile(MultipartFile multipartFile) {
         this.multipartFile = multipartFile;
+    }
+
+    public Part getPart() {
+        return part;
+    }
+
+    public void setPart(Part part) {
+        this.part = part;
     }
 
     public NestedBean getNestedBean() {

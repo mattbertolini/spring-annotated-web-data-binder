@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.mock.web.MockPart;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
@@ -116,6 +117,22 @@ class FormParameterIntegrationTest {
         );
         mockMvc.perform(multipart("/multipartFile")
             .file(multipartFile)
+            .contentType(MediaType.MULTIPART_FORM_DATA)
+            .accept(MediaType.TEXT_PLAIN))
+            .andExpect(status().isOk())
+            .andExpect(content().string(expected));
+    }
+
+    @Test
+    void bindsPart() throws Exception {
+        String expected = "this is a file part";
+        MockPart part = new MockPart(
+            "part",
+            "mockFile.txt",
+            expected.getBytes(StandardCharsets.UTF_8)
+        );
+        mockMvc.perform(multipart("/part")
+            .part(part)
             .contentType(MediaType.MULTIPART_FORM_DATA)
             .accept(MediaType.TEXT_PLAIN))
             .andExpect(status().isOk())

@@ -24,8 +24,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.Part;
 import javax.validation.Valid;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.Scanner;
 
 @RestController
 public class FormParameterController {
@@ -66,6 +69,14 @@ public class FormParameterController {
         return formParameterBean.getValidated();
     }
 
+    @PostMapping(value = "/validatedWithBindingResult", produces = MediaType.TEXT_PLAIN_VALUE)
+    public String validatedWithBindingResult(@Valid @BeanParameter FormParameterBean formParameterBean, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "notValid";
+        }
+        return "valid";
+    }
+
     @PostMapping(value = "/multipartFile", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String multipartFile(@BeanParameter FormParameterBean formParameterBean) throws Exception {
         MultipartFile multipartFile = formParameterBean.getMultipartFile();
@@ -75,12 +86,17 @@ public class FormParameterController {
         return new String(multipartFile.getBytes());
     }
 
-    @PostMapping(value = "/validatedWithBindingResult", produces = MediaType.TEXT_PLAIN_VALUE)
-    public String validatedWithBindingResult(@Valid @BeanParameter FormParameterBean formParameterBean, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return "notValid";
+    @PostMapping(value = "/part", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String part(@BeanParameter FormParameterBean formParameterBean) throws Exception {
+        Part part = formParameterBean.getPart();
+        if (part == null || part.getSize() <= 0) {
+            throw new RuntimeException("Multipart file is null or empty");
         }
-        return "valid";
+        String text;
+        try (Scanner scanner = new Scanner(part.getInputStream(), StandardCharsets.UTF_8.name())) {
+            text = scanner.useDelimiter("\\A").next();
+        }
+        return text;
     }
 
     @PostMapping(value = "/nested", produces = MediaType.TEXT_PLAIN_VALUE)

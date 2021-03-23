@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package com.mattbertolini.spring.test.web.bind;
 import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
 import com.mattbertolini.spring.web.bind.annotation.FormParameter;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotEmpty;
 import java.util.Map;
@@ -40,6 +41,9 @@ public class FormParameterBean {
     @NotEmpty
     @FormParameter("validated")
     private String validated;
+
+    @FormParameter("file")
+    private MultipartFile multipartFile;
 
     @BeanParameter
     private NestedBean nestedBean;
@@ -92,6 +96,14 @@ public class FormParameterBean {
 
     public void setValidated(String validated) {
         this.validated = validated;
+    }
+
+    public MultipartFile getMultipartFile() {
+        return multipartFile;
+    }
+
+    public void setMultipartFile(MultipartFile multipartFile) {
+        this.multipartFile = multipartFile;
     }
 
     public NestedBean getNestedBean() {

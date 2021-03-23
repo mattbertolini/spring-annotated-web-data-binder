@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
@@ -30,6 +31,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import java.nio.charset.StandardCharsets;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -99,6 +103,23 @@ class FormParameterIntegrationTest {
             .accept(MediaType.TEXT_PLAIN))
             .andExpect(status().isOk())
             .andExpect(content().string("notValid"));
+    }
+
+    @Test
+    void bindsMultipartFile() throws Exception {
+        String expected = "this is a multipart file";
+        MockMultipartFile multipartFile = new MockMultipartFile(
+            "file",
+            "mockFile.txt",
+            MediaType.TEXT_PLAIN_VALUE,
+            expected.getBytes(StandardCharsets.UTF_8)
+        );
+        mockMvc.perform(multipart("/multipartFile")
+            .file(multipartFile)
+            .contentType(MediaType.MULTIPART_FORM_DATA)
+            .accept(MediaType.TEXT_PLAIN))
+            .andExpect(status().isOk())
+            .andExpect(content().string(expected));
     }
 
     @Test

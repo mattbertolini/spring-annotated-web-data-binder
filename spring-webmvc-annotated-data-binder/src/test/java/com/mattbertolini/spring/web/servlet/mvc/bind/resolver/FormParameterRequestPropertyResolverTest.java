@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,17 @@ import com.mattbertolini.spring.web.bind.annotation.FormParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.mock.web.MockMultipartHttpServletRequest;
 import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
+import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -94,6 +100,23 @@ class FormParameterRequestPropertyResolverTest {
         assertThat(actual).isEqualTo(expected);
     }
 
+    @SuppressWarnings("unchecked")
+    @Test
+    void returnsMultipartFile() throws Exception {
+        MockMultipartHttpServletRequest multipartRequest = new MockMultipartHttpServletRequest();
+        MockMultipartFile multipartFile = new MockMultipartFile(
+            "multipart_file",
+            "testfile.txt",
+            MediaType.TEXT_PLAIN_VALUE,
+            "testing".getBytes(StandardCharsets.UTF_8)
+        );
+        multipartRequest.addFile(multipartFile);
+        
+        Object actual = resolver.resolve(bindingProperty("multipartFile"), new ServletWebRequest(multipartRequest));
+        assertThat(actual).isNotNull();
+        assertThat((Collection<MultipartFile>) actual).hasSize(1).first().isEqualTo(multipartFile);
+    }
+
     private BindingProperty bindingProperty(String property) throws IntrospectionException {
         return BindingProperty.forPropertyDescriptor(new PropertyDescriptor(property, TestingBean.class));
     }
@@ -110,6 +133,9 @@ class FormParameterRequestPropertyResolverTest {
 
         @FormParameter
         private String missingValue;
+
+        @FormParameter("multipart_file")
+        private MultipartFile multipartFile;
 
         public String getAnnotated() {
             return annotated;
@@ -141,6 +167,14 @@ class FormParameterRequestPropertyResolverTest {
 
         public void setMissingValue(String missingValue) {
             this.missingValue = missingValue;
+        }
+
+        public MultipartFile getMultipartFile() {
+            return multipartFile;
+        }
+
+        public void setMultipartFile(MultipartFile multipartFile) {
+            this.multipartFile = multipartFile;
         }
     }
 }

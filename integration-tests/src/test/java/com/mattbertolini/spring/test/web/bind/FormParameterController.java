@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.Map;
@@ -63,6 +64,15 @@ public class FormParameterController {
     @PostMapping(value = "/validated", produces = MediaType.TEXT_PLAIN_VALUE)
     public String validated(@Valid @BeanParameter FormParameterBean formParameterBean) {
         return formParameterBean.getValidated();
+    }
+
+    @PostMapping(value = "/multipartFile", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String multipartFile(@BeanParameter FormParameterBean formParameterBean) throws Exception {
+        MultipartFile multipartFile = formParameterBean.getMultipartFile();
+        if (multipartFile == null || multipartFile.isEmpty()) {
+            throw new RuntimeException("Multipart file is null or empty");
+        }
+        return new String(multipartFile.getBytes());
     }
 
     @PostMapping(value = "/validatedWithBindingResult", produces = MediaType.TEXT_PLAIN_VALUE)

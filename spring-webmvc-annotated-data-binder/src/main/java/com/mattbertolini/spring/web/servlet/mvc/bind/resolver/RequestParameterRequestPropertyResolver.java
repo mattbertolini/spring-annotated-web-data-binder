@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.multipart.MultipartRequest;
 
 public class RequestParameterRequestPropertyResolver extends AbstractNamedRequestPropertyResolver<NativeWebRequest, Object>
     implements RequestPropertyResolver {
@@ -35,6 +36,10 @@ public class RequestParameterRequestPropertyResolver extends AbstractNamedReques
 
     @Override
     protected Object resolveWithName(@NonNull BindingProperty bindingProperty, String name, @NonNull NativeWebRequest request) {
+        MultipartRequest multipartRequest = request.getNativeRequest(MultipartRequest.class);
+        if (multipartRequest != null) {
+            return multipartRequest.getFiles(name);
+        }
         return request.getParameterValues(name);
     }
     

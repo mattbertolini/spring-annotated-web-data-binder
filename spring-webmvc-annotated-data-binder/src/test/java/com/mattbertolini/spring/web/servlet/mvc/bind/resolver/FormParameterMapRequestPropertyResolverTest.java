@@ -16,6 +16,7 @@
 
 package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
 
+import com.mattbertolini.spring.web.bind.PropertyResolutionException;
 import com.mattbertolini.spring.web.bind.annotation.FormParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,6 +38,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class FormParameterMapRequestPropertyResolverTest {
     private FormParameterMapRequestPropertyResolver resolver;
@@ -220,6 +222,72 @@ class FormParameterMapRequestPropertyResolverTest {
         assertThat(actual).isInstanceOf(Map.class);
         Map<String, Part> map = (Map<String, Part>) actual;
         assertThat(map).containsEntry("file", fileOne);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void returnsEmptyMultiValueMultipartFileMap() throws Exception {
+        MockMultipartHttpServletRequest multipartRequest = new MockMultipartHttpServletRequest();
+        ServletWebRequest request = new ServletWebRequest(multipartRequest);
+
+        Object actual = resolver.resolve(bindingProperty("multiValueMultipartMap"), request);
+        assertThat(actual).isInstanceOf(MultiValueMap.class);
+        MultiValueMap<String, MultipartFile> map = (MultiValueMap<String, MultipartFile>) actual;
+        assertThat(map).isEmpty();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void returnsEmptyMultipartFileMap() throws Exception {
+        MockMultipartHttpServletRequest multipartRequest = new MockMultipartHttpServletRequest();
+        ServletWebRequest request = new ServletWebRequest(multipartRequest);
+
+        Object actual = resolver.resolve(bindingProperty("multipartFileMap"), request);
+        assertThat(actual).isInstanceOf(Map.class);
+        Map<String, MultipartFile> map = (Map<String, MultipartFile>) actual;
+        assertThat(map).isEmpty();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void returnsEmptyPartMap() throws Exception {
+        MockMultipartHttpServletRequest multipartRequest = new MockMultipartHttpServletRequest();
+        ServletWebRequest request = new ServletWebRequest(multipartRequest);
+
+        Object actual = resolver.resolve(bindingProperty("partMap"), request);
+        assertThat(actual).isInstanceOf(Map.class);
+        Map<String, Part> map = (Map<String, Part>) actual;
+        assertThat(map).isEmpty();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void returnsEmptyPartMultiValueMap() throws Exception {
+        MockMultipartHttpServletRequest multipartRequest = new MockMultipartHttpServletRequest();
+        ServletWebRequest request = new ServletWebRequest(multipartRequest);
+
+        Object actual = resolver.resolve(bindingProperty("multiValuePartMap"), request);
+        assertThat(actual).isInstanceOf(MultiValueMap.class);
+        MultiValueMap<String, Part> map = (MultiValueMap<String, Part>) actual;
+        assertThat(map).isEmpty();
+    }
+
+    @Test
+    void throwsExceptionReadingMultipartRequestForMap() {
+        MockMultipartHttpServletRequest multipartRequest = new ExceptionThrowingMockMultipartHttpServletRequest();
+        ServletWebRequest request = new ServletWebRequest(multipartRequest);
+
+        assertThatThrownBy(() -> resolver.resolve(bindingProperty("partMap"), request))
+            .isInstanceOf(PropertyResolutionException.class);
+    }
+
+    @Test
+    void throwsExceptionReadingMultipartRequestForMultiValueMap() {
+        MockMultipartHttpServletRequest multipartRequest = new ExceptionThrowingMockMultipartHttpServletRequest();
+        ServletWebRequest request = new ServletWebRequest(multipartRequest);
+
+        assertThatThrownBy(() -> resolver.resolve(bindingProperty("multiValuePartMap"), request))
+            .isInstanceOf(PropertyResolutionException.class);
     }
 
     private BindingProperty bindingProperty(String property) throws IntrospectionException {

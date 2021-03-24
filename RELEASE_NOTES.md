@@ -1,5 +1,11 @@
 # Release Notes
 
+## 0.3.0
+Released 2021-03-24
+
+- Add support for binding `MultipartFile` and Servlet API `Part` objects using `@FormParamter` and `@RequestParamter` 
+  annotations. `MultipartFile` and `Part` are only for Spring MVC and do not work in Spring WebFlux. 
+
 ## 0.2.0
 Released 2020-09-02
 

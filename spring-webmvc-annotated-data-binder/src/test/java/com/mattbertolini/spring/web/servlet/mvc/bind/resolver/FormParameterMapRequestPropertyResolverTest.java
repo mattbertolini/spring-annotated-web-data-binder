@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,29 @@
 
 package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
 
+import com.mattbertolini.spring.web.bind.PropertyResolutionException;
 import com.mattbertolini.spring.web.bind.annotation.FormParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.mock.web.MockMultipartHttpServletRequest;
+import org.springframework.mock.web.MockPart;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.Part;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class FormParameterMapRequestPropertyResolverTest {
     private FormParameterMapRequestPropertyResolver resolver;
@@ -87,6 +96,202 @@ class FormParameterMapRequestPropertyResolverTest {
         assertThat(map).containsEntry("form_param", "one");
     }
 
+    @SuppressWarnings("unchecked")
+    @Test
+    void returnsMultipartFileMap() throws Exception {
+        MockMultipartFile fileOne = new MockMultipartFile("file_one",
+            "fileOne.txt",
+            MediaType.TEXT_PLAIN_VALUE,
+            "fileOne".getBytes(StandardCharsets.UTF_8));
+        MockMultipartFile fileTwo = new MockMultipartFile("file_two",
+            "fileTwo.txt",
+            MediaType.TEXT_PLAIN_VALUE,
+            "fileTwo".getBytes(StandardCharsets.UTF_8));
+        MockMultipartHttpServletRequest multipartRequest = new MockMultipartHttpServletRequest();
+        multipartRequest.addFile(fileOne);
+        multipartRequest.addFile(fileTwo);
+        ServletWebRequest request = new ServletWebRequest(multipartRequest);
+
+        Object actual = resolver.resolve(bindingProperty("multipartFileMap"), request);
+        assertThat(actual).isInstanceOf(Map.class);
+        Map<String, MultipartFile> map = (Map<String, MultipartFile>) actual;
+        assertThat(map).containsEntry("file_one", fileOne)
+            .containsEntry("file_two", fileTwo);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void returnsMultipartFileMultiValueMap() throws Exception {
+        MockMultipartFile fileOne = new MockMultipartFile("file",
+            "fileOne.txt",
+            MediaType.TEXT_PLAIN_VALUE,
+            "fileOne".getBytes(StandardCharsets.UTF_8));
+        MockMultipartFile fileTwo = new MockMultipartFile("file",
+            "fileTwo.txt",
+            MediaType.TEXT_PLAIN_VALUE,
+            "fileTwo".getBytes(StandardCharsets.UTF_8));
+        MockMultipartHttpServletRequest multipartRequest = new MockMultipartHttpServletRequest();
+        multipartRequest.addFile(fileOne);
+        multipartRequest.addFile(fileTwo);
+        ServletWebRequest request = new ServletWebRequest(multipartRequest);
+
+        Object actual = resolver.resolve(bindingProperty("multiValueMultipartMap"), request);
+        assertThat(actual).isInstanceOf(MultiValueMap.class);
+        MultiValueMap<String, MultipartFile> map = (MultiValueMap<String, MultipartFile>) actual;
+        assertThat(map).containsEntry("file", Arrays.asList(fileOne, fileTwo));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void returnsFirstMultipartFileInMap() throws Exception {
+        MockMultipartFile fileOne = new MockMultipartFile("file",
+            "fileOne.txt",
+            MediaType.TEXT_PLAIN_VALUE,
+            "fileOne".getBytes(StandardCharsets.UTF_8));
+        MockMultipartFile fileTwo = new MockMultipartFile("file",
+            "fileTwo.txt",
+            MediaType.TEXT_PLAIN_VALUE,
+            "fileTwo".getBytes(StandardCharsets.UTF_8));
+        MockMultipartHttpServletRequest multipartRequest = new MockMultipartHttpServletRequest();
+        multipartRequest.addFile(fileOne);
+        multipartRequest.addFile(fileTwo);
+        ServletWebRequest request = new ServletWebRequest(multipartRequest);
+
+        Object actual = resolver.resolve(bindingProperty("multipartFileMap"), request);
+        assertThat(actual).isInstanceOf(Map.class);
+        Map<String, MultipartFile> map = (Map<String, MultipartFile>) actual;
+        assertThat(map).containsEntry("file", fileOne);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void returnsPartMap() throws Exception {
+        MockPart fileOne = new MockPart("file_one",
+            "fileOne.txt",
+            "fileOne".getBytes(StandardCharsets.UTF_8));
+        MockPart fileTwo = new MockPart("file_two",
+            "fileTwo.txt",
+            "fileTwo".getBytes(StandardCharsets.UTF_8));
+        MockMultipartHttpServletRequest multipartRequest = new MockMultipartHttpServletRequest();
+        multipartRequest.addPart(fileOne);
+        multipartRequest.addPart(fileTwo);
+        ServletWebRequest request = new ServletWebRequest(multipartRequest);
+
+        Object actual = resolver.resolve(bindingProperty("partMap"), request);
+        assertThat(actual).isInstanceOf(Map.class);
+        Map<String, Part> map = (Map<String, Part>) actual;
+        assertThat(map).containsEntry("file_one", fileOne)
+            .containsEntry("file_two", fileTwo);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void returnsPartMultiValueMap() throws Exception {
+        MockPart fileOne = new MockPart("file",
+            "fileOne.txt",
+            "fileOne".getBytes(StandardCharsets.UTF_8));
+        MockPart fileTwo = new MockPart("file",
+            "fileTwo.txt",
+            "fileTwo".getBytes(StandardCharsets.UTF_8));
+        MockMultipartHttpServletRequest multipartRequest = new MockMultipartHttpServletRequest();
+        multipartRequest.addPart(fileOne);
+        multipartRequest.addPart(fileTwo);
+        ServletWebRequest request = new ServletWebRequest(multipartRequest);
+
+        Object actual = resolver.resolve(bindingProperty("multiValuePartMap"), request);
+        assertThat(actual).isInstanceOf(MultiValueMap.class);
+        MultiValueMap<String, Part> map = (MultiValueMap<String, Part>) actual;
+        assertThat(map).containsEntry("file", Arrays.asList(fileOne, fileTwo));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void returnsFirstPartInMap() throws Exception {
+        MockPart fileOne = new MockPart("file",
+            "fileOne.txt",
+            "fileOne".getBytes(StandardCharsets.UTF_8));
+        MockPart fileTwo = new MockPart("file",
+            "fileTwo.txt",
+            "fileTwo".getBytes(StandardCharsets.UTF_8));
+        MockMultipartHttpServletRequest multipartRequest = new MockMultipartHttpServletRequest();
+        multipartRequest.addPart(fileOne);
+        multipartRequest.addPart(fileTwo);
+        ServletWebRequest request = new ServletWebRequest(multipartRequest);
+
+        Object actual = resolver.resolve(bindingProperty("partMap"), request);
+        assertThat(actual).isInstanceOf(Map.class);
+        Map<String, Part> map = (Map<String, Part>) actual;
+        assertThat(map).containsEntry("file", fileOne);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void returnsEmptyMultiValueMultipartFileMap() throws Exception {
+        MockMultipartHttpServletRequest multipartRequest = new MockMultipartHttpServletRequest();
+        ServletWebRequest request = new ServletWebRequest(multipartRequest);
+
+        Object actual = resolver.resolve(bindingProperty("multiValueMultipartMap"), request);
+        assertThat(actual).isInstanceOf(MultiValueMap.class);
+        MultiValueMap<String, MultipartFile> map = (MultiValueMap<String, MultipartFile>) actual;
+        assertThat(map).isEmpty();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void returnsEmptyMultipartFileMap() throws Exception {
+        MockMultipartHttpServletRequest multipartRequest = new MockMultipartHttpServletRequest();
+        ServletWebRequest request = new ServletWebRequest(multipartRequest);
+
+        Object actual = resolver.resolve(bindingProperty("multipartFileMap"), request);
+        assertThat(actual).isInstanceOf(Map.class);
+        Map<String, MultipartFile> map = (Map<String, MultipartFile>) actual;
+        assertThat(map).isEmpty();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void returnsEmptyPartMap() throws Exception {
+        MockMultipartHttpServletRequest multipartRequest = new MockMultipartHttpServletRequest();
+        ServletWebRequest request = new ServletWebRequest(multipartRequest);
+
+        Object actual = resolver.resolve(bindingProperty("partMap"), request);
+        assertThat(actual).isInstanceOf(Map.class);
+        Map<String, Part> map = (Map<String, Part>) actual;
+        assertThat(map).isEmpty();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void returnsEmptyPartMultiValueMap() throws Exception {
+        MockMultipartHttpServletRequest multipartRequest = new MockMultipartHttpServletRequest();
+        ServletWebRequest request = new ServletWebRequest(multipartRequest);
+
+        Object actual = resolver.resolve(bindingProperty("multiValuePartMap"), request);
+        assertThat(actual).isInstanceOf(MultiValueMap.class);
+        MultiValueMap<String, Part> map = (MultiValueMap<String, Part>) actual;
+        assertThat(map).isEmpty();
+    }
+
+    @Test
+    void throwsExceptionReadingMultipartRequestForMap() throws Exception {
+        MockMultipartHttpServletRequest multipartRequest = new ExceptionThrowingMockMultipartHttpServletRequest();
+        ServletWebRequest request = new ServletWebRequest(multipartRequest);
+
+        BindingProperty bindingProperty = bindingProperty("partMap");
+        assertThatThrownBy(() -> resolver.resolve(bindingProperty, request))
+            .isInstanceOf(PropertyResolutionException.class);
+    }
+
+    @Test
+    void throwsExceptionReadingMultipartRequestForMultiValueMap() throws Exception {
+        MockMultipartHttpServletRequest multipartRequest = new ExceptionThrowingMockMultipartHttpServletRequest();
+        ServletWebRequest request = new ServletWebRequest(multipartRequest);
+
+        BindingProperty bindingProperty = bindingProperty("multiValuePartMap");
+        assertThatThrownBy(() -> resolver.resolve(bindingProperty, request))
+            .isInstanceOf(PropertyResolutionException.class);
+    }
+
     private BindingProperty bindingProperty(String property) throws IntrospectionException {
         return BindingProperty.forPropertyDescriptor(new PropertyDescriptor(property, TestingBean.class));
     }
@@ -106,6 +311,18 @@ class FormParameterMapRequestPropertyResolverTest {
 
         @FormParameter
         private String notAMap;
+
+        @FormParameter
+        private Map<String, MultipartFile> multipartFileMap;
+
+        @FormParameter
+        private MultiValueMap<String, MultipartFile> multiValueMultipartMap;
+
+        @FormParameter
+        private Map<String, Part> partMap;
+
+        @FormParameter
+        private MultiValueMap<String, Part> multiValuePartMap;
 
         public Map<String, String> getAnnotated() {
             return annotated;
@@ -145,6 +362,38 @@ class FormParameterMapRequestPropertyResolverTest {
 
         public void setNotAMap(String notAMap) {
             this.notAMap = notAMap;
+        }
+
+        public Map<String, MultipartFile> getMultipartFileMap() {
+            return multipartFileMap;
+        }
+
+        public void setMultipartFileMap(Map<String, MultipartFile> multipartFileMap) {
+            this.multipartFileMap = multipartFileMap;
+        }
+
+        public MultiValueMap<String, MultipartFile> getMultiValueMultipartMap() {
+            return multiValueMultipartMap;
+        }
+
+        public void setMultiValueMultipartMap(MultiValueMap<String, MultipartFile> multiValueMultipartMap) {
+            this.multiValueMultipartMap = multiValueMultipartMap;
+        }
+
+        public Map<String, Part> getPartMap() {
+            return partMap;
+        }
+
+        public void setPartMap(Map<String, Part> partMap) {
+            this.partMap = partMap;
+        }
+
+        public MultiValueMap<String, Part> getMultiValuePartMap() {
+            return multiValuePartMap;
+        }
+
+        public void setMultiValuePartMap(MultiValueMap<String, Part> multiValuePartMap) {
+            this.multiValuePartMap = multiValuePartMap;
         }
     }
 }

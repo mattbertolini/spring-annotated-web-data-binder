@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,28 @@
 
 package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
 
+import com.mattbertolini.spring.web.bind.PropertyResolutionException;
 import com.mattbertolini.spring.web.bind.annotation.FormParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.mock.web.MockMultipartHttpServletRequest;
+import org.springframework.mock.web.MockPart;
 import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.Part;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class FormParameterRequestPropertyResolverTest {
     private FormParameterRequestPropertyResolver resolver;
@@ -93,6 +102,69 @@ class FormParameterRequestPropertyResolverTest {
         Object actual = resolver.resolve(bindingProperty("multipleValues"), request);
         assertThat(actual).isEqualTo(expected);
     }
+    
+    @Test
+    void returnsMultipartFile() throws Exception {
+        MockMultipartHttpServletRequest multipartRequest = new MockMultipartHttpServletRequest();
+        MockMultipartFile multipartFile = new MockMultipartFile(
+            "multipart_file",
+            "testfile.txt",
+            MediaType.TEXT_PLAIN_VALUE,
+            "testing".getBytes(StandardCharsets.UTF_8)
+        );
+        multipartRequest.addFile(multipartFile);
+        
+        Object actual = resolver.resolve(bindingProperty("multipartFile"), new ServletWebRequest(multipartRequest));
+        assertThat(actual).isNotNull();
+        assertThat((MultipartFile) actual).isEqualTo(multipartFile);
+    }
+
+    @Test
+    void returnsPart() throws Exception {
+        MockMultipartHttpServletRequest multipartRequest = new MockMultipartHttpServletRequest();
+        MockPart part = new MockPart(
+            "part",
+            "testfile.txt",
+            "testing".getBytes(StandardCharsets.UTF_8)
+        );
+        multipartRequest.addPart(part);
+
+        Object actual = resolver.resolve(bindingProperty("part"), new ServletWebRequest(multipartRequest));
+        assertThat(actual).isNotNull();
+        assertThat((Part) actual).isEqualTo(part);
+    }
+
+    @Test
+    void returnsMultipartFileAndFormParameter() throws Exception {
+        MockMultipartFile multipartFile = new MockMultipartFile(
+            "multipart_file",
+            "testfile.txt",
+            MediaType.TEXT_PLAIN_VALUE,
+            "testing".getBytes(StandardCharsets.UTF_8)
+        );
+
+        MockMultipartHttpServletRequest multipartRequest = new MockMultipartHttpServletRequest();
+        multipartRequest.addParameter("testing", "formValue");
+        multipartRequest.addFile(multipartFile);
+        ServletWebRequest request = new ServletWebRequest(multipartRequest);
+
+        Object formValue = resolver.resolve(bindingProperty("annotated"), request);
+        assertThat(formValue).isEqualTo(new String[]{"formValue"});
+
+        Object actual = resolver.resolve(bindingProperty("multipartFile"), request);
+        assertThat(actual).isNotNull();
+        assertThat((MultipartFile) actual).isEqualTo(multipartFile);
+    }
+
+    @Test
+    void throwsExceptionReadingMultipartRequest() throws Exception {
+        MockMultipartHttpServletRequest multipartRequest = new ExceptionThrowingMockMultipartHttpServletRequest();
+        ServletWebRequest request = new ServletWebRequest(multipartRequest);
+
+        BindingProperty bindingProperty = bindingProperty("multipartFile");
+        assertThatThrownBy(() -> resolver.resolve(bindingProperty, request))
+            .isInstanceOf(PropertyResolutionException.class);
+    }
 
     private BindingProperty bindingProperty(String property) throws IntrospectionException {
         return BindingProperty.forPropertyDescriptor(new PropertyDescriptor(property, TestingBean.class));
@@ -110,6 +182,12 @@ class FormParameterRequestPropertyResolverTest {
 
         @FormParameter
         private String missingValue;
+
+        @FormParameter("multipart_file")
+        private MultipartFile multipartFile;
+
+        @FormParameter("part")
+        private Part part;
 
         public String getAnnotated() {
             return annotated;
@@ -141,6 +219,22 @@ class FormParameterRequestPropertyResolverTest {
 
         public void setMissingValue(String missingValue) {
             this.missingValue = missingValue;
+        }
+
+        public MultipartFile getMultipartFile() {
+            return multipartFile;
+        }
+
+        public void setMultipartFile(MultipartFile multipartFile) {
+            this.multipartFile = multipartFile;
+        }
+
+        public Part getPart() {
+            return part;
+        }
+
+        public void setPart(Part part) {
+            this.part = part;
         }
     }
 }

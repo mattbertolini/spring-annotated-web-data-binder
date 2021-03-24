@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
 
+import com.mattbertolini.spring.web.bind.PropertyResolutionException;
 import com.mattbertolini.spring.web.bind.annotation.RequestParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import com.mattbertolini.spring.web.bind.resolver.AbstractNamedRequestPropertyResolver;
@@ -23,6 +24,9 @@ import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.multipart.support.MultipartResolutionDelegate;
+
+import javax.servlet.http.HttpServletRequest;
 
 public class RequestParameterRequestPropertyResolver extends AbstractNamedRequestPropertyResolver<NativeWebRequest, Object>
     implements RequestPropertyResolver {
@@ -35,6 +39,18 @@ public class RequestParameterRequestPropertyResolver extends AbstractNamedReques
 
     @Override
     protected Object resolveWithName(@NonNull BindingProperty bindingProperty, String name, @NonNull NativeWebRequest request) {
+        HttpServletRequest servletRequest = request.getNativeRequest(HttpServletRequest.class);
+        if (servletRequest != null) {
+            try {
+                Object value = MultipartResolutionDelegate.resolveMultipartArgument(name, bindingProperty.getMethodParameter(), servletRequest);
+                if (MultipartResolutionDelegate.UNRESOLVABLE != value) {
+                    return value;
+                }
+            } catch (Exception e) {
+                throw new PropertyResolutionException("Exception resolving multipart argument", e);
+            }
+        }
+        
         return request.getParameterValues(name);
     }
     

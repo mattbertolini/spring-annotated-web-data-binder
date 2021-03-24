@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,19 @@ package com.mattbertolini.spring.test.web.bind;
 import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
 import org.springframework.http.MediaType;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StreamUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.Part;
 import javax.validation.Valid;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 public class FormParameterController {
@@ -71,6 +78,67 @@ public class FormParameterController {
             return "notValid";
         }
         return "valid";
+    }
+
+    @PostMapping(value = "/multipartFile", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String multipartFile(@BeanParameter FormParameterBean.ServletMultipartBean formParameterBean) throws Exception {
+        MultipartFile multipartFile = formParameterBean.getMultipartFile();
+        if (multipartFile == null || multipartFile.isEmpty()) {
+            throw new RuntimeException("Multipart file is null or empty");
+        }
+        return new String(multipartFile.getBytes());
+    }
+
+    @PostMapping(value = "/part", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String part(@BeanParameter FormParameterBean.ServletMultipartBean formParameterBean) throws Exception {
+        Part part = formParameterBean.getPart();
+        if (part == null || part.getSize() <= 0) {
+            throw new RuntimeException("Multipart file is null or empty");
+        }
+        return StreamUtils.copyToString(part.getInputStream(), StandardCharsets.UTF_8);
+    }
+
+    @PostMapping(value = "/multipartFileMap", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String multipartFileMap(@BeanParameter FormParameterBean.ServletMultipartBean formParameterBean) throws Exception {
+        Map<String, MultipartFile> multipartFileMap = formParameterBean.getMultipartFileMap();
+        MultipartFile fileOne = multipartFileMap.get("fileOne");
+        MultipartFile fileTwo = multipartFileMap.get("fileTwo");
+        return new String(fileOne.getBytes()) + ", " + new String(fileTwo.getBytes());
+    }
+
+    @PostMapping(value = "/multiValueMultipartFileMap", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String multiValueMultipartFileMap(@BeanParameter FormParameterBean.ServletMultipartBean formParameterBean) {
+        MultiValueMap<String, MultipartFile> multiValueMultipartMap = formParameterBean.getMultiValueMultipartMap();
+        List<MultipartFile> files = multiValueMultipartMap.get("file");
+        return files.stream().map(multipartFile -> {
+            try {
+                return new String(multipartFile.getBytes());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }).collect(Collectors.joining(", "));
+    }
+
+    @PostMapping(value = "/partMap", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String partMap(@BeanParameter FormParameterBean.ServletMultipartBean formParameterBean) throws Exception {
+        Map<String, Part> partMap = formParameterBean.getPartMap();
+        Part fileOne = partMap.get("fileOne");
+        Part fileTwo = partMap.get("fileTwo");
+        return StreamUtils.copyToString(fileOne.getInputStream(), StandardCharsets.UTF_8)
+            + ", " + StreamUtils.copyToString(fileTwo.getInputStream(), StandardCharsets.UTF_8);
+    }
+
+    @PostMapping(value = "/multiValuePartMap", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String multiValuePartMap(@BeanParameter FormParameterBean.ServletMultipartBean formParameterBean) {
+        MultiValueMap<String, Part> multiValuePartMap = formParameterBean.getMultiValuePartMap();
+        List<Part> files = multiValuePartMap.get("file");
+        return files.stream().map(part -> {
+            try {
+                return StreamUtils.copyToString(part.getInputStream(), StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }).collect(Collectors.joining(", "));
     }
 
     @PostMapping(value = "/nested", produces = MediaType.TEXT_PLAIN_VALUE)

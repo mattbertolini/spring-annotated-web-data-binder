@@ -43,12 +43,6 @@ public class FormParameterBean {
     @FormParameter("validated")
     private String validated;
 
-    @FormParameter("file")
-    private MultipartFile multipartFile;
-
-    @FormParameter("part")
-    private Part part;
-
     @BeanParameter
     private NestedBean nestedBean;
 
@@ -102,27 +96,82 @@ public class FormParameterBean {
         this.validated = validated;
     }
 
-    public MultipartFile getMultipartFile() {
-        return multipartFile;
-    }
-
-    public void setMultipartFile(MultipartFile multipartFile) {
-        this.multipartFile = multipartFile;
-    }
-
-    public Part getPart() {
-        return part;
-    }
-
-    public void setPart(Part part) {
-        this.part = part;
-    }
-
     public NestedBean getNestedBean() {
         return nestedBean;
     }
 
     public void setNestedBean(NestedBean nestedBean) {
         this.nestedBean = nestedBean;
+    }
+
+    /**
+     * Test bean for multipart binding in a Servlet/WebMVC application
+     */
+    static class ServletMultipartBean {
+        @FormParameter("file")
+        private MultipartFile multipartFile;
+
+        @FormParameter("part")
+        private Part part;
+
+        @FormParameter
+        private Map<String, MultipartFile> multipartFileMap;
+
+        @FormParameter
+        private MultiValueMap<String, MultipartFile> multiValueMultipartMap;
+
+        @FormParameter
+        private Map<String, Part> partMap;
+
+        @FormParameter
+        private MultiValueMap<String, Part> multiValuePartMap;
+
+        public MultipartFile getMultipartFile() {
+            return multipartFile;
+        }
+
+        public void setMultipartFile(MultipartFile multipartFile) {
+            this.multipartFile = multipartFile;
+        }
+
+        public Part getPart() {
+            return part;
+        }
+
+        public void setPart(Part part) {
+            this.part = part;
+        }
+
+        public Map<String, MultipartFile> getMultipartFileMap() {
+            return multipartFileMap;
+        }
+
+        public void setMultipartFileMap(Map<String, MultipartFile> multipartFileMap) {
+            this.multipartFileMap = multipartFileMap;
+        }
+
+        public MultiValueMap<String, MultipartFile> getMultiValueMultipartMap() {
+            return multiValueMultipartMap;
+        }
+
+        public void setMultiValueMultipartMap(MultiValueMap<String, MultipartFile> multiValueMultipartMap) {
+            this.multiValueMultipartMap = multiValueMultipartMap;
+        }
+
+        public Map<String, Part> getPartMap() {
+            return partMap;
+        }
+
+        public void setPartMap(Map<String, Part> partMap) {
+            this.partMap = partMap;
+        }
+
+        public MultiValueMap<String, Part> getMultiValuePartMap() {
+            return multiValuePartMap;
+        }
+
+        public void setMultiValuePartMap(MultiValueMap<String, Part> multiValuePartMap) {
+            this.multiValuePartMap = multiValuePartMap;
+        }
     }
 }

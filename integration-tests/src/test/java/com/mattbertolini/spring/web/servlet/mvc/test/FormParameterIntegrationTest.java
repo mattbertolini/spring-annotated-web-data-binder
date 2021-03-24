@@ -140,6 +140,94 @@ class FormParameterIntegrationTest {
     }
 
     @Test
+    void bindsMultipartFileMap() throws Exception {
+        MockMultipartFile fileOne = new MockMultipartFile(
+            "fileOne",
+            "fileOne.txt",
+            MediaType.TEXT_PLAIN_VALUE,
+            "fileOneValue".getBytes(StandardCharsets.UTF_8)
+        );
+        MockMultipartFile fileTwo = new MockMultipartFile(
+            "fileTwo",
+            "fileTwo.txt",
+            MediaType.TEXT_PLAIN_VALUE,
+            "fileTwoValue".getBytes(StandardCharsets.UTF_8)
+        );
+        mockMvc.perform(multipart("/multipartFileMap")
+            .file(fileOne)
+            .file(fileTwo)
+            .contentType(MediaType.MULTIPART_FORM_DATA)
+            .accept(MediaType.TEXT_PLAIN))
+            .andExpect(status().isOk())
+            .andExpect(content().string("fileOneValue, fileTwoValue"));
+    }
+
+    @Test
+    void bindsMultiValueMultipartFileMap() throws Exception {
+        MockMultipartFile fileOne = new MockMultipartFile(
+            "file",
+            "fileOne.txt",
+            MediaType.TEXT_PLAIN_VALUE,
+            "fileOneValue".getBytes(StandardCharsets.UTF_8)
+        );
+        MockMultipartFile fileTwo = new MockMultipartFile(
+            "file",
+            "fileTwo.txt",
+            MediaType.TEXT_PLAIN_VALUE,
+            "fileTwoValue".getBytes(StandardCharsets.UTF_8)
+        );
+        mockMvc.perform(multipart("/multiValueMultipartFileMap")
+            .file(fileOne)
+            .file(fileTwo)
+            .contentType(MediaType.MULTIPART_FORM_DATA)
+            .accept(MediaType.TEXT_PLAIN))
+            .andExpect(status().isOk())
+            .andExpect(content().string("fileOneValue, fileTwoValue"));
+    }
+
+    @Test
+    void bindsPartMap() throws Exception {
+        MockPart fileOne = new MockPart(
+            "fileOne",
+            "fileOne.txt",
+            "fileOneValue".getBytes(StandardCharsets.UTF_8)
+        );
+        MockPart fileTwo = new MockPart(
+            "fileTwo",
+            "fileTwo.txt",
+            "fileTwoValue".getBytes(StandardCharsets.UTF_8)
+        );
+        mockMvc.perform(multipart("/partMap")
+            .part(fileOne)
+            .part(fileTwo)
+            .contentType(MediaType.MULTIPART_FORM_DATA)
+            .accept(MediaType.TEXT_PLAIN))
+            .andExpect(status().isOk())
+            .andExpect(content().string("fileOneValue, fileTwoValue"));
+    }
+
+    @Test
+    void bindsMultiValuePartMap() throws Exception {
+        MockPart fileOne = new MockPart(
+            "file",
+            "fileOne.txt",
+            "fileOneValue".getBytes(StandardCharsets.UTF_8)
+        );
+        MockPart fileTwo = new MockPart(
+            "file",
+            "fileTwo.txt",
+            "fileTwoValue".getBytes(StandardCharsets.UTF_8)
+        );
+        mockMvc.perform(multipart("/multiValuePartMap")
+            .part(fileOne)
+            .part(fileTwo)
+            .contentType(MediaType.MULTIPART_FORM_DATA)
+            .accept(MediaType.TEXT_PLAIN))
+            .andExpect(status().isOk())
+            .andExpect(content().string("fileOneValue, fileTwoValue"));
+    }
+
+    @Test
     void bindsNestedBean() throws Exception {
         makeRequest("/nested", "nested_form_param=expectedValue")
             .andExpect(status().isOk())

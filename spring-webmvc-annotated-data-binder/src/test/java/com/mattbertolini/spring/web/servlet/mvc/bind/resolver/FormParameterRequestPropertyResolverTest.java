@@ -132,6 +132,28 @@ class FormParameterRequestPropertyResolverTest {
         assertThat((Part) actual).isEqualTo(part);
     }
 
+    @Test
+    void returnsMultipartFileAndFormParameter() throws Exception {
+        MockMultipartFile multipartFile = new MockMultipartFile(
+            "multipart_file",
+            "testfile.txt",
+            MediaType.TEXT_PLAIN_VALUE,
+            "testing".getBytes(StandardCharsets.UTF_8)
+        );
+
+        MockMultipartHttpServletRequest multipartRequest = new MockMultipartHttpServletRequest();
+        multipartRequest.addParameter("testing", "formValue");
+        multipartRequest.addFile(multipartFile);
+        ServletWebRequest request = new ServletWebRequest(multipartRequest);
+
+        Object formValue = resolver.resolve(bindingProperty("annotated"), request);
+        assertThat(formValue).isEqualTo(new String[]{"formValue"});
+
+        Object actual = resolver.resolve(bindingProperty("multipartFile"), request);
+        assertThat(actual).isNotNull();
+        assertThat((MultipartFile) actual).isEqualTo(multipartFile);
+    }
+
     private BindingProperty bindingProperty(String property) throws IntrospectionException {
         return BindingProperty.forPropertyDescriptor(new PropertyDescriptor(property, TestingBean.class));
     }

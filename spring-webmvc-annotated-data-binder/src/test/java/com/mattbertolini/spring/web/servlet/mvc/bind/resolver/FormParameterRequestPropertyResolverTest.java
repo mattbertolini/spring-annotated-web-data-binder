@@ -157,11 +157,12 @@ class FormParameterRequestPropertyResolverTest {
     }
 
     @Test
-    void throwsExceptionReadingMultipartRequest() {
+    void throwsExceptionReadingMultipartRequest() throws Exception {
         MockMultipartHttpServletRequest multipartRequest = new ExceptionThrowingMockMultipartHttpServletRequest();
         ServletWebRequest request = new ServletWebRequest(multipartRequest);
 
-        assertThatThrownBy(() -> resolver.resolve(bindingProperty("multipartFile"), request))
+        BindingProperty bindingProperty = bindingProperty("multipartFile");
+        assertThatThrownBy(() -> resolver.resolve(bindingProperty, request))
             .isInstanceOf(PropertyResolutionException.class);
     }
 

@@ -273,20 +273,22 @@ class FormParameterMapRequestPropertyResolverTest {
     }
 
     @Test
-    void throwsExceptionReadingMultipartRequestForMap() {
+    void throwsExceptionReadingMultipartRequestForMap() throws Exception {
         MockMultipartHttpServletRequest multipartRequest = new ExceptionThrowingMockMultipartHttpServletRequest();
         ServletWebRequest request = new ServletWebRequest(multipartRequest);
 
-        assertThatThrownBy(() -> resolver.resolve(bindingProperty("partMap"), request))
+        BindingProperty bindingProperty = bindingProperty("partMap");
+        assertThatThrownBy(() -> resolver.resolve(bindingProperty, request))
             .isInstanceOf(PropertyResolutionException.class);
     }
 
     @Test
-    void throwsExceptionReadingMultipartRequestForMultiValueMap() {
+    void throwsExceptionReadingMultipartRequestForMultiValueMap() throws Exception {
         MockMultipartHttpServletRequest multipartRequest = new ExceptionThrowingMockMultipartHttpServletRequest();
         ServletWebRequest request = new ServletWebRequest(multipartRequest);
 
-        assertThatThrownBy(() -> resolver.resolve(bindingProperty("multiValuePartMap"), request))
+        BindingProperty bindingProperty = bindingProperty("multiValuePartMap");
+        assertThatThrownBy(() -> resolver.resolve(bindingProperty, request))
             .isInstanceOf(PropertyResolutionException.class);
     }
 

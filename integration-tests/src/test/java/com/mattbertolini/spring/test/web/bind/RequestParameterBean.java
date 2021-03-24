@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,9 @@ package com.mattbertolini.spring.test.web.bind;
 import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
 import com.mattbertolini.spring.web.bind.annotation.RequestParameter;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.Part;
 import javax.validation.constraints.NotEmpty;
 import java.util.Map;
 
@@ -100,5 +102,76 @@ public class RequestParameterBean {
 
     public void setNestedBean(NestedBean nestedBean) {
         this.nestedBean = nestedBean;
+    }
+
+    /**
+     * Test bean for multipart binding in a Servlet/WebMVC application
+     */
+    static class ServletMultipartBean {
+        @RequestParameter("file")
+        private MultipartFile multipartFile;
+
+        @RequestParameter("part")
+        private Part part;
+
+        @RequestParameter
+        private Map<String, MultipartFile> multipartFileMap;
+
+        @RequestParameter
+        private MultiValueMap<String, MultipartFile> multiValueMultipartMap;
+
+        @RequestParameter
+        private Map<String, Part> partMap;
+
+        @RequestParameter
+        private MultiValueMap<String, Part> multiValuePartMap;
+
+        public MultipartFile getMultipartFile() {
+            return multipartFile;
+        }
+
+        public void setMultipartFile(MultipartFile multipartFile) {
+            this.multipartFile = multipartFile;
+        }
+
+        public Part getPart() {
+            return part;
+        }
+
+        public void setPart(Part part) {
+            this.part = part;
+        }
+
+        public Map<String, MultipartFile> getMultipartFileMap() {
+            return multipartFileMap;
+        }
+
+        public void setMultipartFileMap(Map<String, MultipartFile> multipartFileMap) {
+            this.multipartFileMap = multipartFileMap;
+        }
+
+        public MultiValueMap<String, MultipartFile> getMultiValueMultipartMap() {
+            return multiValueMultipartMap;
+        }
+
+        public void setMultiValueMultipartMap(MultiValueMap<String, MultipartFile> multiValueMultipartMap) {
+            this.multiValueMultipartMap = multiValueMultipartMap;
+        }
+
+        public Map<String, Part> getPartMap() {
+            return partMap;
+        }
+
+        public void setPartMap(Map<String, Part> partMap) {
+            this.partMap = partMap;
+        }
+
+        public MultiValueMap<String, Part> getMultiValuePartMap() {
+            return multiValuePartMap;
+        }
+
+        public void setMultiValuePartMap(MultiValueMap<String, Part> multiValuePartMap) {
+            this.multiValuePartMap = multiValuePartMap;
+        }
     }
 }

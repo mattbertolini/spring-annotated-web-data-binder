@@ -16,6 +16,7 @@
 
 package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
 
+import com.mattbertolini.spring.web.bind.PropertyResolutionException;
 import com.mattbertolini.spring.web.bind.annotation.RequestParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,6 +37,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class RequestParameterRequestPropertyResolverTest {
     private RequestParameterRequestPropertyResolver resolver;
@@ -152,6 +154,15 @@ class RequestParameterRequestPropertyResolverTest {
         Object actual = resolver.resolve(bindingProperty("multipartFile"), request);
         assertThat(actual).isNotNull();
         assertThat((MultipartFile) actual).isEqualTo(multipartFile);
+    }
+
+    @Test
+    void throwsExceptionReadingMultipartRequest() {
+        MockMultipartHttpServletRequest multipartRequest = new ExceptionThrowingMockMultipartHttpServletRequest();
+        ServletWebRequest request = new ServletWebRequest(multipartRequest);
+
+        assertThatThrownBy(() -> resolver.resolve(bindingProperty("multipartFile"), request))
+            .isInstanceOf(PropertyResolutionException.class);
     }
 
     private BindingProperty bindingProperty(String property) throws IntrospectionException {

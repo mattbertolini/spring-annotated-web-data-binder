@@ -14,7 +14,7 @@ Setting up the binder is very simple. Just add a single bean to your Spring conf
 [source,java,indent=0]
 .Java
 ----
-include::{sourceDir}/com/mattbertolini/spring/web/bind/docs/webmvc/ExampleContext.java[tag=javaMvcConfiguration]
+include::{sourceDir}/com/mattbertolini/spring/web/bind/docs/webmvc/ExampleMvcContext.java[tag=javaMvcConfiguration]
 ----
 
 If you are using Spring XML configuration you can also add the configuration bean like below. Spring WebFlux doesn't
@@ -58,7 +58,7 @@ include::{sourceDir}/com/mattbertolini/spring/web/bind/docs/CustomRequestBean.ja
 [NOTE]
 ====
 Due to the architecture of the Java Servlet framework, query parameters and form data are grouped together as request
-parameters. Because of this, the `@RequestParamter` and `@FormParamter` are basically alises for each other in Spring
+parameters. Because of this, the `@RequestParameter` and `@FormParameter` are basically aliases for each other in Spring
 MVC. In Spring WebFlux these two data types are treated separately.
 ====
 

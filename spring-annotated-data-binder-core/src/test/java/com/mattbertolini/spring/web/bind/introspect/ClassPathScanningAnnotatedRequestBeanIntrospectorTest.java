@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package com.mattbertolini.spring.web.bind.introspect;
 
 import com.mattbertolini.spring.web.bind.introspect.scan.IgnoredBean;
 import com.mattbertolini.spring.web.bind.introspect.scan.ScannedBean;
-import org.assertj.core.api.Assertions;
+import com.mattbertolini.spring.web.bind.introspect.scan.subbackage.SubpackageBean;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -50,6 +50,7 @@ class ClassPathScanningAnnotatedRequestBeanIntrospectorTest {
         ClassPathScanningAnnotatedRequestBeanIntrospector introspector = new ClassPathScanningAnnotatedRequestBeanIntrospector(delegateIntrospector, packages);
         introspector.afterPropertiesSet();
         verify(delegateIntrospector).getResolversFor(ScannedBean.class);
+        verify(delegateIntrospector).getResolversFor(SubpackageBean.class);
         verify(delegateIntrospector, never()).getResolversFor(IgnoredBean.class);
     }
 

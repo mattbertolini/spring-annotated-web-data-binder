@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,7 +66,7 @@ public class ClassPathScanningAnnotatedRequestBeanIntrospector implements Annota
         ClassLoader classLoader = ClassPathScanningAnnotatedRequestBeanIntrospector.class.getClassLoader();
         LOGGER.debug("Searching for @RequestBean annotated classes in package [" + basePackage + "]");
         Set<BeanDefinition> candidateComponents = scanner.findCandidateComponents(basePackage);
-        LOGGER.debug("Found" + candidateComponents.size() + " annotated classes in package [" + basePackage + "]");
+        LOGGER.debug("Found " + candidateComponents.size() + " annotated classes in package [" + basePackage + "]");
         for (BeanDefinition candidateComponent : candidateComponents) {
             String beanClassName = candidateComponent.getBeanClassName();
             if (!StringUtils.hasText(beanClassName)) {

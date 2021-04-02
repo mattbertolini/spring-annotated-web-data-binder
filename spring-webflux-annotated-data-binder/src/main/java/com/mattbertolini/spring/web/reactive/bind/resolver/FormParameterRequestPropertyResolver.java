@@ -51,7 +51,7 @@ public class FormParameterRequestPropertyResolver implements RequestPropertyReso
     }
 
     @NonNull
-    private Object getPartValues(List<Part> parts) {
+    private Object getPartValues(@NonNull List<Part> parts) {
         List<Object> values = parts.stream()
             .map(value -> value instanceof FormFieldPart ? ((FormFieldPart) value).value() : value)
             .collect(Collectors.toList());

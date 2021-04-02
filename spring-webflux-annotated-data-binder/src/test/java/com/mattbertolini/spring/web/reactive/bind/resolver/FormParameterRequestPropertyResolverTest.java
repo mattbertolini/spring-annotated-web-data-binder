@@ -144,6 +144,29 @@ class FormParameterRequestPropertyResolverTest {
         assertThat(partContentToString(filePart)).isEqualTo("expected");
     }
 
+    @SuppressWarnings("unchecked")
+    @Test
+    void returnsMultipleMultipartFileParts() throws Exception {
+        MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
+        multipartBodyBuilder.part("file", "expectedOne")
+            .contentType(MediaType.TEXT_PLAIN)
+            .filename("mockFileOne.txt");
+        multipartBodyBuilder.part("file", "expectedTwo")
+            .contentType(MediaType.TEXT_PLAIN)
+            .filename("mockFileTwo.txt");
+
+        ServerWebExchange exchange = createMultipartExchange(multipartBodyBuilder);
+        Mono<Object> actual = resolver.resolve(bindingProperty("multipartValue"), exchange);
+        Object obj = actual.block();
+        assertThat(obj).isNotNull()
+            .isInstanceOf(List.class);
+        List<Part> partsList = (List<Part>) obj;
+        for (Part part : partsList) {
+            assertThat(partContentToString(part)).startsWith("expected");
+        }
+
+    }
+
     @Test
     void returnsMultipartFilePartAndFormParameter() throws Exception {
         MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();

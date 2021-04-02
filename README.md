@@ -100,7 +100,7 @@ This library is my attempt to fill the gap I see in Spring MVC.
 ## Requirements
 
 * Java 8+
-* Spring MVC or Spring WebFlux (5.2.6+)   
+* Spring MVC or Spring WebFlux (5.3.5+)   
 
 ## Use
 

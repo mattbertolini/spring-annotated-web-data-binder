@@ -53,12 +53,9 @@ public class FormParameterRequestPropertyResolver implements RequestPropertyReso
 
     @NonNull
     private Object getPartValues(List<Part> parts) {
-        if (!CollectionUtils.isEmpty(parts)) {
-            List<Object> values = parts.stream()
-                .map(value -> value instanceof FormFieldPart ? ((FormFieldPart) value).value() : value)
-                .collect(Collectors.toList());
-            return values.size() == 1 ? values.get(0) : values;
-        }
-        return Mono.empty();
+        List<Object> values = parts.stream()
+            .map(value -> value instanceof FormFieldPart ? ((FormFieldPart) value).value() : value)
+            .collect(Collectors.toList());
+        return values.size() == 1 ? values.get(0) : values;
     }
 }

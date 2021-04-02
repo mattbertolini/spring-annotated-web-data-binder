@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,29 +20,50 @@ import com.mattbertolini.spring.web.bind.annotation.FormParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.ResolvableType;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.MultipartBodyBuilder;
+import org.springframework.http.codec.ClientCodecConfigurer;
+import org.springframework.http.codec.HttpMessageWriter;
+import org.springframework.http.codec.multipart.FilePart;
+import org.springframework.http.codec.multipart.MultipartHttpMessageWriter;
+import org.springframework.http.codec.multipart.Part;
+import org.springframework.mock.http.client.reactive.MockClientHttpRequest;
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
 import org.springframework.mock.web.server.MockServerWebExchange;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class FormParameterRequestPropertyResolverTest {
 
+    private MultipartHttpMessageWriter writer;
+
     private FormParameterRequestPropertyResolver resolver;
 
     @BeforeEach
     void setUp() {
+        List<HttpMessageWriter<?>> writers = ClientCodecConfigurer.create().getWriters();
+        writer = new MultipartHttpMessageWriter(writers);
+
         resolver = new FormParameterRequestPropertyResolver();
     }
-    
+
     @Test
     void supportsReturnsTrueOnPresenceOfAnnotation() throws Exception {
         boolean result = resolver.supports(bindingProperty("annotated"));
@@ -107,8 +128,66 @@ class FormParameterRequestPropertyResolverTest {
         assertThat(actual.block()).isEqualTo(expected);
     }
 
+    @Test
+    void returnsMultipartFilePart() throws Exception {
+        MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
+        multipartBodyBuilder.part("file", "expected")
+            .contentType(MediaType.TEXT_PLAIN)
+            .filename("mockFile.txt");
+
+        ServerWebExchange exchange = createMultipartExchange(multipartBodyBuilder);
+        Mono<Object> actual = resolver.resolve(bindingProperty("multipartValue"), exchange);
+        Object obj = actual.block();
+        assertThat(obj).isNotNull()
+            .isInstanceOf(FilePart.class);
+        FilePart filePart = (FilePart) obj;
+        assertThat(partContentToString(filePart)).isEqualTo("expected");
+    }
+
+    @Test
+    void returnsMultipartFilePartAndFormParameter() throws Exception {
+        MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
+        multipartBodyBuilder.part("testing", "simpleValue");
+        multipartBodyBuilder.part("file", "filePart")
+            .contentType(MediaType.TEXT_PLAIN)
+            .filename("mockFile.txt");
+
+        ServerWebExchange exchange = createMultipartExchange(multipartBodyBuilder);
+
+        Mono<Object> simpleValue = resolver.resolve(bindingProperty("annotated"), exchange);
+        assertThat(simpleValue.block()).isEqualTo("simpleValue");
+
+        Mono<Object> multipartValue = resolver.resolve(bindingProperty("multipartValue"), exchange);
+        Object obj = multipartValue.block();
+        assertThat(obj).isNotNull()
+            .isInstanceOf(FilePart.class);
+        FilePart filePart = (FilePart) obj;
+        assertThat(partContentToString(filePart)).isEqualTo("filePart");
+    }
+
     private BindingProperty bindingProperty(String property) throws IntrospectionException {
         return BindingProperty.forPropertyDescriptor(new PropertyDescriptor(property, TestingBean.class));
+    }
+
+    private ServerWebExchange createMultipartExchange(MultipartBodyBuilder builder) {
+        MockClientHttpRequest clientRequest = new MockClientHttpRequest(HttpMethod.POST, "/irrelevant");
+        writer.write(Mono.just(builder.build()), ResolvableType.forClass(MultiValueMap.class),
+            MediaType.MULTIPART_FORM_DATA, clientRequest, Collections.emptyMap()).block();
+
+        MediaType contentType = clientRequest.getHeaders().getContentType();
+        Flux<DataBuffer> body = clientRequest.getBody();
+        Objects.requireNonNull(contentType, "Content type header missing");
+        MockServerHttpRequest serverRequest = MockServerHttpRequest.post("/irrelevant")
+            .contentType(contentType)
+            .body(body);
+
+        return MockServerWebExchange.from(serverRequest);
+    }
+
+    private String partContentToString(Part part) {
+        DataBuffer data = DataBufferUtils.join(part.content()).block();
+        Objects.requireNonNull(data, "Data buffer is null");
+        return data.toString(StandardCharsets.UTF_8);
     }
 
     @SuppressWarnings("unused")
@@ -123,6 +202,9 @@ class FormParameterRequestPropertyResolverTest {
 
         @FormParameter
         private String missingValue;
+
+        @FormParameter("file")
+        private Part multipartValue;
 
         public String getAnnotated() {
             return annotated;
@@ -154,6 +236,14 @@ class FormParameterRequestPropertyResolverTest {
 
         public void setMissingValue(String missingValue) {
             this.missingValue = missingValue;
+        }
+
+        public Part getMultipartValue() {
+            return multipartValue;
+        }
+
+        public void setMultipartValue(Part multipartValue) {
+            this.multipartValue = multipartValue;
         }
     }
 }

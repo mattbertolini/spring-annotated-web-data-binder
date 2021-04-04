@@ -19,7 +19,7 @@ jar {
         attributes(
             'Implementation-Title': project.name,
             'Implementation-Version': archiveVersion,
-            'Automatic-Module-Name': 'com.mattbertolini.spring.web.reactive.bind.todo' // TODO
+            'Automatic-Module-Name': 'com.mattbertolini.spring.web.mvc.bind.autoconfigure'
         )
     }
 }
@@ -63,7 +63,7 @@ publishing {
             from components.java
 
             pom {
-                name = 'Spring Boot MVC Annotated Data Binder Starter'
+                name = 'Spring MVC Annotated Data Binder Spring Boot Starter'
                 description = 'Spring Boot starter for Spring MVC Annotated Java Bean data binder'
                 url = 'https://github.com/mattbertolini/spring-annotated-web-data-binder'
                 developers {

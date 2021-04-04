@@ -5,4 +5,5 @@ include 'spring-webflux-annotated-data-binder'
 include 'integration-tests'
 include 'docs'
 include 'webmvc-annotated-data-binder-spring-boot-starter'
+include 'webflux-annotated-data-binder-spring-boot-starter'
 

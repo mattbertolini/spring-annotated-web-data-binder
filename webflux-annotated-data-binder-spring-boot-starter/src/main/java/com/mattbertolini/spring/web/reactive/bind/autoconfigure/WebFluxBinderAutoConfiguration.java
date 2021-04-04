@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.mattbertolini.spring.web.servlet.mvc.bind.autoconfigure;
+package com.mattbertolini.spring.web.reactive.bind.autoconfigure;
 
-import com.mattbertolini.spring.web.servlet.mvc.bind.config.BinderConfiguration;
-import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.RequestPropertyResolver;
+import com.mattbertolini.spring.web.reactive.bind.config.BinderConfiguration;
+import com.mattbertolini.spring.web.reactive.bind.resolver.RequestPropertyResolver;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackages;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -30,10 +30,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Configuration
-public class WebMvcBinderAutoConfiguration {
+public class WebFluxBinderAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
+    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
     public BinderConfiguration binderConfiguration(Optional<List<RequestPropertyResolver>> customResolvers, BeanFactory beanFactory) {
         List<String> packages = AutoConfigurationPackages.get(beanFactory);
         BinderConfiguration binderConfiguration = new BinderConfiguration();

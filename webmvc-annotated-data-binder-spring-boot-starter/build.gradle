@@ -11,7 +11,7 @@ repositories {
 
 dependencies {
     api project(':spring-webmvc-annotated-data-binder')
-    implementation 'org.springframework.boot:spring-boot-autoconfigure:2.3.4.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
 }
 
 jar {

@@ -20,7 +20,6 @@ import com.mattbertolini.spring.web.servlet.mvc.bind.PropertyResolverRegistry;
 import com.mattbertolini.spring.web.servlet.mvc.bind.config.BinderConfiguration;
 import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.RequestPropertyResolver;
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackages;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -35,14 +34,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+@ConditionalOnMissingBean(BinderConfiguration.class)
+@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 public class WebMvcBinderAutoConfiguration {
     private final List<String> packagesToScan = new LinkedList<>();
     private final Set<RequestPropertyResolver> customResolvers = new LinkedHashSet<>();
     private final Set<PropertyResolverRegistry> propertyResolverRegistries = new LinkedHashSet<>();
-
-    @Autowired
+    
     public WebMvcBinderAutoConfiguration(BeanFactory beanFactory,
                                          Optional<List<RequestPropertyResolver>> customResolvers,
                                          Optional<List<PropertyResolverRegistry>> propertyResolverRegistries) {
@@ -52,8 +52,6 @@ public class WebMvcBinderAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean
-    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
     public BinderConfiguration binderConfiguration() {
         BinderConfiguration binderConfiguration = new BinderConfiguration();
         packagesToScan.forEach(binderConfiguration::addPackageToScan);

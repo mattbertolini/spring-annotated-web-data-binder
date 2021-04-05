@@ -20,7 +20,6 @@ import com.mattbertolini.spring.web.reactive.bind.PropertyResolverRegistry;
 import com.mattbertolini.spring.web.reactive.bind.config.BinderConfiguration;
 import com.mattbertolini.spring.web.reactive.bind.resolver.RequestPropertyResolver;
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackages;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -35,26 +34,24 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+@ConditionalOnMissingBean(BinderConfiguration.class)
+@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
 public class WebFluxBinderAutoConfiguration {
     private final List<String> packagesToScan = new LinkedList<>();
     private final Set<RequestPropertyResolver> customResolvers = new LinkedHashSet<>();
     private final Set<PropertyResolverRegistry> propertyResolverRegistries = new LinkedHashSet<>();
-
-    @Autowired
+    
     public WebFluxBinderAutoConfiguration(BeanFactory beanFactory,
                                           Optional<List<RequestPropertyResolver>> customResolvers,
                                           Optional<List<PropertyResolverRegistry>> propertyResolverRegistries) {
         packagesToScan.addAll(AutoConfigurationPackages.get(beanFactory));
         customResolvers.ifPresent(this.customResolvers::addAll);
         propertyResolverRegistries.ifPresent(this.propertyResolverRegistries::addAll);
-
     }
 
     @Bean
-    @ConditionalOnMissingBean
-    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
     public BinderConfiguration binderConfiguration() {
         BinderConfiguration binderConfiguration = new BinderConfiguration();
         packagesToScan.forEach(binderConfiguration::addPackageToScan);

@@ -46,7 +46,9 @@ public class WebFluxBinderAutoConfiguration {
     public WebFluxBinderAutoConfiguration(BeanFactory beanFactory,
                                           Optional<List<RequestPropertyResolver>> customResolvers,
                                           Optional<List<PropertyResolverRegistry>> propertyResolverRegistries) {
-        packagesToScan.addAll(AutoConfigurationPackages.get(beanFactory));
+        if (AutoConfigurationPackages.has(beanFactory)) {
+            packagesToScan.addAll(AutoConfigurationPackages.get(beanFactory));
+        }
         customResolvers.ifPresent(this.customResolvers::addAll);
         propertyResolverRegistries.ifPresent(this.propertyResolverRegistries::addAll);
     }

@@ -12,6 +12,11 @@ repositories {
 dependencies {
     api project(':spring-webflux-annotated-data-binder')
     implementation 'org.springframework.boot:spring-boot-autoconfigure'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    testImplementation 'org.assertj:assertj-core'
+    testImplementation 'org.springframework.boot:spring-boot-test'
 }
 
 jar {

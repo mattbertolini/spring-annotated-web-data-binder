@@ -41,7 +41,7 @@ subprojects {
         implementation platform('com.google.code.findbugs:jsr305:3.0.2')
 
         constraints {
-            implementation "org.springframework.boot:spring-boot-autoconfigure:$springBootVersion"
+            implementation "org.springframework.boot:spring-boot-starter:$springBootVersion"
             implementation "org.springframework.boot:spring-boot-test:$springBootVersion"
         }
 

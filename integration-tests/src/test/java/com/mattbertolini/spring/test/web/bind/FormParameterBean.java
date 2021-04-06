@@ -18,6 +18,7 @@ package com.mattbertolini.spring.test.web.bind;
 
 import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
 import com.mattbertolini.spring.web.bind.annotation.FormParameter;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -172,6 +173,22 @@ public class FormParameterBean {
 
         public void setMultiValuePartMap(MultiValueMap<String, Part> multiValuePartMap) {
             this.multiValuePartMap = multiValuePartMap;
+        }
+    }
+
+    /**
+     * Test bean for multipart binding in a WebFlux application
+     */
+    static class WebfluxMultipartBean {
+        @FormParameter("file")
+        private FilePart filePart;
+
+        public FilePart getFilePart() {
+            return filePart;
+        }
+
+        public void setFilePart(FilePart filePart) {
+            this.filePart = filePart;
         }
     }
 }

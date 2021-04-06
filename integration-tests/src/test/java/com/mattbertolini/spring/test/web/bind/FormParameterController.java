@@ -17,16 +17,21 @@
 package com.mattbertolini.spring.test.web.bind;
 
 import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.MediaType;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StreamUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import reactor.core.publisher.Flux;
 
 import javax.servlet.http.Part;
 import javax.validation.Valid;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -62,6 +67,7 @@ public class FormParameterController {
         return multiValueMap.getFirst("multi-value-map");
     }
 
+    @SuppressWarnings("unused")
     @PostMapping(value = "/bindingResult", produces = MediaType.TEXT_PLAIN_VALUE)
     public String bindingResult(@BeanParameter FormParameterBean formParameterBean, BindingResult bindingResult) {
         return Integer.toString(bindingResult.getErrorCount());
@@ -72,6 +78,7 @@ public class FormParameterController {
         return formParameterBean.getValidated();
     }
 
+    @SuppressWarnings("unused")
     @PostMapping(value = "/validatedWithBindingResult", produces = MediaType.TEXT_PLAIN_VALUE)
     public String validatedWithBindingResult(@Valid @BeanParameter FormParameterBean formParameterBean, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -139,6 +146,18 @@ public class FormParameterController {
                 throw new RuntimeException(e);
             }
         }).collect(Collectors.joining(", "));
+    }
+
+    @PostMapping(value = "/webFluxFilePart", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    public String webFluxFilePart(@BeanParameter FormParameterBean.WebfluxMultipartBean formParameterBean) {
+        FilePart filePart = formParameterBean.getFilePart();
+        if (filePart == null) {
+            throw new RuntimeException("Multipart file is null or empty");
+        }
+        ByteArrayOutputStream data = new ByteArrayOutputStream();
+        Flux<DataBuffer> dataBuffer = DataBufferUtils.write(filePart.content(), data);
+        dataBuffer.subscribe(DataBufferUtils.releaseConsumer());
+        return new String(data.toByteArray(), StandardCharsets.UTF_8);
     }
 
     @PostMapping(value = "/nested", produces = MediaType.TEXT_PLAIN_VALUE)

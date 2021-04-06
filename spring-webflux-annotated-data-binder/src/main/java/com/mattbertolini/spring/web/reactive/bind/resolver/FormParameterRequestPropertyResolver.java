@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,16 @@ package com.mattbertolini.spring.web.reactive.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.FormParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
+import org.springframework.http.codec.multipart.FormFieldPart;
+import org.springframework.http.codec.multipart.Part;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class FormParameterRequestPropertyResolver implements RequestPropertyResolver {
     @Override
@@ -36,8 +41,20 @@ public class FormParameterRequestPropertyResolver implements RequestPropertyReso
     public Mono<Object> resolve(@NonNull BindingProperty bindingProperty, @NonNull ServerWebExchange exchange) {
         FormParameter annotation = bindingProperty.getAnnotation(FormParameter.class);
         Assert.state(annotation != null, "No FormParameter annotation found on type");
-        return exchange.getFormData()
-            .filter(multiValueMap -> multiValueMap.getFirst(annotation.value()) != null)
-            .map(multiValueMap -> multiValueMap.get(annotation.value()));
+        return exchange.getMultipartData()
+            .filter(multipartData -> multipartData.getFirst(annotation.value()) != null)
+            .map(multipartData -> multipartData.get(annotation.value()))
+            .map(this::getPartValues)
+            .switchIfEmpty(exchange.getFormData()
+                .filter(formData -> formData.getFirst(annotation.value()) != null)
+                .map(formData -> formData.get(annotation.value())));
+    }
+
+    @NonNull
+    private Object getPartValues(@NonNull List<Part> parts) {
+        List<Object> values = parts.stream()
+            .map(value -> value instanceof FormFieldPart ? ((FormFieldPart) value).value() : value)
+            .collect(Collectors.toList());
+        return values.size() == 1 ? values.get(0) : values;
     }
 }

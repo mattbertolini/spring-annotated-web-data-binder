@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -30,6 +31,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.reactive.config.EnableWebFlux;
 
 import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
+import static org.springframework.web.reactive.function.BodyInserters.fromMultipartData;
 
 @SpringJUnitWebConfig(classes = {FormParameterIntegrationTest.Context.class})
 class FormParameterIntegrationTest {
@@ -103,6 +105,23 @@ class FormParameterIntegrationTest {
         makeRequest("/nested", "nested_form_param")
             .expectStatus().isOk()
             .expectBody(String.class).isEqualTo("expectedValue");
+    }
+
+    @Test
+    void bindsMultipartFile() {
+        String expected = "this is a multipart file";
+        MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
+        multipartBodyBuilder.part("file", expected)
+            .contentType(MediaType.TEXT_PLAIN)
+            .filename("mockFile.txt");
+        webTestClient.post()
+            .uri("/webFluxFilePart")
+            .contentType(MediaType.MULTIPART_FORM_DATA)
+            .body(fromMultipartData(multipartBodyBuilder.build()))
+            .accept(MediaType.TEXT_PLAIN)
+            .exchange()
+            .expectStatus().isOk()
+            .expectBody(String.class).isEqualTo(expected);
     }
 
     private WebTestClient.ResponseSpec makeRequest(String path, String inputParameter) {

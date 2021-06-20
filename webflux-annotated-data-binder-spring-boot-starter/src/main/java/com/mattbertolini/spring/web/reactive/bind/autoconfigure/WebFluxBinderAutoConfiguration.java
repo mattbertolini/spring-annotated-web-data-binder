@@ -20,6 +20,7 @@ import com.mattbertolini.spring.web.reactive.bind.PropertyResolverRegistry;
 import com.mattbertolini.spring.web.reactive.bind.config.BinderConfiguration;
 import com.mattbertolini.spring.web.reactive.bind.resolver.RequestPropertyResolver;
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackages;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -44,13 +45,13 @@ public class WebFluxBinderAutoConfiguration {
     private final Set<PropertyResolverRegistry> propertyResolverRegistries = new LinkedHashSet<>();
     
     public WebFluxBinderAutoConfiguration(BeanFactory beanFactory,
-                                          Optional<List<RequestPropertyResolver>> customResolvers,
-                                          Optional<List<PropertyResolverRegistry>> propertyResolverRegistries) {
+                                          ObjectProvider<List<RequestPropertyResolver>> customResolvers,
+                                          ObjectProvider<List<PropertyResolverRegistry>> propertyResolverRegistries) {
         if (AutoConfigurationPackages.has(beanFactory)) {
             packagesToScan.addAll(AutoConfigurationPackages.get(beanFactory));
         }
-        customResolvers.ifPresent(this.customResolvers::addAll);
-        propertyResolverRegistries.ifPresent(this.propertyResolverRegistries::addAll);
+        customResolvers.ifAvailable(this.customResolvers::addAll);
+        propertyResolverRegistries.ifAvailable(this.propertyResolverRegistries::addAll);
     }
 
     @Bean

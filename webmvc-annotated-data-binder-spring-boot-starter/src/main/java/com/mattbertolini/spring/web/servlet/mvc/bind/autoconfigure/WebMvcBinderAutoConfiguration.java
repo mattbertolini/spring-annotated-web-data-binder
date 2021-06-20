@@ -20,6 +20,7 @@ import com.mattbertolini.spring.web.servlet.mvc.bind.PropertyResolverRegistry;
 import com.mattbertolini.spring.web.servlet.mvc.bind.config.BinderConfiguration;
 import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.RequestPropertyResolver;
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackages;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -31,7 +32,6 @@ import org.springframework.context.annotation.Role;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Configuration(proxyBeanMethods = false)
@@ -44,13 +44,13 @@ public class WebMvcBinderAutoConfiguration {
     private final Set<PropertyResolverRegistry> propertyResolverRegistries = new LinkedHashSet<>();
     
     public WebMvcBinderAutoConfiguration(BeanFactory beanFactory,
-                                         Optional<List<RequestPropertyResolver>> customResolvers,
-                                         Optional<List<PropertyResolverRegistry>> propertyResolverRegistries) {
+                                         ObjectProvider<List<RequestPropertyResolver>> customResolvers,
+                                         ObjectProvider<List<PropertyResolverRegistry>> propertyResolverRegistries) {
         if (AutoConfigurationPackages.has(beanFactory)) {
             packagesToScan.addAll(AutoConfigurationPackages.get(beanFactory));
         }
-        customResolvers.ifPresent(this.customResolvers::addAll);
-        propertyResolverRegistries.ifPresent(this.propertyResolverRegistries::addAll);
+        customResolvers.ifAvailable(this.customResolvers::addAll);
+        propertyResolverRegistries.ifAvailable(this.propertyResolverRegistries::addAll);
     }
 
     @Bean

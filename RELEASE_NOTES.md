@@ -1,5 +1,14 @@
 # Release Notes
 
+## 0.4.0
+Released 2021-06-20
+
+- New Spring Boot starter modules for both Web MVC and WebFlux implementations. Allows quick and easy use of the data 
+  binder in Spring Boot applications with no configuration.
+- Add basic support for Multipart request data in WebFlux.
+- Minimum supported Spring version: 5.3.8
+- Minimum supported Spring Boot version: 2.4.7
+
 ## 0.3.0
 Released 2021-03-24
 

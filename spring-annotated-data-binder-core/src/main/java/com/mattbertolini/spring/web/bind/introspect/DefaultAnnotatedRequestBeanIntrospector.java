@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +20,10 @@ import com.mattbertolini.spring.web.bind.AbstractPropertyResolverRegistry;
 import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
 import com.mattbertolini.spring.web.bind.resolver.RequestPropertyResolverBase;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeansException;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -65,14 +63,13 @@ public class DefaultAnnotatedRequestBeanIntrospector implements AnnotatedRequest
                                           @Nullable final String prefix,
                                           @NonNull final List<ResolvedPropertyData> propertyData,
                                           @NonNull final Set<Class<?>> cycleClasses) {
-        BeanInfo beanInfo;
+        PropertyDescriptor[] propertyDescriptors;
         try {
-            beanInfo = Introspector.getBeanInfo(targetType);
-        } catch (IntrospectionException e) {
+            propertyDescriptors = BeanUtils.getPropertyDescriptors(targetType);
+        } catch (BeansException e) {
             throw new RequestBeanIntrospectionException("Unable to introspect request bean of type " +
                 targetType.getName() + ": " + e.getMessage(), e);
         }
-        PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
         for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
             String propertyName = getPropertyName(prefix, propertyDescriptor);
             BindingProperty bindingProperty = BindingProperty.forPropertyDescriptor(propertyDescriptor);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 the original author or authors.
+ * Copyright 2019-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,12 +28,18 @@ import org.springframework.core.MethodParameter;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.ModelAttributeMethodProcessor;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.Map;
 
 public class BeanParameterMethodArgumentResolver extends ModelAttributeMethodProcessor {
+    private static final String INTROSPECTOR_TARGET_CLASS = BeanParameterMethodArgumentResolver.class +
+        ".INTROSPECTOR_TARGET_CLASS";
+
     private final AnnotatedRequestBeanIntrospector introspector;
 
     public BeanParameterMethodArgumentResolver(@NonNull AnnotatedRequestBeanIntrospector introspector) {
@@ -61,7 +67,7 @@ public class BeanParameterMethodArgumentResolver extends ModelAttributeMethodPro
     @NonNull
     private PropertyValues makePropertyValues(@NonNull Class<?> targetType, @NonNull NativeWebRequest request) {
         MutablePropertyValues propertyValues = new MutablePropertyValues();
-        List<ResolvedPropertyData> propertyData = introspector.getResolversFor(targetType);
+        Collection<ResolvedPropertyData> propertyData = introspector.getResolversFor(targetType);
         for (ResolvedPropertyData data : propertyData) {
             RequestPropertyResolver resolver = (RequestPropertyResolver) data.getResolver();
             try {
@@ -75,5 +81,31 @@ public class BeanParameterMethodArgumentResolver extends ModelAttributeMethodPro
             }
         }
         return propertyValues;
+    }
+
+    @Override
+    @NonNull
+    protected Object createAttribute(@NonNull String attributeName, MethodParameter parameter, @NonNull WebDataBinderFactory binderFactory, NativeWebRequest webRequest) throws Exception {
+        try {
+            MethodParameter nestedParameter = parameter.nestedIfOptional();
+            Class<?> clazz = nestedParameter.getNestedParameterType();
+            webRequest.setAttribute(INTROSPECTOR_TARGET_CLASS, clazz, WebRequest.SCOPE_REQUEST);
+            return super.createAttribute(attributeName, parameter, binderFactory, webRequest);
+        } finally {
+            webRequest.removeAttribute(INTROSPECTOR_TARGET_CLASS, WebRequest.SCOPE_REQUEST);
+        }
+    }
+
+    @Override
+    public Object resolveConstructorArgument(@NonNull String paramName,@NonNull Class<?> paramType, NativeWebRequest request) throws Exception {
+        Class<?> clazz = (Class<?>) request.getAttribute(INTROSPECTOR_TARGET_CLASS, WebRequest.SCOPE_REQUEST);
+        if (clazz == null) {
+            return super.resolveConstructorArgument(paramName, paramType, request);
+        }
+
+        final Map<String, ResolvedPropertyData> resolvers = introspector.getResolverMapFor(clazz);
+        final ResolvedPropertyData resolvedPropertyData = resolvers.get(paramName);
+        final RequestPropertyResolver resolver = (RequestPropertyResolver) resolvedPropertyData.getResolver();
+        return resolver.resolve(resolvedPropertyData.getBindingProperty(), request);
     }
 }

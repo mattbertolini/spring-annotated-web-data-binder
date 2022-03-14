@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 the original author or authors.
+ * Copyright 2019-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.HashSet;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class ClassPathScanningAnnotatedRequestBeanIntrospector implements AnnotatedRequestBeanIntrospector, InitializingBean {
@@ -51,8 +51,8 @@ public class ClassPathScanningAnnotatedRequestBeanIntrospector implements Annota
 
     @Override
     @NonNull
-    public List<ResolvedPropertyData> getResolversFor(@NonNull Class<?> targetType) {
-        return introspectorCache.getResolversFor(targetType);
+    public Map<String, ResolvedPropertyData> getResolverMapFor(@NonNull Class<?> targetType) {
+        return introspectorCache.getResolverMapFor(targetType);
     }
 
     @Override
@@ -75,8 +75,8 @@ public class ClassPathScanningAnnotatedRequestBeanIntrospector implements Annota
             try {
                 LOGGER.debug("Introspecting request bean " + beanClassName);
                 Class<?> clazz = ClassUtils.forName(beanClassName, classLoader);
-                // Invoking cache getResolversFor will trigger the delegate introspector and save data into the cache.
-                introspectorCache.getResolversFor(clazz);
+                // Invoking cache getResolverMapFor will trigger the delegate introspector and save data into the cache.
+                introspectorCache.getResolverMapFor(clazz);
             } catch (Exception e) {
                 throw new RequestBeanIntrospectionException("Unable to introspect request bean of type " + beanClassName + ": " + e.getMessage(), e);
             }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.lang.NonNull;
 
 import java.lang.annotation.Annotation;
-import java.util.List;
+import java.util.Collection;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -50,9 +50,9 @@ class DefaultAnnotatedRequestBeanIntrospectorTest {
     void returnsResolversForType() {
         FakeResolver resolver = new FakeResolver(RequestParameter.class);
         registry.addResolver(resolver);
-        List<ResolvedPropertyData> resolvers = introspector.getResolversFor(SimpleType.class);
+        Collection<ResolvedPropertyData> resolvers = introspector.getResolversFor(SimpleType.class);
         assertThat(resolvers.size()).isEqualTo(1);
-        ResolvedPropertyData data = resolvers.get(0);
+        ResolvedPropertyData data = resolvers.iterator().next();
         assertThat(data.getPropertyName()).isEqualTo("data");
     }
 
@@ -60,9 +60,9 @@ class DefaultAnnotatedRequestBeanIntrospectorTest {
     void returnsResolversUsingNestedTypes() {
         FakeResolver resolver = new FakeResolver(RequestParameter.class);
         registry.addResolver(resolver);
-        List<ResolvedPropertyData> resolvers = introspector.getResolversFor(OuterBean.class);
+        Collection<ResolvedPropertyData> resolvers = introspector.getResolversFor(OuterBean.class);
         assertThat(resolvers.size()).isEqualTo(1);
-        ResolvedPropertyData data = resolvers.get(0);
+        ResolvedPropertyData data = resolvers.iterator().next();
         assertThat(data.getPropertyName()).isEqualTo("innerBean.inner");
     }
 

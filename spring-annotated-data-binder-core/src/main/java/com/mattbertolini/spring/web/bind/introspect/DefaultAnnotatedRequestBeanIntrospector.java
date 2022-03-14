@@ -25,9 +25,10 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import java.beans.PropertyDescriptor;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -43,26 +44,26 @@ public class DefaultAnnotatedRequestBeanIntrospector implements AnnotatedRequest
     }
 
     /**
-     * Creates a list of resolved property data for the given target class. This method traverses the object graph for
+     * Creates a map of resolved property data for the given target class. This method traverses the object graph for
      * the given type recursively. Circular references are not allowed as they will cause stack overflow errors.
      *
      * @param targetType The class or type to get property resolver data for. Required.
-     * @return A list of resolved property data. This list is never null but may be empty.
+     * @return A map of resolved property data. This map is never null but may be empty.
      * @throws CircularReferenceException If a circular reference is found while traversing the object graph.
      */
     @Override
     @NonNull
-    public List<ResolvedPropertyData> getResolversFor(@NonNull Class<?> targetType) {
+    public Map<String, ResolvedPropertyData> getResolverMapFor(@NonNull Class<?> targetType) {
         Set<Class<?>> cycleClasses = new LinkedHashSet<>();
-        List<ResolvedPropertyData> propertyData = new LinkedList<>();
-        recursiveGetResolversFor(targetType, null, propertyData, cycleClasses);
-        return propertyData;
+        Map<String, ResolvedPropertyData> propertyData = new HashMap<>();
+        recursiveGetResolverMapFor(targetType, null, propertyData, cycleClasses);
+        return Collections.unmodifiableMap(propertyData);
     }
 
-    private void recursiveGetResolversFor(@NonNull final Class<?> targetType,
-                                          @Nullable final String prefix,
-                                          @NonNull final List<ResolvedPropertyData> propertyData,
-                                          @NonNull final Set<Class<?>> cycleClasses) {
+    private void recursiveGetResolverMapFor(@NonNull final Class<?> targetType,
+                                            @Nullable final String prefix,
+                                            @NonNull Map<String, ResolvedPropertyData> propertyData,
+                                            @NonNull final Set<Class<?>> cycleClasses) {
         PropertyDescriptor[] propertyDescriptors;
         try {
             propertyDescriptors = BeanUtils.getPropertyDescriptors(targetType);
@@ -80,14 +81,14 @@ public class DefaultAnnotatedRequestBeanIntrospector implements AnnotatedRequest
                         "references not supported as they can cause stack overflow errors. Cycle: " +
                         cycleClasses.toString());
                 }
-                recursiveGetResolversFor(type, propertyName, propertyData, cycleClasses);
+                recursiveGetResolverMapFor(type, propertyName, propertyData, cycleClasses);
                 cycleClasses.remove(type);
             } else {
                 RequestPropertyResolverBase<?, ?> resolver = registry.findResolverFor(bindingProperty);
                 if (resolver == null) {
                     continue;
                 }
-                propertyData.add(new ResolvedPropertyData(propertyName, bindingProperty, resolver));
+                propertyData.put(propertyName, new ResolvedPropertyData(propertyName, bindingProperty, resolver));
             }
         }
     }

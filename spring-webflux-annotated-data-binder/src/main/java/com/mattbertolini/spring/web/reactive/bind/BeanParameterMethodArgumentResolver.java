@@ -94,7 +94,9 @@ public class BeanParameterMethodArgumentResolver extends ModelAttributeMethodArg
         if (resolvableType == null) {
             return super.getValuesToBind(binder, exchange);
         }
-        Collection<ResolvedPropertyData> propertyData = introspector.getResolversFor(resolvableType.resolve());
+        Class<?> type = resolvableType.resolve();
+        Assert.notNull(type, "The resolved type must not be null");
+        Collection<ResolvedPropertyData> propertyData = introspector.getResolversFor(type);
         return getValuesToBind(propertyData, exchange);
     }
 

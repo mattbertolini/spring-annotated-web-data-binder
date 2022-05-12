@@ -3,10 +3,6 @@ plugins {
     id 'com.mattbertolini.build.maven-central-publish'
 }
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     api project(':spring-webflux-annotated-data-binder')
     api 'org.springframework.boot:spring-boot-starter'

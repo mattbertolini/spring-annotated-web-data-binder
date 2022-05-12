@@ -27,11 +27,6 @@ jar {
     }
 }
 
-java {
-    withJavadocJar()
-    withSourcesJar()
-}
-
 mavenCentralPublish {
     name = "Spring Annotated Data Binder Core"
     description = "Core module for Spring annotated web data binder"

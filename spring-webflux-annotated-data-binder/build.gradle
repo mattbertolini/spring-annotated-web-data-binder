@@ -31,11 +31,6 @@ jar {
     }
 }
 
-java {
-    withJavadocJar()
-    withSourcesJar()
-}
-
 mavenCentralPublish {
     name = "Spring WebFlux Annotated Data Binder"
     description = "Annotated Java Bean data binder for Spring WebFlux"

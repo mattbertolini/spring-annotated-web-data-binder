@@ -1,6 +1,7 @@
 package com.mattbertolini.build
 
 plugins {
+    java
     `maven-publish`
     signing
 }
@@ -11,6 +12,11 @@ abstract class MavenCentralPublishExtension {
 }
 
 val extension = extensions.create("mavenCentralPublish", MavenCentralPublishExtension::class)
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
 
 publishing {
     repositories {

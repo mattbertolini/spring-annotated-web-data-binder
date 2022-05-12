@@ -28,11 +28,6 @@ jar {
     }
 }
 
-java {
-    withJavadocJar()
-    withSourcesJar()
-}
-
 mavenCentralPublish {
     name = "Spring MVC Annotated Data Binder Spring Boot Starter"
     description = "Spring Boot starter for Spring MVC Annotated Java Bean data binder"

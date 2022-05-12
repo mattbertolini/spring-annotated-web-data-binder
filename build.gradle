@@ -59,6 +59,15 @@ subprojects {
         implementation platform('nl.jqno.equalsverifier:equalsverifier:3.1.13')
         implementation platform('org.mockito:mockito-core:3.3.3')
     }
+
+    jar {
+        manifest {
+            attributes(
+                'Implementation-Title': project.name,
+                'Implementation-Version': archiveVersion,
+            )
+        }
+    }
     
     testing {
         suites {

@@ -21,8 +21,6 @@ dependencies {
 jar {
     manifest {
         attributes(
-            'Implementation-Title': project.name,
-            'Implementation-Version': archiveVersion,
             'Automatic-Module-Name': 'com.mattbertolini.spring.web.mvc.bind.autoconfigure'
         )
     }

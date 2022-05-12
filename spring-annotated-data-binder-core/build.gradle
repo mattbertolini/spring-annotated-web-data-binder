@@ -1,6 +1,5 @@
 plugins {
     id 'java-library'
-    id 'jacoco'
     id 'com.mattbertolini.build.maven-central-publish'
 }
 
@@ -34,18 +33,6 @@ jar {
         )
     }
 }
-
-jacocoTestReport {
-    reports {
-        xml.required = true
-        html.required = true
-        csv.required = false
-    }
-}
-
-test.finalizedBy jacocoTestReport
-
-projectsWithCoverage << project
 
 java {
     withJavadocJar()

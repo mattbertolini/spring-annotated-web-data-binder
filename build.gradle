@@ -1,5 +1,4 @@
 plugins {
-    id 'base'
     id 'jvm-test-suite'
     id 'jacoco'
     id 'jacoco-report-aggregation'
@@ -21,6 +20,12 @@ ext.javadocLinks = [
     "https://docs.spring.io/spring-boot/docs/$springBootVersion/api/"
 ] as String[]
 
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+}
+
 subprojects {
     apply plugin: 'java'
     apply plugin: 'jacoco'
@@ -29,12 +34,14 @@ subprojects {
 
     group 'com.mattbertolini'
     version '0.5.0-SNAPSHOT'
-    
-    sourceCompatibility = 1.8
 
-    repositories {
-        mavenCentral()
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(8)
+        }
     }
+
+//    sourceCompatibility = 1.8
 
     dependencies {
         implementation platform("org.springframework:spring-framework-bom:$springVersion")
@@ -77,14 +84,10 @@ subprojects {
             links = rootProject.ext.javadocLinks
             addStringOption('Xdoclint:none', '-quiet')
         }
-        if(JavaVersion.current().isJava9Compatible()) {
+        if (java.toolchain.languageVersion.get().asInt() >= 9) {
             options.addBooleanOption('html5', true)
         }
     }
-}
-
-repositories {
-    mavenCentral()
 }
 
 reporting {

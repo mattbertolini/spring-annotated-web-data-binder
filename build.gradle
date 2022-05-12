@@ -75,6 +75,7 @@ subprojects {
         options {
             source = '8'
             links = rootProject.ext.javadocLinks
+            addStringOption('Xdoclint:none', '-quiet')
         }
         if(JavaVersion.current().isJava9Compatible()) {
             options.addBooleanOption('html5', true)

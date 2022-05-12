@@ -86,12 +86,12 @@ task jacocoMergeReport(type: JacocoReport, dependsOn: jacocoRootMerge) {
     
 
     reports {
-        html.enabled = true
-        xml.enabled = true
-        csv.enabled = false
+        html.required = true
+        xml.required = true
+        csv.required = false
 
-        html.destination = file(reportHtmlDir)
-        xml.destination = file(reportXmlFile)
+        html.outputLocation = file(reportHtmlDir)
+        xml.outputLocation = file(reportXmlFile)
     }
 }
 
@@ -100,8 +100,4 @@ sonarqube {
         property "sonar.projectKey", "mattbertolini_spring-annotated-web-data-binder"
 //        property "sonar.coverage.jacoco.xmlReportPaths", reportXmlFile
     }
-}
-
-wrapper {
-    distributionType = Wrapper.DistributionType.ALL
 }

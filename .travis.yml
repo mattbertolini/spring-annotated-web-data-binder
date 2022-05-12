@@ -14,3 +14,6 @@ jobs:
     - name: OpenJDK 11
       jdk: openjdk11
       script: ./gradlew jacocoTestReport sonarqube
+    - name: OpenJDK 17
+      jdk: openjdk17
+      script: ./gradlew jacocoTestReport check

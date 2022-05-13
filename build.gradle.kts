@@ -3,7 +3,7 @@ plugins {
     `jvm-test-suite`
     jacoco
     `jacoco-report-aggregation`
-    id("org.sonarqube") version "2.8"
+    id("org.sonarqube") version "3.3"
 }
 
 val springVersion = "5.3.8"

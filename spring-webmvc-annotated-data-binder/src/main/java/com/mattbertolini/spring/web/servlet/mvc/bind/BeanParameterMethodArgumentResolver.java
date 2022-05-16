@@ -30,7 +30,7 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
-import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.method.annotation.ModelAttributeMethodProcessor;
 
 import java.util.Collection;
@@ -89,16 +89,16 @@ public class BeanParameterMethodArgumentResolver extends ModelAttributeMethodPro
         try {
             MethodParameter nestedParameter = parameter.nestedIfOptional();
             Class<?> clazz = nestedParameter.getNestedParameterType();
-            webRequest.setAttribute(INTROSPECTOR_TARGET_CLASS, clazz, WebRequest.SCOPE_REQUEST);
+            webRequest.setAttribute(INTROSPECTOR_TARGET_CLASS, clazz, RequestAttributes.SCOPE_REQUEST);
             return super.createAttribute(attributeName, parameter, binderFactory, webRequest);
         } finally {
-            webRequest.removeAttribute(INTROSPECTOR_TARGET_CLASS, WebRequest.SCOPE_REQUEST);
+            webRequest.removeAttribute(INTROSPECTOR_TARGET_CLASS, RequestAttributes.SCOPE_REQUEST);
         }
     }
 
     @Override
     public Object resolveConstructorArgument(@NonNull String paramName,@NonNull Class<?> paramType, NativeWebRequest request) throws Exception {
-        Class<?> clazz = (Class<?>) request.getAttribute(INTROSPECTOR_TARGET_CLASS, WebRequest.SCOPE_REQUEST);
+        Class<?> clazz = (Class<?>) request.getAttribute(INTROSPECTOR_TARGET_CLASS, RequestAttributes.SCOPE_REQUEST);
         if (clazz == null) {
             return super.resolveConstructorArgument(paramName, paramType, request);
         }

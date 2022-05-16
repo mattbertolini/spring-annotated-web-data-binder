@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,29 +31,29 @@ import java.lang.annotation.Target;
  * annotation are essentially the same in Spring MVC.</p>
  *
  * <p>This annotation can be used on fields:
- * <pre>
- *     &#64;RequestParameter("query_param")
+ * <pre>{@code
+ *     @RequestParameter("query_param")
  *     private String queryParam;
- * </pre>
+ * }</pre>
  * or on getter/setter methods of the property:
- * <pre>
- *     &#64;RequestParameter("query_param")
+ * <pre>{@code
+ *     @RequestParameter("query_param")
  *     public void setQueryParam(String queryParam) {
  *          this.queryParam = queryParam;
  *     }
- * </pre>
+ * }</pre>
  * </p>
  *
- * <p>Setting this annotation without a value on a {@link java.util.Map} or
- * {@link org.springframework.util.MultiValueMap} binds all of the query parameters to a map.
- * <pre>
- *     &#64;RequestParameter
- *     private MultiValueMap&lt;String, String&gt; queryParameters;
+ * <p>Setting this annotation without a value on a {@link java.util.Map Map} or
+ * {@link org.springframework.util.MultiValueMap MultiValueMap} binds all of the query parameters to a map.
+ * <pre>{@code
+ *     @RequestParameter
+ *     private MultiValueMap<String, String> queryParameters;
  *
  *     // Map of the first values only
- *     &#64;RequestParameter
- *     private Map&lt;String, String&gt; firstParamValues;
- * </pre>
+ *     @RequestParameter
+ *     private Map<String, String> firstParamValues;
+ * }</pre>
  * </p>
  */
 @Target({ElementType.FIELD, ElementType.METHOD})

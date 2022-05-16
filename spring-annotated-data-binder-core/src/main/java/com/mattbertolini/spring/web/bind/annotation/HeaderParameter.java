@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,36 +26,36 @@ import java.lang.annotation.Target;
  * <p>Annotation for fetching HTTP header values.</p>
  *
  * <p>This annotation can be used on fields:
- * <pre>
- *     &#64;HeaderParameter("X-Header-Name")
+ * <pre>{@code
+ *     @HeaderParameter("X-Header-Name")
  *     private String headerValue;
- * </pre>
+ * }</pre>
  * or on getter/setter methods of the property:
- * <pre>
- *     &#64;HeaderParameter("X-Header-Name")
+ * <pre>{@code
+ *     @HeaderParameter("X-Header-Name")
  *     public void setHeaderValue(String headerValue) {
  *         this.headerValue = headerValue;
  *     }
- * </pre>
+ * }</pre>
  * </p>
  *
  * <p>Setting this annotation without a value on a {@link java.util.Map} or
  * {@link org.springframework.util.MultiValueMap} binds all of the headers to a map.
- * <pre>
- *     &#64HeaderParameter
- *     private MultiValueMap&lt;String, String&gt; headers;
+ * <pre>{@code
+ *     @HeaderParameter
+ *     private MultiValueMap<String, String> headers;
  *
  *     // Map of first values only
- *     &#64HeaderParameter
- *     private Map&lt;String, String&gt; firstValueHeaders;
- * </pre>
+ *     @HeaderParameter
+ *     private Map<String, String> firstValueHeaders;
+ * }</pre>
  * </p>
  *
  * <p>This can also be done with a {@link org.springframework.http.HttpHeaders} object as well.
- * <pre>
- *     &#64;HeaderParameter
+ * <pre>{@code
+ *     @HeaderParameter
  *     private HttpHeaders httpHeaders;
- * </pre>
+ * }</pre>
  * </p>
  */
 @Target({ElementType.FIELD, ElementType.METHOD})

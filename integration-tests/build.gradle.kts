@@ -18,6 +18,10 @@ dependencies {
     testCompileOnly("org.hamcrest:hamcrest") // Version defined in Spring BOM file
 }
 
+tasks.compileJava {
+    options.release.set(17)
+}
+
 tasks.jacocoTestReport {
     reports {
         html.required.set(false)

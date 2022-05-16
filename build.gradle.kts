@@ -15,7 +15,7 @@ val reportXmlFile by extra("$rootJacocoDir/jacocoTestReport.xml")
 val javadocLinks = arrayOf(
     "https://docs.oracle.com/javase/8/docs/api/",
     "https://docs.oracle.com/javaee/7/api/",
-    "https://docs.spring.io/spring/docs/$springVersion/javadoc-api/",
+    "https://docs.spring.io/spring-framework/docs/$springVersion/javadoc-api/",
     "https://docs.spring.io/spring-boot/docs/$springBootVersion/api/"
 )
 
@@ -36,8 +36,12 @@ subprojects {
 
     java {
         toolchain {
-            languageVersion.set(JavaLanguageVersion.of(8))
+            languageVersion.set(JavaLanguageVersion.of(17))
         }
+    }
+
+    tasks.compileJava {
+        options.release.set(8)
     }
 
 //    sourceCompatibility = 1.8
@@ -55,7 +59,7 @@ subprojects {
         // Test
         implementation(platform("org.junit:junit-bom:5.6.1"))
         implementation(platform("org.assertj:assertj-core:3.15.0"))
-        implementation(platform("nl.jqno.equalsverifier:equalsverifier:3.1.13"))
+        implementation(platform("nl.jqno.equalsverifier:equalsverifier:3.10"))
         implementation(platform("org.mockito:mockito-core:3.3.3"))
     }
 

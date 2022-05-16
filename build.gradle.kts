@@ -6,8 +6,8 @@ plugins {
     id("org.sonarqube") version "3.3"
 }
 
-val springVersion = "5.3.8"
-val springBootVersion = "2.4.7"
+val springVersion = "5.3.13"
+val springBootVersion = "2.4.13"
 
 val rootJacocoDir by extra("${rootProject.buildDir}/reports/jacoco/testCodeCoverageReport")
 val reportXmlFile by extra("$rootJacocoDir/jacocoTestReport.xml")

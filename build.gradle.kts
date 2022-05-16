@@ -10,7 +10,7 @@ val springVersion = "5.3.13"
 val springBootVersion = "2.4.13"
 
 val rootJacocoDir by extra("${rootProject.buildDir}/reports/jacoco/testCodeCoverageReport")
-val reportXmlFile by extra("$rootJacocoDir/jacocoTestReport.xml")
+val reportXmlFile by extra("$rootJacocoDir/testCodeCoverageReport.xml")
 
 val javadocLinks = arrayOf(
     "https://docs.oracle.com/javase/8/docs/api/",

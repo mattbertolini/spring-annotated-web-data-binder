@@ -10,4 +10,4 @@ jobs:
   include:
     - name: OpenJDK 17
       jdk: openjdk17
-      script: ./gradlew --no-daemon jacocoTestReport sonarqube
+      script: ./gradlew --no-daemon jacocoTestReport testCodeCoverageReport sonarqube

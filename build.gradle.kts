@@ -125,6 +125,6 @@ dependencies {
 sonarqube {
     properties {
         property("sonar.projectKey", "mattbertolini_spring-annotated-web-data-binder")
-//        property "sonar.coverage.jacoco.xmlReportPaths", reportXmlFile
+        property("sonar.coverage.jacoco.xmlReportPaths", reportXmlFile)
     }
 }

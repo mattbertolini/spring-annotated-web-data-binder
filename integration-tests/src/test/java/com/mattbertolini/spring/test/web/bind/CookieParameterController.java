@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package com.mattbertolini.spring.test.web.bind;
 
+import com.mattbertolini.spring.test.web.bind.records.CookieParameterRecord;
 import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
 import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
@@ -62,5 +63,10 @@ public class CookieParameterController {
     @GetMapping(value = "/nested", produces = MediaType.TEXT_PLAIN_VALUE)
     public String nestedBean(@BeanParameter CookieParameterBean cookieParameterBean) {
         return cookieParameterBean.getNestedBean().getCookieValue();
+    }
+
+    @GetMapping(value = "/record", produces = MediaType.TEXT_PLAIN_VALUE)
+    public String javaRecord(@BeanParameter CookieParameterRecord cookieParameterRecord) {
+        return cookieParameterRecord.annotated();
     }
 }

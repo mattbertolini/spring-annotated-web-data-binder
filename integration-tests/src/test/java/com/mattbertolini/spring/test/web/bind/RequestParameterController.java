@@ -16,6 +16,7 @@
 
 package com.mattbertolini.spring.test.web.bind;
 
+import com.mattbertolini.spring.test.web.bind.records.RequestParameterRecord;
 import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
 import org.springframework.http.MediaType;
 import org.springframework.util.MultiValueMap;

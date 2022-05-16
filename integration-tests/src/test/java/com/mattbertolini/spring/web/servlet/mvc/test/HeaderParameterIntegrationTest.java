@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -120,6 +120,13 @@ class HeaderParameterIntegrationTest {
         return mockMvc.perform(get(path)
             .accept(MediaType.TEXT_PLAIN)
             .header(inputHeader, "expectedValue"));
+    }
+
+    @Test
+    void bindsToJavaRecord() throws Exception {
+        makeRequest("/record", "x-annotated-field")
+            .andExpect(status().isOk())
+            .andExpect(content().string("expectedValue"));
     }
 
     @ContextConfiguration

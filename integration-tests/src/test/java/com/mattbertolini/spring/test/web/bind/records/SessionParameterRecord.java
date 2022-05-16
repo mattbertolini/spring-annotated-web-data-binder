@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.mattbertolini.spring.test.web.bind;
+package com.mattbertolini.spring.test.web.bind.records;
 
-import com.mattbertolini.spring.web.bind.annotation.RequestParameter;
+import com.mattbertolini.spring.web.bind.annotation.SessionParameter;
 
-public record RequestParameterRecord(
-    @RequestParameter("annotated_field") String annotated
+public record SessionParameterRecord(
+    @SessionParameter("annotated_field") String annotated
 ) {}

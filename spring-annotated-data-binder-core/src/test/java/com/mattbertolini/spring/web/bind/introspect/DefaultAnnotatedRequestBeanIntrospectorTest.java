@@ -51,7 +51,7 @@ class DefaultAnnotatedRequestBeanIntrospectorTest {
         FakeResolver resolver = new FakeResolver(RequestParameter.class);
         registry.addResolver(resolver);
         Collection<ResolvedPropertyData> resolvers = introspector.getResolversFor(SimpleType.class);
-        assertThat(resolvers.size()).isEqualTo(1);
+        assertThat(resolvers).hasSize(1);
         ResolvedPropertyData data = resolvers.iterator().next();
         assertThat(data.getPropertyName()).isEqualTo("data");
     }
@@ -61,7 +61,7 @@ class DefaultAnnotatedRequestBeanIntrospectorTest {
         FakeResolver resolver = new FakeResolver(RequestParameter.class);
         registry.addResolver(resolver);
         Collection<ResolvedPropertyData> resolvers = introspector.getResolversFor(OuterBean.class);
-        assertThat(resolvers.size()).isEqualTo(1);
+        assertThat(resolvers).hasSize(1);
         ResolvedPropertyData data = resolvers.iterator().next();
         assertThat(data.getPropertyName()).isEqualTo("innerBean.inner");
     }

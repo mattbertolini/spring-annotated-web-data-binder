@@ -23,25 +23,25 @@ class PropertyResolverRegistryTest {
 
     @Test
     void addsResolversFromSet() {
-        assertThat(registry.getPropertyResolvers().size()).isZero();
+        assertThat(registry.getPropertyResolvers()).isEmpty();
         registry.addResolvers(Collections.singleton(new FakeResolver()));
-        assertThat(registry.getPropertyResolvers().size()).isEqualTo(1);
+        assertThat(registry.getPropertyResolvers()).hasSize(1);
     }
 
     @Test
     void addsSingleResolver() {
-        assertThat(registry.getPropertyResolvers().size()).isZero();
+        assertThat(registry.getPropertyResolvers()).isEmpty();
         registry.addResolver(new FakeResolver());
-        assertThat(registry.getPropertyResolvers().size()).isEqualTo(1);
+        assertThat(registry.getPropertyResolvers()).hasSize(1);
     }
 
     @Test
     void addsResolversFromRegistry() {
         PropertyResolverRegistry anotherRegistry = new PropertyResolverRegistry();
         anotherRegistry.addResolver(new FakeResolver());
-        assertThat(registry.getPropertyResolvers().size()).isZero();
+        assertThat(registry.getPropertyResolvers()).isEmpty();
         registry.addResolvers(anotherRegistry);
-        assertThat(registry.getPropertyResolvers().size()).isEqualTo(1);
+        assertThat(registry.getPropertyResolvers()).hasSize(1);
     }
 
     private static class FakeResolver implements RequestPropertyResolver {

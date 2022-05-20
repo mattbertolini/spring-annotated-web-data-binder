@@ -3,7 +3,7 @@
 ## 0.5.0 
 IN PROGRESS
 
-- Added preliminary support for Java records.
+- Add preliminary support for Java records.
 - JDK 17 is now required to build this project. The production artifacts are still compiled to Java 1.8 bytecode.
 - Upgrade to Spring Framework 5.3.13
 - Upgrade to Spring Boot 2.4.13

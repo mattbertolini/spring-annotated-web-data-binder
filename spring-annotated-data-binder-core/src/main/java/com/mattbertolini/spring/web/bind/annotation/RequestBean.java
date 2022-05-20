@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,15 +28,15 @@ import java.lang.annotation.Target;
  * bean with this annotation found in a package scanned by the introspector will have it's resolved property data
  * pre-loaded and cached so it can be retrieved at request time without the need for additional introspection. This is
  * a performance improvement so introspection is not done at request time.
- * <pre>
- *     &#64;RequestBean
+ * <pre>{@code
+ *     @RequestBean
  *     public class ExampleRequestBean {
- *         &#64RequestParameter("some_parameter")
+ *         @RequestParameter("some_parameter")
  *         private String someParameter;
  *         
  *         // Getters/Setters
  *     }
- * </pre>
+ * }</pre>
  * </p>
  * @see com.mattbertolini.spring.web.bind.introspect.ClassPathScanningAnnotatedRequestBeanIntrospector
  */

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,30 +26,30 @@ import java.lang.annotation.Target;
  * <p>Annotation for fetching HTTP cookie data.</p>
  *
  * <p>This annotation can be used on fields:
- * <pre>
- *     &#64;CookieParameter("cookie_name")
+ * <pre>{@code
+ *     @CookieParameter("cookie_name")
  *     private String cookieValue;
- * </pre>
+ * }</pre>
  * or on getter/setter methods:
- * <pre>
- *     &#64;CookieParameter("cookie_name")
+ * <pre>{@code
+ *     @CookieParameter("cookie_name")
  *     public void setCookieValue(String cookieValue) {
  *         this.cookieValue = cookieValue;
  *     }
- * </pre>
+ * }</pre>
  * </p>
  *
  * <p>If you need access to all attributes of a cookie (e.g. expiration date, domain, etc) you can bind to cookie
  * objects. In Spring MVC you and bind directly to a {@link javax.servlet.http.Cookie}:
- * <pre>
- *     &#64;CookieParameter("cookie_name")
+ * <pre>{@code
+ *     @CookieParameter("cookie_name")
  *     private Cookie cookie;
- * </pre>
+ * }</pre>
  * In Spring WebFlux you can bind directly to a {@link org.springframework.http.HttpCookie}:
- * <pre>
- *     &#64;CookieParameter("cookie_name")
+ * <pre>{@code
+ *     @CookieParameter("cookie_name")
  *     private HttpCookie cookie;
- * </pre>
+ * }</pre>
  * </p>
  */
 @Target({ElementType.FIELD, ElementType.METHOD})

@@ -8,6 +8,7 @@ dependencies {
     api("org.springframework:spring-beans")
     api("org.springframework:spring-web")
     compileOnly("com.google.code.findbugs:jsr305")
+    compileOnly("javax.servlet:javax.servlet-api") // So Javadoc doesn't give warnings about missing links
 
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")

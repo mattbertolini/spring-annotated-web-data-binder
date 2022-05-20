@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 the original author or authors.
+ * Copyright 2019-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,8 @@ import com.mattbertolini.spring.web.bind.introspect.scan.subbackage.SubpackageBe
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -49,9 +49,9 @@ class ClassPathScanningAnnotatedRequestBeanIntrospectorTest {
         Set<String> packages = Collections.singleton("com.mattbertolini.spring.web.bind.introspect.scan");
         ClassPathScanningAnnotatedRequestBeanIntrospector introspector = new ClassPathScanningAnnotatedRequestBeanIntrospector(delegateIntrospector, packages);
         introspector.afterPropertiesSet();
-        verify(delegateIntrospector).getResolversFor(ScannedBean.class);
-        verify(delegateIntrospector).getResolversFor(SubpackageBean.class);
-        verify(delegateIntrospector, never()).getResolversFor(IgnoredBean.class);
+        verify(delegateIntrospector).getResolverMapFor(ScannedBean.class);
+        verify(delegateIntrospector).getResolverMapFor(SubpackageBean.class);
+        verify(delegateIntrospector, never()).getResolverMapFor(IgnoredBean.class);
     }
 
     @Test
@@ -64,7 +64,7 @@ class ClassPathScanningAnnotatedRequestBeanIntrospectorTest {
 
     @Test
     void throwsExceptionWhenResolving() {
-        when(delegateIntrospector.getResolversFor(any())).thenThrow(RuntimeException.class);
+        when(delegateIntrospector.getResolverMapFor(any())).thenThrow(RuntimeException.class);
         Set<String> packages = Collections.singleton("com.mattbertolini.spring.web.bind.introspect.scan");
         ClassPathScanningAnnotatedRequestBeanIntrospector introspector = new ClassPathScanningAnnotatedRequestBeanIntrospector(delegateIntrospector, packages);
         assertThatThrownBy(introspector::afterPropertiesSet).isInstanceOf(RequestBeanIntrospectionException.class);
@@ -75,8 +75,8 @@ class ClassPathScanningAnnotatedRequestBeanIntrospectorTest {
         Set<String> packages = Collections.singleton("com.mattbertolini.spring.web.bind.introspect.scan");
         ClassPathScanningAnnotatedRequestBeanIntrospector introspector = new ClassPathScanningAnnotatedRequestBeanIntrospector(delegateIntrospector, packages);
         introspector.afterPropertiesSet();
-        List<ResolvedPropertyData> resolversFor = introspector.getResolversFor(ScannedBean.class);
+        Collection<ResolvedPropertyData> resolversFor = introspector.getResolversFor(ScannedBean.class);
         assertThat(resolversFor).isNotNull();
-        verify(delegateIntrospector).getResolversFor(ScannedBean.class);
+        verify(delegateIntrospector).getResolverMapFor(ScannedBean.class);
     }
 }

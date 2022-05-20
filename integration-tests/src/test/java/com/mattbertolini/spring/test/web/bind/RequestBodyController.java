@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 the original author or authors.
+ * Copyright 2019-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package com.mattbertolini.spring.test.web.bind;
 
+import com.mattbertolini.spring.test.web.bind.records.RequestBodyRecord;
 import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.Part;
@@ -90,5 +91,11 @@ public class RequestBodyController {
             return count.get();
         }).subscribe();
         return "multipartFlux " + count.get();
+    }
+
+    @PostMapping(value = "/record", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public String javaRecord(@BeanParameter RequestBodyRecord requestBodyRecord) {
+        JsonBody jsonBody = requestBodyRecord.jsonBody();
+        return jsonBody.getProperty();
     }
 }

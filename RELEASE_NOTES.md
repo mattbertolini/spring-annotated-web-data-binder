@@ -1,5 +1,12 @@
 # Release Notes
 
+## 0.5.0 
+IN PROGRESS
+
+- Added preliminary support for Java records.
+- JDK 17 is now required to build this project. The production artifacts are still compiled to Java 1.8 bytecode.
+- Upgraded to equals verifier 3.10
+
 ## 0.4.0
 Released 2021-06-20
 

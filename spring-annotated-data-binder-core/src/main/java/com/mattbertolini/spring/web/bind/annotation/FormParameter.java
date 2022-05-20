@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,29 +31,29 @@ import java.lang.annotation.Target;
  * are essentially the same in Spring MVC.</p>
  *
  * <p>This annotation can be used on fields:
- * <pre>
- *     &#64;FormParameter("form_param")
+ * <pre>{@code
+ *     @FormParameter("form_param")
  *     private String formParam;
- * </pre>
+ * }</pre>
  * or on getter/setter methods of the property:
- * <pre>
- *     &#64;FormParameter("form_param")
+ * <pre>{@code
+ *     @FormParameter("form_param")
  *     public void setFormParam(String formParam) {
  *          this.formParam = formParam;
  *     }
- * </pre>
+ * }</pre>
  * </p>
  *
- * <p>Setting this annotation without a value on a {@link java.util.Map} or
- * {@link org.springframework.util.MultiValueMap} binds all of the form data to a map.
- * <pre>
- *     &#64;FormParameter
- *     private MultiValueMap&lt;String, String&gt; formParameters;
+ * <p>Setting this annotation without a value on a {@link java.util.Map Map} or
+ * {@link org.springframework.util.MultiValueMap MultiValueMap} binds all of the form data to a map.
+ * <pre>{@code
+ *     @FormParameter
+ *     private MultiValueMap<String, String> formParameters;
  *
  *     // Map of the first values only
- *     &#64;FormParameter
- *     private Map&lt;String, String&gt; firstParamValues;
- * </pre>
+ *     @FormParameter
+ *     private Map<String, String> firstParamValues;
+ * }</pre>
  * </p>
  */
 @Target({ElementType.FIELD, ElementType.METHOD})

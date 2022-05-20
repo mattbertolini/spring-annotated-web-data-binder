@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -102,6 +102,15 @@ class CookieParameterIntegrationTest {
         mockMvc.perform(get("/nested")
             .accept(MediaType.TEXT_PLAIN)
             .cookie(new Cookie("nested_cookie_param", "expectedValue")))
+            .andExpect(status().isOk())
+            .andExpect(content().string("expectedValue"));
+    }
+
+    @Test
+    void bindsUsingJavaRecord() throws Exception {
+        mockMvc.perform(get("/record")
+                .accept(MediaType.TEXT_PLAIN)
+                .cookie(new Cookie("annotated_field", "expectedValue")))
             .andExpect(status().isOk())
             .andExpect(content().string("expectedValue"));
     }

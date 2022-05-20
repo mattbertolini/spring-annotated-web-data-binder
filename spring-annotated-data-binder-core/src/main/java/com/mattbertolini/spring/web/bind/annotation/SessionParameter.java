@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,17 +26,17 @@ import java.lang.annotation.Target;
  * <p>Annotation for fetching session attributes.</p>
  *
  * <p>This annotation can be used on fields:
- * <pre>
- *     &#64;SessionParameter("attributeName")
+ * <pre>{@code
+ *     @SessionParameter("attributeName")
  *     private String attributeName;
- * </pre>
+ * }</pre>
  * or on getter/setter methods:
- * <pre>
- *     &#64;SessionParameter("attributeName")
+ * <pre>{@code
+ *     @SessionParameter("attributeName")
  *     public void setAttributeName(String attributeName) {
  *         this.attributeName = attributeName;
  *     }
- * </pre>
+ * }</pre>
  * </p>
  */
 @Target({ElementType.FIELD, ElementType.METHOD})

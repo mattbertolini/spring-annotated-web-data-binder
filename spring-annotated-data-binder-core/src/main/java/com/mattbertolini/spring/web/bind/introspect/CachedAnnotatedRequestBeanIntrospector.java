@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,13 @@ package com.mattbertolini.spring.web.bind.introspect;
 
 import org.springframework.lang.NonNull;
 
-import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 public class CachedAnnotatedRequestBeanIntrospector implements AnnotatedRequestBeanIntrospector {
     private final AnnotatedRequestBeanIntrospector delegate;
-    private final ConcurrentMap<Class<?>, List<ResolvedPropertyData>> cache;
+    private final ConcurrentMap<Class<?>, Map<String, ResolvedPropertyData>> cache;
 
     public CachedAnnotatedRequestBeanIntrospector(@NonNull AnnotatedRequestBeanIntrospector delegate) {
         this.delegate = delegate;
@@ -33,7 +33,7 @@ public class CachedAnnotatedRequestBeanIntrospector implements AnnotatedRequestB
 
     @Override
     @NonNull
-    public List<ResolvedPropertyData> getResolversFor(@NonNull Class<?> targetType) {
-        return cache.computeIfAbsent(targetType, delegate::getResolversFor);
+    public Map<String, ResolvedPropertyData> getResolverMapFor(@NonNull Class<?> targetType) {
+        return cache.computeIfAbsent(targetType, delegate::getResolverMapFor);
     }
 }

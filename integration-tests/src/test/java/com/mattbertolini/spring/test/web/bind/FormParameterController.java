@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 the original author or authors.
+ * Copyright 2019-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package com.mattbertolini.spring.test.web.bind;
 
+import com.mattbertolini.spring.test.web.bind.records.FormParameterRecord;
 import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
@@ -163,5 +164,10 @@ public class FormParameterController {
     @PostMapping(value = "/nested", produces = MediaType.TEXT_PLAIN_VALUE)
     public String nestedBeanParameter(@BeanParameter FormParameterBean formParameterBean) {
         return formParameterBean.getNestedBean().getFormData();
+    }
+
+    @PostMapping(value = "/record", produces = MediaType.TEXT_PLAIN_VALUE)
+    public String javaRecord(@BeanParameter FormParameterRecord formParameterRecord) {
+        return formParameterRecord.annotated();
     }
 }

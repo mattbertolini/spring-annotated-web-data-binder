@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,32 +24,32 @@ import java.lang.annotation.Target;
 
 /**
  * <p>This annotation has two purposes. The first is to mark controller method arguments for binding using this library.
- * <pre>
- *     &#64;GetMapping(value = "/example", produces = MediaType.TEXT_PLAIN_VALUE)
- *     public String handleRequest(&#64;BeanParameter requestBean) {
+ * <pre>{@code
+ *     @GetMapping(value = "/example", produces = MediaType.TEXT_PLAIN_VALUE)
+ *     public String handleRequest(@BeanParameter requestBean) {
  *         return someService.doSomethingWith(requestBean);
  *     }
- * </pre>
+ * }</pre>
  * The second is to mark a Java bean property as a nested object that should also be scanned for additional request
  * annotations.
- * <pre>
+ * <pre>{@code
  *     public class OuterBean {
- *         &#64;RequestParameter("some_parameter")
+ *         @RequestParameter("some_parameter")
  *         private String someParameter;
  *
- *         &#64;BeanParameter
+ *         @BeanParameter
  *         private NestedBean nestedBean;
  *
  *         // Getters/Setters
  *     }
  *
  *     public class NestedBean {
- *         &#64;RequestParameter("another_parameter")
+ *         @RequestParameter("another_parameter")
  *         private String anotherParameter;
  *
  *         // Getters/Setters
  *     }
- * </pre>
+ * }</pre>
  * <strong>Note:</strong> It's important that no circular dependencies are created using this annotation. The
  * introspection process will fail if a circular reference is found. This is done to prevent stack overflow errors at
  * runtime.</p>

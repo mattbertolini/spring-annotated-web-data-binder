@@ -6,16 +6,16 @@ plugins {
     id("org.sonarqube") version "3.3"
 }
 
-val springVersion = "5.3.8"
-val springBootVersion = "2.4.7"
+val springVersion = "5.3.13"
+val springBootVersion = "2.4.13"
 
 val rootJacocoDir by extra("${rootProject.buildDir}/reports/jacoco/testCodeCoverageReport")
-val reportXmlFile by extra("$rootJacocoDir/jacocoTestReport.xml")
+val reportXmlFile by extra("$rootJacocoDir/testCodeCoverageReport.xml")
 
 val javadocLinks = arrayOf(
     "https://docs.oracle.com/javase/8/docs/api/",
     "https://docs.oracle.com/javaee/7/api/",
-    "https://docs.spring.io/spring/docs/$springVersion/javadoc-api/",
+    "https://docs.spring.io/spring-framework/docs/$springVersion/javadoc-api/",
     "https://docs.spring.io/spring-boot/docs/$springBootVersion/api/"
 )
 
@@ -36,8 +36,12 @@ subprojects {
 
     java {
         toolchain {
-            languageVersion.set(JavaLanguageVersion.of(8))
+            languageVersion.set(JavaLanguageVersion.of(17))
         }
+    }
+
+    tasks.compileJava {
+        options.release.set(8)
     }
 
 //    sourceCompatibility = 1.8
@@ -55,7 +59,7 @@ subprojects {
         // Test
         implementation(platform("org.junit:junit-bom:5.6.1"))
         implementation(platform("org.assertj:assertj-core:3.15.0"))
-        implementation(platform("nl.jqno.equalsverifier:equalsverifier:3.1.13"))
+        implementation(platform("nl.jqno.equalsverifier:equalsverifier:3.10"))
         implementation(platform("org.mockito:mockito-core:3.3.3"))
     }
 
@@ -121,6 +125,6 @@ dependencies {
 sonarqube {
     properties {
         property("sonar.projectKey", "mattbertolini_spring-annotated-web-data-binder")
-//        property "sonar.coverage.jacoco.xmlReportPaths", reportXmlFile
+        property("sonar.coverage.jacoco.xmlReportPaths", reportXmlFile)
     }
 }

@@ -1,4 +1,5 @@
 language: java
+install: skip
 
 addons:
   sonarcloud:
@@ -8,12 +9,6 @@ addons:
 
 jobs:
   include:
-    - name: OpenJDK 8
-      jdk: openjdk8
-      script: ./gradlew jacocoTestReport check
-    - name: OpenJDK 11
-      jdk: openjdk11
-      script: ./gradlew jacocoTestReport sonarqube
     - name: OpenJDK 17
       jdk: openjdk17
-      script: ./gradlew jacocoTestReport check
+      script: ./gradlew --no-daemon jacocoTestReport testCodeCoverageReport sonarqube

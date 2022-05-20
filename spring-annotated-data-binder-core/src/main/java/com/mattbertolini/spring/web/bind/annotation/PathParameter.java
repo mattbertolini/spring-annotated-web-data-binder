@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,24 +26,24 @@ import java.lang.annotation.Target;
  * <p>Annotation for fetching Spring path variable values.</p>
  *
  * <p>This annotation can be used on fields:
- * <pre>
- *     &#64;PathParameter("pathVar")
+ * <pre>{@code
+ *     @PathParameter("pathVar")
  *     private String pathVariable;
- * </pre>
+ * }</pre>
  * or on getter/setter methods:
- * <pre>
- *     &#64;PathParameter("pathVar")
+ * <pre>{@code
+ *     @PathParameter("pathVar")
  *     public void setPathVariable(String pathVariable) {
  *         this.pathVariable = pathVariable;
  *     }
- * </pre>
+ * }</pre>
  * </p>
  *
- * <p>Setting this annotation without a value on a {@link java.util.Map} binds all path variables to a Map.
- * <pre>
- *     &#64;PathParameter
- *     private Map&lt;String, String&gt; pathVariables;
- * </pre>
+ * <p>Setting this annotation without a value on a {@link java.util.Map Map} binds all path variables to a Map.
+ * <pre>{@code
+ *     @PathParameter
+ *     private Map<String, String> pathVariables;
+ * }</pre>
  * </p>
  */
 @Target({ElementType.FIELD, ElementType.METHOD})

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package com.mattbertolini.spring.test.web.bind;
 
+import com.mattbertolini.spring.test.web.bind.records.RequestContextRecord;
 import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -72,6 +73,11 @@ public class RequestContextController {
     @GetMapping(value = "/timeZone", produces = MediaType.TEXT_PLAIN_VALUE)
     public String timeZone(@BeanParameter RequestContextBean requestContextBean) {
         return requestContextBean.getTimeZone().toString();
+    }
+
+    @GetMapping(value = "/timeZoneRecord", produces = MediaType.TEXT_PLAIN_VALUE)
+    public String javaRecordTimeZone(@BeanParameter RequestContextRecord requestContextRecord) {
+        return requestContextRecord.timeZone().toString();
     }
 
     @GetMapping(value = "/zoneId", produces = MediaType.TEXT_PLAIN_VALUE)

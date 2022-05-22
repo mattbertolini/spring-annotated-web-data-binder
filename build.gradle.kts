@@ -32,7 +32,7 @@ subprojects {
     apply(plugin = "jvm-test-suite")
 
     group = "com.mattbertolini"
-    version = "0.5.0-SNAPSHOT"
+    version = "0.5.0"
 
     java {
         toolchain {

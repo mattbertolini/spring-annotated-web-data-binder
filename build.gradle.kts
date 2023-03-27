@@ -124,6 +124,7 @@ dependencies {
 
 sonar {
     properties {
+        property("sonar.host.url", "https://sonarcloud.io")
         property("sonar.organizationKey", "github-mattbertolini")
         property("sonar.projectKey", "mattbertolini_spring-annotated-web-data-binder")
         property("sonar.coverage.jacoco.xmlReportPaths", reportXmlFile)

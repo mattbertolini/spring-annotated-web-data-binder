@@ -122,7 +122,7 @@ dependencies {
     jacocoAggregation(project(":webmvc-annotated-data-binder-spring-boot-starter"))
 }
 
-sonarqube {
+sonar {
     properties {
         property("sonar.organizationKey", "github-mattbertolini")
         property("sonar.projectKey", "mattbertolini_spring-annotated-web-data-binder")

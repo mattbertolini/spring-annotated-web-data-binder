@@ -35,4 +35,4 @@ jobs:
       - name: Run Gradle
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew build jacocoTestReport testCodeCoverageReport sonar
+        run: ./gradlew -Dorg.gradle.welcome=never build jacocoTestReport testCodeCoverageReport sonar

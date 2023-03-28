@@ -3,7 +3,7 @@ plugins {
     `jvm-test-suite`
     jacoco
     `jacoco-report-aggregation`
-    id("org.sonarqube") version "3.3"
+    id("org.sonarqube") version "4.0.0.2929"
 }
 
 val springVersion = "5.3.13"
@@ -122,8 +122,10 @@ dependencies {
     jacocoAggregation(project(":webmvc-annotated-data-binder-spring-boot-starter"))
 }
 
-sonarqube {
+sonar {
     properties {
+        property("sonar.host.url", "https://sonarcloud.io")
+        property("sonar.organization", "github-mattbertolini")
         property("sonar.projectKey", "mattbertolini_spring-annotated-web-data-binder")
         property("sonar.coverage.jacoco.xmlReportPaths", reportXmlFile)
     }

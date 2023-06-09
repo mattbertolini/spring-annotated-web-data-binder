@@ -5,7 +5,30 @@
 :sourceDir: ../../../src/main/java
 :resourcesDir: ../../../src/main/resources
 
+== Installation
+To install:
 
+[source,xml,indent=0,role="primary",subs="+attributes"]
+.Maven
+----
+<dependency>
+    <groupId>com.mattbertolini</groupId>
+    <artifactId>spring-webmvc-annotated-data-binder</artifactId>
+    <version>{revnumber}</version>
+</dependency>
+----
+
+[source,kotlin,indent=0,role="secondary",subs="+attributes"]
+.Gradle (Kotlin DSL)
+----
+implementation("com.mattbertolini:spring-webmvc-annotated-data-binder:{revnumber}")
+----
+
+[source,groovy,indent=0,role="secondary",subs="+attributes"]
+.Gradle (Groovy DSL)
+----
+implementation 'com.mattbertolini:spring-webmvc-annotated-data-binder:{revnumber}'
+----
 
 == Configuration
 

@@ -19,6 +19,8 @@ springWebmvc = { module = "org.springframework:spring-webmvc", version.ref = "sp
 springBootStarter = { module = "org.springframework.boot:spring-boot-starter", version.ref = "springBoot" }
 springBootTest = { module = "org.springframework.boot:spring-boot-test", version.ref = "springBoot" }
 
+springAsciidoctorExtBlockSwitch = { module = "io.spring.asciidoctor:spring-asciidoctor-extensions-block-switch", version = "0.6.1" }
+
 glassfishJavaxEl = { module = "org.glassfish:javax.el", version = "3.0.1-b12" } # Needed by Hibernate Validator
 hibernateValidator = { module = "org.hibernate.validator:hibernate-validator", version = "6.0.21.Final" }
 jacksonDatabind = { module = "com.fasterxml.jackson.core:jackson-databind", version = "2.12.7.1" }
@@ -30,5 +32,5 @@ equalsVerifier = { module = "nl.jqno.equalsverifier:equalsverifier", version = "
 hamcrest = { module = "org.hamcrest:hamcrest", version = "2.2" }
 
 [plugins]
-asciidoctor = { id = "org.asciidoctor.jvm.convert", version = "2.4.0" }
+asciidoctorConvert = { id = "org.asciidoctor.jvm.convert", version = "3.3.2" }
 sonarqube = { id = "org.sonarqube", version = "4.2.0.3129" }

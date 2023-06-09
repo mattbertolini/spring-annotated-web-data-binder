@@ -6,16 +6,15 @@ plugins {
 dependencies {
     api(project(":spring-annotated-data-binder-core"))
     api(libs.springWebmvc)
-    implementation("javax.servlet:javax.servlet-api")
-    compileOnly("com.google.code.findbugs:jsr305")
+    implementation(libs.javaxServletApi)
+    compileOnly(libs.findbugsJsr305) // To Prevent warnings on missing enum constants
 
     testImplementation(libs.junitJupiterApi)
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
     testImplementation(libs.assertJCore)
     testImplementation(libs.mockitoCore)
     testImplementation(libs.springTest)
     testImplementation("javax.validation:validation-api:2.0.1.Final")
-    testCompileOnly("com.google.code.findbugs:jsr305")
+    testCompileOnly(libs.findbugsJsr305) // To Prevent warnings on missing enum constants
 }
 
 tasks.jar {

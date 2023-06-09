@@ -7,11 +7,10 @@ dependencies {
     api(libs.springContext)
     api(libs.springBeans)
     api(libs.springWeb)
-    compileOnly("com.google.code.findbugs:jsr305")
-    compileOnly("javax.servlet:javax.servlet-api") // So Javadoc doesn't give warnings about missing links
+    compileOnly(libs.findbugsJsr305) // To Prevent warnings on missing enum constants
+    compileOnly(libs.javaxServletApi) // So Javadoc doesn't give warnings about missing links
 
     testImplementation(libs.junitJupiterApi)
-//    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
     testImplementation(libs.assertJCore)
     testImplementation(libs.mockitoCore)
     testImplementation(libs.springTest)

@@ -1,5 +1,11 @@
 # Release Notes
 
+## 0.6.0-SNAPSHOT
+Released TBD
+
+- Restructured Gradle build files to more convention based approached
+- Started using type-safe dependency notation in build files
+
 ## 0.5.0 
 Released 2022-05-22
 

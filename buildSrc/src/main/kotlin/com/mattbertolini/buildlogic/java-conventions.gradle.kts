@@ -5,6 +5,8 @@ plugins {
     jacoco
 }
 
+val versionCatalog = extensions.getByType(VersionCatalogsExtension::class).named("libs")
+
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(JavaVersion.VERSION_17.majorVersion))
@@ -18,7 +20,7 @@ tasks.named<JavaCompile>("compileJava").configure {
 testing {
     suites {
         named<JvmTestSuite>("test").configure {
-            useJUnitJupiter()
+            useJUnitJupiter(versionCatalog.findVersion("junit").orElseThrow().preferredVersion)
         }
     }
 }
@@ -32,8 +34,8 @@ tasks.named<Jar>("jar").configure {
     }
 }
 
-val springVersion = "5.3.13"
-val springBootVersion = "2.4.13"
+val springVersion: String = versionCatalog.findVersion("spring").orElseThrow().preferredVersion
+val springBootVersion: String = versionCatalog.findVersion("springBoot").orElseThrow().preferredVersion
 
 val javadocLinks = arrayOf(
     "https://docs.oracle.com/javase/8/docs/api/",
@@ -53,3 +55,13 @@ tasks.named<Javadoc>("javadoc").configure {
         }
     }
 }
+
+tasks.named<JacocoReport>("jacocoTestReport").configure {
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(false)
+    }
+}
+
+tasks.test { finalizedBy(tasks.jacocoTestReport) }

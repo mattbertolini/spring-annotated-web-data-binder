@@ -5,12 +5,11 @@ plugins {
 
 dependencies {
     api(project(":spring-webflux-annotated-data-binder"))
-    api("org.springframework.boot:spring-boot-starter")
+    api(libs.springBootStarter)
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-    testImplementation("org.assertj:assertj-core")
-    testImplementation("org.springframework.boot:spring-boot-test")
+    testImplementation(libs.junitJupiterApi)
+    testImplementation(libs.assertJCore)
+    testImplementation(libs.springBootTest)
 }
 
 tasks.jar {

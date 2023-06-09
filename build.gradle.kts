@@ -13,41 +13,10 @@ val rootJacocoDir by extra("${rootProject.buildDir}/reports/jacoco/testCodeCover
 val reportXmlFile by extra("$rootJacocoDir/testCodeCoverageReport.xml")
 
 subprojects {
-    apply(plugin = "java")
-    apply(plugin = "jacoco")
     apply(plugin = "org.sonarqube")
-    apply(plugin = "jvm-test-suite")
-    apply(plugin = "com.mattbertolini.buildlogic.java-conventions")
 
     group = "com.mattbertolini"
     version = "0.6.0-SNAPSHOT"
-
-    dependencies {
-        implementation(platform("org.springframework:spring-framework-bom:$springVersion"))
-        implementation(platform("javax.servlet:javax.servlet-api:3.1.0"))
-        implementation(platform("com.google.code.findbugs:jsr305:3.0.2"))
-
-        constraints {
-            implementation("org.springframework.boot:spring-boot-starter:$springBootVersion")
-            implementation("org.springframework.boot:spring-boot-test:$springBootVersion")
-        }
-
-        // Test
-        implementation(platform("org.junit:junit-bom:5.6.1"))
-        implementation(platform("org.assertj:assertj-core:3.15.0"))
-        implementation(platform("nl.jqno.equalsverifier:equalsverifier:3.10"))
-        implementation(platform("org.mockito:mockito-core:3.3.3"))
-    }
-
-    tasks.jacocoTestReport {
-        reports {
-            xml.required.set(true)
-            html.required.set(true)
-            csv.required.set(false)
-        }
-    }
-
-    tasks.test { finalizedBy(tasks.jacocoTestReport) }
 }
 
 reporting {

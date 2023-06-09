@@ -14,7 +14,7 @@ dependencies {
     testImplementation(libs.assertJCore)
     testImplementation(libs.mockitoCore)
     testImplementation(libs.springTest)
-    testCompileOnly("org.hamcrest:hamcrest:2.2")
+    testCompileOnly(libs.hamcrest) // Needed for Spring mock MVC matchers
 }
 
 tasks.named<AsciidoctorTask>("asciidoctor").configure {

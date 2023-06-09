@@ -12,7 +12,7 @@ dependencies {
     testImplementation(libs.assertJCore)
     testImplementation(libs.mockitoCore)
     testImplementation(libs.springTest)
-    testImplementation("javax.validation:validation-api:2.0.1.Final")
+    testImplementation(libs.javaxValidationApi) // Used to test validation annotations
     testCompileOnly(libs.findbugsJsr305) // To Prevent warnings on missing enum constants
 }
 

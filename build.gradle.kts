@@ -5,13 +5,15 @@ plugins {
     alias(libs.plugins.sonarqube)
 }
 
-val rootJacocoDir by extra("${rootProject.buildDir}/reports/jacoco/testCodeCoverageReport")
-val reportXmlFile by extra("$rootJacocoDir/testCodeCoverageReport.xml")
+allprojects {
+    apply(plugin = "com.mattbertolini.buildlogic.project-conventions")
 
-subprojects {
     group = "com.mattbertolini"
     version = "0.6.0-SNAPSHOT"
 }
+
+val rootJacocoDir by extra("${rootProject.buildDir}/reports/jacoco/testCodeCoverageReport")
+val reportXmlFile by extra("$rootJacocoDir/testCodeCoverageReport.xml")
 
 reporting {
     reports {

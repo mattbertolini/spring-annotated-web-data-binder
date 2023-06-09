@@ -1,4 +1,4 @@
-package com.mattbertolini.build
+package com.mattbertolini.buildlogic
 
 plugins {
     java

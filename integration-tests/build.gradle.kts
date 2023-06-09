@@ -18,7 +18,7 @@ dependencies {
     testCompileOnly("org.hamcrest:hamcrest") // Version defined in Spring BOM file
 }
 
-tasks.compileJava {
+tasks.named<JavaCompile>("compileJava").configure {
     options.release.set(17)
 }
 

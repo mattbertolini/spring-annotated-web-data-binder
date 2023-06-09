@@ -1,6 +1,6 @@
 plugins {
     id("com.mattbertolini.buildlogic.java-library")
-    id("com.mattbertolini.build.maven-central-publish")
+    id("com.mattbertolini.buildlogic.maven-central-publish")
 }
 
 dependencies {

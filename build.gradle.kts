@@ -17,7 +17,7 @@ val reportXmlFile = "$rootJacocoDir/testCodeCoverageReport.xml"
 
 reporting {
     reports {
-        val testCodeCoverageReport by getting(JacocoCoverageReport::class) {
+        named<JacocoCoverageReport>("testCodeCoverageReport") {
             testType.set(TestSuiteType.UNIT_TEST)
         }
     }

@@ -20,7 +20,7 @@ tasks.named<JavaCompile>("compileJava").configure {
 testing {
     suites {
         named<JvmTestSuite>("test").configure {
-            useJUnitJupiter(versionCatalog.findVersion("junit").orElseThrow().preferredVersion)
+            useJUnitJupiter(versionCatalog.findVersion("junit").orElseThrow().toString())
         }
     }
 }
@@ -34,8 +34,8 @@ tasks.named<Jar>("jar").configure {
     }
 }
 
-val springVersion: String = versionCatalog.findVersion("spring").orElseThrow().preferredVersion
-val springBootVersion: String = versionCatalog.findVersion("springBoot").orElseThrow().preferredVersion
+val springVersion: String = versionCatalog.findVersion("spring").orElseThrow().toString()
+val springBootVersion: String = versionCatalog.findVersion("springBoot").orElseThrow().toString()
 
 val javadocLinks = arrayOf(
     "https://docs.oracle.com/javase/8/docs/api/",

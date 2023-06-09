@@ -1,13 +1,9 @@
 plugins {
     java
-    `jvm-test-suite`
     jacoco
     `jacoco-report-aggregation`
-    id("org.sonarqube") version "4.0.0.2929"
+    id("org.sonarqube") version "4.2.0.3129"
 }
-
-val springVersion = "5.3.13"
-val springBootVersion = "2.4.13"
 
 val rootJacocoDir by extra("${rootProject.buildDir}/reports/jacoco/testCodeCoverageReport")
 val reportXmlFile by extra("$rootJacocoDir/testCodeCoverageReport.xml")

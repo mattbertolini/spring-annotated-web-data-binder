@@ -1,5 +1,5 @@
 plugins {
-    jacoco
+    id("com.mattbertolini.buildlogic.java-conventions")
     id("org.asciidoctor.jvm.convert") version "2.4.0"
 }
 
@@ -8,10 +8,10 @@ dependencies {
     implementation(project(":spring-webflux-annotated-data-binder"))
     implementation("javax.servlet:javax.servlet-api") // Version defined in Spring BOM file
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testImplementation(libs.junitJupiterApi)
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-    testImplementation("org.assertj:assertj-core")
-    testImplementation("org.mockito:mockito-core")
+    testImplementation(libs.assertJCore)
+    testImplementation(libs.mockitoCore)
     testImplementation("org.springframework:spring-test")
     testCompileOnly("org.hamcrest:hamcrest") // Version defined in Spring BOM file
 }

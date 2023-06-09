@@ -12,13 +12,6 @@ val springBootVersion = "2.4.13"
 val rootJacocoDir by extra("${rootProject.buildDir}/reports/jacoco/testCodeCoverageReport")
 val reportXmlFile by extra("$rootJacocoDir/testCodeCoverageReport.xml")
 
-val javadocLinks = arrayOf(
-    "https://docs.oracle.com/javase/8/docs/api/",
-    "https://docs.oracle.com/javaee/7/api/",
-    "https://docs.spring.io/spring-framework/docs/$springVersion/javadoc-api/",
-    "https://docs.spring.io/spring-boot/docs/$springBootVersion/api/"
-)
-
 subprojects {
     apply(plugin = "java")
     apply(plugin = "jacoco")
@@ -29,10 +22,7 @@ subprojects {
     group = "com.mattbertolini"
     version = "0.6.0-SNAPSHOT"
 
-//    sourceCompatibility = 1.8
-
     dependencies {
-        implementation(platform("org.springframework:spring-framework-bom:$springVersion"))
         implementation(platform("org.springframework:spring-framework-bom:$springVersion"))
         implementation(platform("javax.servlet:javax.servlet-api:3.1.0"))
         implementation(platform("com.google.code.findbugs:jsr305:3.0.2"))
@@ -49,15 +39,6 @@ subprojects {
         implementation(platform("org.mockito:mockito-core:3.3.3"))
     }
 
-    tasks.jar {
-        manifest {
-            attributes(
-                "Implementation-Title" to project.name,
-                "Implementation-Version" to archiveVersion,
-            )
-        }
-    }
-
     tasks.jacocoTestReport {
         reports {
             xml.required.set(true)
@@ -67,19 +48,6 @@ subprojects {
     }
 
     tasks.test { finalizedBy(tasks.jacocoTestReport) }
-
-    tasks.javadoc {
-        options {
-            this as StandardJavadocDocletOptions
-            source = "8"
-            links(*javadocLinks)
-            addStringOption("Xdoclint:none", "-quiet")
-            if (java.toolchain.languageVersion.get().asInt() >= 9) {
-                addBooleanOption("html5", true)
-            }
-        }
-        
-    }
 }
 
 reporting {

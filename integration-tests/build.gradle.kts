@@ -1,6 +1,5 @@
 plugins {
-    java
-    jacoco
+    id("com.mattbertolini.buildlogic.java-conventions")
 }
 
 dependencies {
@@ -22,7 +21,7 @@ tasks.named<JavaCompile>("compileJava").configure {
     options.release.set(17)
 }
 
-tasks.jacocoTestReport {
+tasks.named<JacocoReport>("jacocoTestReport").configure {
     reports {
         html.required.set(false)
     }

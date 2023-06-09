@@ -2,15 +2,13 @@ plugins {
     java
     jacoco
     `jacoco-report-aggregation`
-    id("org.sonarqube") version "4.2.0.3129"
+    alias(libs.plugins.sonarqube)
 }
 
 val rootJacocoDir by extra("${rootProject.buildDir}/reports/jacoco/testCodeCoverageReport")
 val reportXmlFile by extra("$rootJacocoDir/testCodeCoverageReport.xml")
 
 subprojects {
-    apply(plugin = "org.sonarqube")
-
     group = "com.mattbertolini"
     version = "0.6.0-SNAPSHOT"
 }

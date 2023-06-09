@@ -1,6 +1,8 @@
+import org.asciidoctor.gradle.jvm.AsciidoctorTask
+
 plugins {
     id("com.mattbertolini.buildlogic.java-conventions")
-    id("org.asciidoctor.jvm.convert") version "2.4.0"
+    alias(libs.plugins.asciidoctor)
 }
 
 dependencies {
@@ -15,7 +17,7 @@ dependencies {
     testCompileOnly("org.hamcrest:hamcrest:2.2")
 }
 
-tasks.asciidoctor {
+tasks.named<AsciidoctorTask>("asciidoctor").configure {
     attributes(mapOf(
         "sourceDir" to project.sourceSets["main"].allJava.srcDirs.first(),
         "resourcesDir" to project.sourceSets["main"].resources.srcDirs.first(),
@@ -23,7 +25,7 @@ tasks.asciidoctor {
     ))
 }
 
-tasks.jacocoTestReport {
+tasks.named<JacocoReport>("jacocoTestReport").configure {
     reports {
         html.required.set(false)
     }

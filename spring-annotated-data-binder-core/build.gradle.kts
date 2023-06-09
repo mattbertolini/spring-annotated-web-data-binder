@@ -17,7 +17,7 @@ dependencies {
     testImplementation(libs.equalsVerifier)
 }
 
-tasks.jar {
+tasks.named<Jar>("jar").configure {
     manifest {
         attributes(
             "Automatic-Module-Name" to "com.mattbertolini.spring.web.bind"

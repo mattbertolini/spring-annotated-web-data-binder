@@ -12,7 +12,7 @@ dependencies {
     testImplementation(libs.springBootTest)
 }
 
-tasks.jar {
+tasks.named<Jar>("jar").configure {
     manifest {
         attributes(
             "Automatic-Module-Name" to "com.mattbertolini.spring.web.reactive.bind.autoconfigure"

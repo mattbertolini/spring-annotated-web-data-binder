@@ -17,7 +17,7 @@ dependencies {
     testCompileOnly(libs.findbugsJsr305) // To Prevent warnings on missing enum constants
 }
 
-tasks.jar {
+tasks.named<Jar>("jar").configure {
     manifest {
         attributes(
             "Automatic-Module-Name" to "com.mattbertolini.spring.web.servlet.mvc.bind"

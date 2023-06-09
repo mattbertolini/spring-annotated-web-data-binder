@@ -19,30 +19,15 @@ val javadocLinks = arrayOf(
     "https://docs.spring.io/spring-boot/docs/$springBootVersion/api/"
 )
 
-allprojects {
-    repositories {
-        mavenCentral()
-    }
-}
-
 subprojects {
     apply(plugin = "java")
     apply(plugin = "jacoco")
     apply(plugin = "org.sonarqube")
     apply(plugin = "jvm-test-suite")
+    apply(plugin = "com.mattbertolini.buildlogic.java-conventions")
 
     group = "com.mattbertolini"
     version = "0.6.0-SNAPSHOT"
-
-    java {
-        toolchain {
-            languageVersion.set(JavaLanguageVersion.of(17))
-        }
-    }
-
-    tasks.compileJava {
-        options.release.set(8)
-    }
 
 //    sourceCompatibility = 1.8
 
@@ -70,14 +55,6 @@ subprojects {
                 "Implementation-Title" to project.name,
                 "Implementation-Version" to archiveVersion,
             )
-        }
-    }
-    
-    testing {
-        suites {
-            val test by getting(JvmTestSuite::class) {
-                useJUnitJupiter()
-            }
         }
     }
 

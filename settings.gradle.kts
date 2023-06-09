@@ -1,6 +1,10 @@
 rootProject.name = "spring-annotated-web-data-binder"
 
 dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+    }
+    
     versionCatalogs {
         register("libs") {
             from(files("libs.versions.toml"))

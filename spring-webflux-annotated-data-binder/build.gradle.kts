@@ -5,14 +5,14 @@ plugins {
 
 dependencies {
     api(project(":spring-annotated-data-binder-core"))
-    api("org.springframework:spring-webflux")
+    api(libs.springWebflux)
     compileOnly("com.google.code.findbugs:jsr305")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testImplementation(libs.junitJupiterApi)
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-    testImplementation("org.assertj:assertj-core")
-    testImplementation("org.mockito:mockito-core")
-    testImplementation("org.springframework:spring-test")
+    testImplementation(libs.assertJCore)
+    testImplementation(libs.mockitoCore)
+    testImplementation(libs.springTest)
     testCompileOnly("com.google.code.findbugs:jsr305")
     testImplementation("javax.validation:validation-api:2.0.1.Final")
 }

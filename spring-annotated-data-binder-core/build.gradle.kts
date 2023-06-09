@@ -4,18 +4,18 @@ plugins {
 }
 
 dependencies {
-    api("org.springframework:spring-context")
-    api("org.springframework:spring-beans")
-    api("org.springframework:spring-web")
+    api(libs.springContext)
+    api(libs.springBeans)
+    api(libs.springWeb)
     compileOnly("com.google.code.findbugs:jsr305")
     compileOnly("javax.servlet:javax.servlet-api") // So Javadoc doesn't give warnings about missing links
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-    testImplementation("org.assertj:assertj-core")
-    testImplementation("org.mockito:mockito-core")
-    testImplementation("org.springframework:spring-test")
-    testImplementation("nl.jqno.equalsverifier:equalsverifier")
+    testImplementation(libs.junitJupiterApi)
+//    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testImplementation(libs.assertJCore)
+    testImplementation(libs.mockitoCore)
+    testImplementation(libs.springTest)
+    testImplementation(libs.equalsVerifier)
 }
 
 tasks.jar {

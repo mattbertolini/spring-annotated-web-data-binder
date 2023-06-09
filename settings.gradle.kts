@@ -1,4 +1,13 @@
 rootProject.name = "spring-annotated-web-data-binder"
+
+dependencyResolutionManagement {
+    versionCatalogs {
+        register("libs") {
+            from(files("libs.versions.toml"))
+        }
+    }
+}
+
 include("spring-annotated-data-binder-core")
 include("spring-webmvc-annotated-data-binder")
 include("spring-webflux-annotated-data-binder")

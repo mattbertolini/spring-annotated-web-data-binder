@@ -11,10 +11,10 @@ dependencies {
     implementation("org.glassfish:javax.el:3.0.1-b09")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.11.2")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testImplementation(libs.junitJupiterApi)
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-    testImplementation("org.assertj:assertj-core")
-    testImplementation("org.springframework:spring-test")
+    testImplementation(libs.assertJCore)
+    testImplementation(libs.springTest)
     testCompileOnly("org.hamcrest:hamcrest") // Version defined in Spring BOM file
 }
 

@@ -48,6 +48,7 @@ subprojects {
 
     dependencies {
         implementation(platform("org.springframework:spring-framework-bom:$springVersion"))
+        implementation(platform("org.springframework:spring-framework-bom:$springVersion"))
         implementation(platform("javax.servlet:javax.servlet-api:3.1.0"))
         implementation(platform("com.google.code.findbugs:jsr305:3.0.2"))
 

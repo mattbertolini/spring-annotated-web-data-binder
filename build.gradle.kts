@@ -12,8 +12,8 @@ allprojects {
     version = "0.6.0-SNAPSHOT"
 }
 
-val rootJacocoDir by extra("${rootProject.buildDir}/reports/jacoco/testCodeCoverageReport")
-val reportXmlFile by extra("$rootJacocoDir/testCodeCoverageReport.xml")
+val rootJacocoDir = "${rootProject.buildDir}/reports/jacoco/testCodeCoverageReport"
+val reportXmlFile = "$rootJacocoDir/testCodeCoverageReport.xml"
 
 reporting {
     reports {

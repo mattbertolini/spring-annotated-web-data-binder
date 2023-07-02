@@ -1,10 +1,11 @@
 [versions]
-spring = "5.3.27" # Used in java-conventions.gradle.kts
-springBoot = "2.4.13" # Used in java-conventions.gradle.kts
+spring = "5.3.28" # Used in java-conventions.gradle.kts
+springBoot = "2.7.13" # Used in java-conventions.gradle.kts
 junit = "5.9.3" # Used in java-conventions.gradle.kts
+jacoco = "0.8.10" # Used in java-conventions.gradle.kts
 
 [libraries]
-javaxServletApi = { module = "javax.servlet:javax.servlet-api", version = "3.1.0" }
+javaxServletApi = { module = "javax.servlet:javax.servlet-api", version = "4.0.1" }
 javaxValidationApi = { module = "javax.validation:validation-api", version = "2.0.1.Final" }
 
 findbugsJsr305 = { module = "com.google.code.findbugs:jsr305", version = "3.0.2" }

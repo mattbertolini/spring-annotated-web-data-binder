@@ -56,6 +56,11 @@ tasks.named<Javadoc>("javadoc").configure {
     }
 }
 
+val jacocoVersion: String = versionCatalog.findVersion("jacoco").orElseThrow().toString()
+configure<JacocoPluginExtension> {
+    toolVersion = jacocoVersion
+}
+
 tasks.named<JacocoReport>("jacocoTestReport").configure {
     reports {
         xml.required.set(true)

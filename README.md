@@ -153,9 +153,12 @@ Ivy:
 Once the jar is on your classpath, add a `BinderConfiguration` bean to your Spring context:
 
 ```java
-@Bean
-public BinderConfiguration binderConfiguration() {
-    return new BinderConfiguration();
+@Configuration
+public class ExampleConfiguration {
+    @Bean
+    public BinderConfiguration binderConfiguration() {
+        return new BinderConfiguration();
+    }
 }
 ```
 

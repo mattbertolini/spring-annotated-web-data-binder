@@ -1,10 +1,14 @@
 # Release Notes
 
-## 0.6.0-SNAPSHOT
-Released TBD
+## 0.6.0
+Released 2023-12-01
 
-- Restructured Gradle build files to more convention based approached
-- Started using type-safe dependency notation in build files
+- Restructured Gradle build files to more convention based approach.
+- Started using type-safe dependency notation in build files.
+- Fix an issue where servlet api version was not being set correctly in published artifacts in Maven Central ([#11](https://github.com/mattbertolini/spring-annotated-web-data-binder/issues/11)).
+- Upgrade Spring Framework to 5.3.28.
+- Upgrade Spring Boot to 2.7.13 
+- Update build to Gradle 8.5
 
 ## 0.5.0 
 Released 2022-05-22

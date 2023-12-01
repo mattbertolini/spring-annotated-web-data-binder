@@ -39,6 +39,6 @@ sonar {
         property("sonar.host.url", "https://sonarcloud.io")
         property("sonar.organization", "github-mattbertolini")
         property("sonar.projectKey", "mattbertolini_spring-annotated-web-data-binder")
-        property("sonar.coverage.jacoco.xmlReportPaths", reportXmlFile)
+        property("sonar.coverage.jacoco.xmlReportPaths", reportXmlFile.map { it.asFile.path }.get())
     }
 }

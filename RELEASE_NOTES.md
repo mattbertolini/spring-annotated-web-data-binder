@@ -1,5 +1,8 @@
 # Release Notes
 
+## 0.7.0-SNAPSHOT
+Released N/A
+
 ## 0.6.0
 Released 2023-12-01
 

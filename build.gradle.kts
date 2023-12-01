@@ -12,8 +12,9 @@ allprojects {
     version = "0.7.0-SNAPSHOT"
 }
 
-val rootJacocoDir = "${rootProject.buildDir}/reports/jacoco/testCodeCoverageReport"
-val reportXmlFile = "$rootJacocoDir/testCodeCoverageReport.xml"
+val rootJacocoDir = "reports/jacoco/testCodeCoverageReport"
+val coverageReportFileName = "testCodeCoverageReport.xml"
+val reportXmlFile = rootProject.layout.buildDirectory.file("$rootJacocoDir/$coverageReportFileName")
 
 reporting {
     reports {

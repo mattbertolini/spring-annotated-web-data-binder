@@ -5,7 +5,7 @@ plugins {
     jacoco
 }
 
-val versionCatalog = extensions.getByType(VersionCatalogsExtension::class).named("libs")
+val versionCatalog = versionCatalogs.named("libs")
 
 java {
     toolchain {

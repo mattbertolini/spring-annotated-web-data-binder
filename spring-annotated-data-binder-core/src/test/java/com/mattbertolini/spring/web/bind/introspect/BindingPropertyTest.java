@@ -29,7 +29,7 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class BindingPropertyTest {
 
@@ -82,7 +82,7 @@ class BindingPropertyTest {
         @Test
         void throwsIllegalStateExceptionWhenNoGetterOrSetterPresent() throws Exception {
             PropertyDescriptor propertyDescriptor = aPropertyDescriptor("noGettersOrSetters", null, null);
-            assertThrows(IllegalStateException.class, () -> BindingProperty.forPropertyDescriptor(propertyDescriptor));
+            assertThatThrownBy(() -> BindingProperty.forPropertyDescriptor(propertyDescriptor)).isInstanceOf(IllegalStateException.class);
         }
     }
 

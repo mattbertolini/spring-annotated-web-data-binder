@@ -34,4 +34,4 @@ hamcrest = { module = "org.hamcrest:hamcrest", version = "2.2" }
 
 [plugins]
 asciidoctorConvert = { id = "org.asciidoctor.jvm.convert", version = "3.3.2" }
-sonarqube = { id = "org.sonarqube", version = "4.2.0.3129" }
+sonarqube = { id = "org.sonarqube", version = "5.0.0.4638" }

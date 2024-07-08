@@ -29,9 +29,6 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.reactive.config.EnableWebFlux;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @SpringJUnitWebConfig(classes = {HeaderParameterIntegrationTest.Context.class})
 class HeaderParameterIntegrationTest {
 

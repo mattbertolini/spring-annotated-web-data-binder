@@ -100,10 +100,10 @@ class CookieParameterIntegrationTest {
             .expectBody(String.class).isEqualTo("expectedValue");
     }
 
-    private WebTestClient.ResponseSpec makeRequest(String s, String annotated_field) {
+    private WebTestClient.ResponseSpec makeRequest(String s, String annotatedField) {
         return webTestClient.get()
             .uri(s)
-            .cookie(annotated_field, "expectedValue")
+            .cookie(annotatedField, "expectedValue")
             .accept(MediaType.TEXT_PLAIN)
             .exchange();
     }

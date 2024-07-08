@@ -384,15 +384,38 @@ class BeanParameterMethodArgumentResolverTest {
 
     @SuppressWarnings("unused")
     private static class FakeHandlerMethod {
-        public void anAnnotatedMethod(@BeanParameter ABeanClass aBeanClass) {}
-        public void annotatedSimpleType(@BeanParameter int simpleType) {}
+        public void anAnnotatedMethod(@BeanParameter ABeanClass aBeanClass) {
+            // Do nothing
+        }
+
+        public void annotatedSimpleType(@BeanParameter int simpleType) {
+            // Do nothing
+        }
+
         @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-        public void optionalTypeAnnotated(@BeanParameter Optional<ABeanClass> optionalBeanClass) {}
-        public void missingAnnotation(ABeanClass aBeanClass) {}
-        public void aValidatedMethod(@BeanParameter @Validated ABeanClass validatedBean) {}
-        public void aValidMethod(@BeanParameter @Valid ABeanClass validBean) {}
-        public void validationGroups(@BeanParameter @Validated({ValidationGroupOne.class, ValidationGroupTwo.class}) ABeanClass validatedBean) {}
-        public void withBindingResult(@BeanParameter @Validated ABeanClass aBeanClass, BindingResult bindingResult) {}
+        public void optionalTypeAnnotated(@BeanParameter Optional<ABeanClass> optionalBeanClass) {
+            // Do nothing
+        }
+
+        public void missingAnnotation(ABeanClass aBeanClass) {
+            // Do nothing
+        }
+
+        public void aValidatedMethod(@BeanParameter @Validated ABeanClass validatedBean) {
+            // Do nothing
+        }
+
+        public void aValidMethod(@BeanParameter @Valid ABeanClass validBean) {
+            // Do nothing
+        }
+
+        public void validationGroups(@BeanParameter @Validated({ValidationGroupOne.class, ValidationGroupTwo.class}) ABeanClass validatedBean) {
+            // Do nothing
+        }
+
+        public void withBindingResult(@BeanParameter @Validated ABeanClass aBeanClass, BindingResult bindingResult) {
+            // Do nothing
+        }
     }
 
     private static class ABeanClass {

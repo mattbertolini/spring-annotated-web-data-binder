@@ -20,7 +20,6 @@ import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import com.mattbertolini.spring.web.bind.resolver.RequestPropertyResolverBase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.core.convert.TypeDescriptor;
 
 import java.beans.PropertyDescriptor;
 import java.util.Collections;

@@ -75,7 +75,7 @@ class PathParameterIntegrationTest {
 
     @Test
     void hasBindingResult() throws Exception {
-        makeRequest("/bindingResult/expectedValue", "annotated_field")
+        makeRequest("/bindingResult/expectedValue")
             .andExpect(status().isOk())
             .andExpect(content().string("0"));
     }
@@ -107,11 +107,6 @@ class PathParameterIntegrationTest {
         makeRequest("/record/expectedValue")
             .andExpect(status().isOk())
             .andExpect(content().string("expectedValue"));
-    }
-
-    private ResultActions makeRequest(String path, String inputParameter) throws Exception {
-        return mockMvc.perform(get(path)
-            .accept(MediaType.TEXT_PLAIN));
     }
 
     private ResultActions makeRequest(String path) throws Exception {

@@ -146,12 +146,12 @@ class FormParameterRequestPropertyResolverTest {
         MockMultipartHttpServletRequest multipartRequest = new MockMultipartHttpServletRequest();
         multipartRequest.addParameter("testing", "formValue");
         multipartRequest.addFile(multipartFile);
-        ServletWebRequest request = new ServletWebRequest(multipartRequest);
+        ServletWebRequest servletWebRequest = new ServletWebRequest(multipartRequest);
 
-        Object formValue = resolver.resolve(bindingProperty("annotated"), request);
+        Object formValue = resolver.resolve(bindingProperty("annotated"), servletWebRequest);
         assertThat(formValue).isEqualTo(new String[]{"formValue"});
 
-        Object actual = resolver.resolve(bindingProperty("multipartFile"), request);
+        Object actual = resolver.resolve(bindingProperty("multipartFile"), servletWebRequest);
         assertThat(actual).isNotNull();
         assertThat((MultipartFile) actual).isEqualTo(multipartFile);
     }
@@ -159,10 +159,10 @@ class FormParameterRequestPropertyResolverTest {
     @Test
     void throwsExceptionReadingMultipartRequest() throws Exception {
         MockMultipartHttpServletRequest multipartRequest = new ExceptionThrowingMockMultipartHttpServletRequest();
-        ServletWebRequest request = new ServletWebRequest(multipartRequest);
+        ServletWebRequest servletWebRequest = new ServletWebRequest(multipartRequest);
 
         BindingProperty bindingProperty = bindingProperty("multipartFile");
-        assertThatThrownBy(() -> resolver.resolve(bindingProperty, request))
+        assertThatThrownBy(() -> resolver.resolve(bindingProperty, servletWebRequest))
             .isInstanceOf(PropertyResolutionException.class);
     }
 

@@ -228,9 +228,9 @@ class FormParameterMapRequestPropertyResolverTest {
     @Test
     void returnsEmptyMultiValueMultipartFileMap() throws Exception {
         MockMultipartHttpServletRequest multipartRequest = new MockMultipartHttpServletRequest();
-        ServletWebRequest request = new ServletWebRequest(multipartRequest);
+        ServletWebRequest servletWebRequest = new ServletWebRequest(multipartRequest);
 
-        Object actual = resolver.resolve(bindingProperty("multiValueMultipartMap"), request);
+        Object actual = resolver.resolve(bindingProperty("multiValueMultipartMap"), servletWebRequest);
         assertThat(actual).isInstanceOf(MultiValueMap.class);
         MultiValueMap<String, MultipartFile> map = (MultiValueMap<String, MultipartFile>) actual;
         assertThat(map).isEmpty();

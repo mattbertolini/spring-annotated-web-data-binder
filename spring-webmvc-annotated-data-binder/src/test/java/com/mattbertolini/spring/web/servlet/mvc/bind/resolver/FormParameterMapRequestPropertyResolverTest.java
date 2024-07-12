@@ -110,9 +110,9 @@ class FormParameterMapRequestPropertyResolverTest {
         MockMultipartHttpServletRequest multipartRequest = new MockMultipartHttpServletRequest();
         multipartRequest.addFile(fileOne);
         multipartRequest.addFile(fileTwo);
-        ServletWebRequest request = new ServletWebRequest(multipartRequest);
+        ServletWebRequest servletWebRequest = new ServletWebRequest(multipartRequest);
 
-        Object actual = resolver.resolve(bindingProperty("multipartFileMap"), request);
+        Object actual = resolver.resolve(bindingProperty("multipartFileMap"), servletWebRequest);
         assertThat(actual).isInstanceOf(Map.class);
         Map<String, MultipartFile> map = (Map<String, MultipartFile>) actual;
         assertThat(map).containsEntry("file_one", fileOne)
@@ -133,9 +133,9 @@ class FormParameterMapRequestPropertyResolverTest {
         MockMultipartHttpServletRequest multipartRequest = new MockMultipartHttpServletRequest();
         multipartRequest.addFile(fileOne);
         multipartRequest.addFile(fileTwo);
-        ServletWebRequest request = new ServletWebRequest(multipartRequest);
+        ServletWebRequest servletWebRequest = new ServletWebRequest(multipartRequest);
 
-        Object actual = resolver.resolve(bindingProperty("multiValueMultipartMap"), request);
+        Object actual = resolver.resolve(bindingProperty("multiValueMultipartMap"), servletWebRequest);
         assertThat(actual).isInstanceOf(MultiValueMap.class);
         MultiValueMap<String, MultipartFile> map = (MultiValueMap<String, MultipartFile>) actual;
         assertThat(map).containsEntry("file", Arrays.asList(fileOne, fileTwo));
@@ -155,9 +155,9 @@ class FormParameterMapRequestPropertyResolverTest {
         MockMultipartHttpServletRequest multipartRequest = new MockMultipartHttpServletRequest();
         multipartRequest.addFile(fileOne);
         multipartRequest.addFile(fileTwo);
-        ServletWebRequest request = new ServletWebRequest(multipartRequest);
+        ServletWebRequest servletWebRequest = new ServletWebRequest(multipartRequest);
 
-        Object actual = resolver.resolve(bindingProperty("multipartFileMap"), request);
+        Object actual = resolver.resolve(bindingProperty("multipartFileMap"), servletWebRequest);
         assertThat(actual).isInstanceOf(Map.class);
         Map<String, MultipartFile> map = (Map<String, MultipartFile>) actual;
         assertThat(map).containsEntry("file", fileOne);
@@ -175,9 +175,9 @@ class FormParameterMapRequestPropertyResolverTest {
         MockMultipartHttpServletRequest multipartRequest = new MockMultipartHttpServletRequest();
         multipartRequest.addPart(fileOne);
         multipartRequest.addPart(fileTwo);
-        ServletWebRequest request = new ServletWebRequest(multipartRequest);
+        ServletWebRequest servletWebRequest = new ServletWebRequest(multipartRequest);
 
-        Object actual = resolver.resolve(bindingProperty("partMap"), request);
+        Object actual = resolver.resolve(bindingProperty("partMap"), servletWebRequest);
         assertThat(actual).isInstanceOf(Map.class);
         Map<String, Part> map = (Map<String, Part>) actual;
         assertThat(map).containsEntry("file_one", fileOne)
@@ -196,9 +196,9 @@ class FormParameterMapRequestPropertyResolverTest {
         MockMultipartHttpServletRequest multipartRequest = new MockMultipartHttpServletRequest();
         multipartRequest.addPart(fileOne);
         multipartRequest.addPart(fileTwo);
-        ServletWebRequest request = new ServletWebRequest(multipartRequest);
+        ServletWebRequest servletWebRequest = new ServletWebRequest(multipartRequest);
 
-        Object actual = resolver.resolve(bindingProperty("multiValuePartMap"), request);
+        Object actual = resolver.resolve(bindingProperty("multiValuePartMap"), servletWebRequest);
         assertThat(actual).isInstanceOf(MultiValueMap.class);
         MultiValueMap<String, Part> map = (MultiValueMap<String, Part>) actual;
         assertThat(map).containsEntry("file", Arrays.asList(fileOne, fileTwo));
@@ -216,9 +216,9 @@ class FormParameterMapRequestPropertyResolverTest {
         MockMultipartHttpServletRequest multipartRequest = new MockMultipartHttpServletRequest();
         multipartRequest.addPart(fileOne);
         multipartRequest.addPart(fileTwo);
-        ServletWebRequest request = new ServletWebRequest(multipartRequest);
+        ServletWebRequest servletWebRequest = new ServletWebRequest(multipartRequest);
 
-        Object actual = resolver.resolve(bindingProperty("partMap"), request);
+        Object actual = resolver.resolve(bindingProperty("partMap"), servletWebRequest);
         assertThat(actual).isInstanceOf(Map.class);
         Map<String, Part> map = (Map<String, Part>) actual;
         assertThat(map).containsEntry("file", fileOne);
@@ -240,9 +240,9 @@ class FormParameterMapRequestPropertyResolverTest {
     @Test
     void returnsEmptyMultipartFileMap() throws Exception {
         MockMultipartHttpServletRequest multipartRequest = new MockMultipartHttpServletRequest();
-        ServletWebRequest request = new ServletWebRequest(multipartRequest);
+        ServletWebRequest servletWebRequest = new ServletWebRequest(multipartRequest);
 
-        Object actual = resolver.resolve(bindingProperty("multipartFileMap"), request);
+        Object actual = resolver.resolve(bindingProperty("multipartFileMap"), servletWebRequest);
         assertThat(actual).isInstanceOf(Map.class);
         Map<String, MultipartFile> map = (Map<String, MultipartFile>) actual;
         assertThat(map).isEmpty();
@@ -252,9 +252,9 @@ class FormParameterMapRequestPropertyResolverTest {
     @Test
     void returnsEmptyPartMap() throws Exception {
         MockMultipartHttpServletRequest multipartRequest = new MockMultipartHttpServletRequest();
-        ServletWebRequest request = new ServletWebRequest(multipartRequest);
+        ServletWebRequest servletWebRequest = new ServletWebRequest(multipartRequest);
 
-        Object actual = resolver.resolve(bindingProperty("partMap"), request);
+        Object actual = resolver.resolve(bindingProperty("partMap"), servletWebRequest);
         assertThat(actual).isInstanceOf(Map.class);
         Map<String, Part> map = (Map<String, Part>) actual;
         assertThat(map).isEmpty();
@@ -264,9 +264,9 @@ class FormParameterMapRequestPropertyResolverTest {
     @Test
     void returnsEmptyPartMultiValueMap() throws Exception {
         MockMultipartHttpServletRequest multipartRequest = new MockMultipartHttpServletRequest();
-        ServletWebRequest request = new ServletWebRequest(multipartRequest);
+        ServletWebRequest servletWebRequest = new ServletWebRequest(multipartRequest);
 
-        Object actual = resolver.resolve(bindingProperty("multiValuePartMap"), request);
+        Object actual = resolver.resolve(bindingProperty("multiValuePartMap"), servletWebRequest);
         assertThat(actual).isInstanceOf(MultiValueMap.class);
         MultiValueMap<String, Part> map = (MultiValueMap<String, Part>) actual;
         assertThat(map).isEmpty();
@@ -275,20 +275,20 @@ class FormParameterMapRequestPropertyResolverTest {
     @Test
     void throwsExceptionReadingMultipartRequestForMap() throws Exception {
         MockMultipartHttpServletRequest multipartRequest = new ExceptionThrowingMockMultipartHttpServletRequest();
-        ServletWebRequest request = new ServletWebRequest(multipartRequest);
+        ServletWebRequest servletWebRequest = new ServletWebRequest(multipartRequest);
 
         BindingProperty bindingProperty = bindingProperty("partMap");
-        assertThatThrownBy(() -> resolver.resolve(bindingProperty, request))
+        assertThatThrownBy(() -> resolver.resolve(bindingProperty, servletWebRequest))
             .isInstanceOf(PropertyResolutionException.class);
     }
 
     @Test
     void throwsExceptionReadingMultipartRequestForMultiValueMap() throws Exception {
         MockMultipartHttpServletRequest multipartRequest = new ExceptionThrowingMockMultipartHttpServletRequest();
-        ServletWebRequest request = new ServletWebRequest(multipartRequest);
+        ServletWebRequest servletWebRequest = new ServletWebRequest(multipartRequest);
 
         BindingProperty bindingProperty = bindingProperty("multiValuePartMap");
-        assertThatThrownBy(() -> resolver.resolve(bindingProperty, request))
+        assertThatThrownBy(() -> resolver.resolve(bindingProperty, servletWebRequest))
             .isInstanceOf(PropertyResolutionException.class);
     }
 

@@ -14,8 +14,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        jdk-version: [17, 21]
-    name: JDK ${{ matrix.jdk-version }}
+        jdk:
+          - version: 17
+            tasks: build jacocoTestReport testCodeCoverageReport sonar
+          - version: 21
+            tasks: build jacocoTestReport testCodeCoverageReport
+    name: JDK ${{ matrix.jdk.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -26,7 +30,7 @@ jobs:
       - name: Setup Java JDK
         uses: actions/setup-java@v4
         with:
-          java-version: ${{ matrix.jdk-version }}
+          java-version: ${{ matrix.jdk.version }}
           distribution: 'temurin'
 
       - name: Setup Gradle
@@ -35,4 +39,5 @@ jobs:
       - name: Run Gradle
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew -Dorg.gradle.welcome=never build jacocoTestReport testCodeCoverageReport sonar
+
+        run: ./gradlew -Dorg.gradle.welcome=never ${{ matrix.jdk.tasks }}

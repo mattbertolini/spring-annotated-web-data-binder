@@ -16,9 +16,9 @@ jobs:
       matrix:
         jdk:
           - version: 17
-            tasks: build jacocoTestReport testCodeCoverageReport sonar
-          - version: 21
             tasks: build jacocoTestReport testCodeCoverageReport
+          - version: 21
+            tasks: build jacocoTestReport testCodeCoverageReport sonar
     name: JDK ${{ matrix.jdk.version }}
     steps:
       - name: Checkout
@@ -39,5 +39,4 @@ jobs:
       - name: Run Gradle
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
         run: ./gradlew -Dorg.gradle.welcome=never ${{ matrix.jdk.tasks }}

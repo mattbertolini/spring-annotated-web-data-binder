@@ -17,6 +17,7 @@
 package com.mattbertolini.spring.web.bind.docs;
 
 public class ExampleService {
+    @SuppressWarnings("unused")
     public String doSomethingWith(CustomRequestBean customRequestBean) {
         return "";
     }

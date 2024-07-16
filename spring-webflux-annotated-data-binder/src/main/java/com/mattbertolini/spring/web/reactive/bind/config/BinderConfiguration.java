@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ import org.springframework.web.reactive.result.method.annotation.ArgumentResolve
 import org.springframework.web.reactive.result.method.annotation.RequestMappingHandlerAdapter;
 
 import java.util.Collections;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -67,7 +67,7 @@ public class BinderConfiguration implements BeanPostProcessor {
      * @param propertyResolverRegistry The resolver registry to use.
      */
     public BinderConfiguration(@NonNull PropertyResolverRegistry propertyResolverRegistry) {
-        packagesToScan = new LinkedHashSet<>();
+        packagesToScan = new HashSet<>();
         this.propertyResolverRegistry = propertyResolverRegistry;
     }
 
@@ -137,11 +137,10 @@ public class BinderConfiguration implements BeanPostProcessor {
 
     @Override
     public Object postProcessBeforeInitialization(@NonNull Object bean, @NonNull String beanName) {
-        if (!(bean instanceof RequestMappingHandlerAdapter)) {
+        if (!(bean instanceof RequestMappingHandlerAdapter adapter)) {
             return bean;
         }
 
-        RequestMappingHandlerAdapter adapter = (RequestMappingHandlerAdapter) bean;
         ArgumentResolverConfigurer resolverConfigurer = adapter.getArgumentResolverConfigurer();
         if (resolverConfigurer != null) {
             ReactiveAdapterRegistry reactiveAdapterRegistry = adapter.getReactiveAdapterRegistry();

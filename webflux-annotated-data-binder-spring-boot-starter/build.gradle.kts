@@ -10,6 +10,8 @@ dependencies {
     testImplementation(libs.junitJupiterApi)
     testImplementation(libs.assertJCore)
     testImplementation(libs.springBootTest)
+    testImplementation(libs.jakartaWebsocketClientApi)
+    testImplementation(libs.jakartaWebsocketApi)
 }
 
 tasks.named<Jar>("jar").configure {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -91,11 +91,9 @@ public class BinderConfiguration implements BeanPostProcessor {
 
     @Override
     public Object postProcessBeforeInitialization(@NonNull Object bean, @NonNull String beanName) {
-        if (!(bean instanceof RequestMappingHandlerAdapter)) {
+        if (!(bean instanceof RequestMappingHandlerAdapter adapter)) {
             return bean;
         }
-
-        RequestMappingHandlerAdapter adapter = (RequestMappingHandlerAdapter) bean;
 
         PropertyResolverRegistry resolverRegistry = createPropertyResolverRegistry(adapter);
         AnnotatedRequestBeanIntrospector introspector = createIntrospector(resolverRegistry);

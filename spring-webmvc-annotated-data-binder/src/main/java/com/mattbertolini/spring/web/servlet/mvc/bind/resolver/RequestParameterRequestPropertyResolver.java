@@ -22,6 +22,7 @@ import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import com.mattbertolini.spring.web.bind.resolver.AbstractNamedRequestPropertyResolver;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -31,12 +32,13 @@ public class RequestParameterRequestPropertyResolver extends AbstractNamedReques
     implements RequestPropertyResolver {
 
     @Override
-    public boolean supports(@NonNull BindingProperty bindingProperty) {
+    public boolean supports(BindingProperty bindingProperty) {
         RequestParameter annotation = bindingProperty.getAnnotation(RequestParameter.class);
         return annotation != null && StringUtils.hasText(annotation.value());
     }
 
     @Override
+    @Nullable
     protected Object resolveWithName(@NonNull BindingProperty bindingProperty, String name, @NonNull NativeWebRequest request) {
         HttpServletRequest servletRequest = request.getNativeRequest(HttpServletRequest.class);
         if (servletRequest != null) {
@@ -54,8 +56,7 @@ public class RequestParameterRequestPropertyResolver extends AbstractNamedReques
     }
     
     @Override
-    @NonNull
-    protected String getName(@NonNull BindingProperty bindingProperty) {
+    protected String getName(BindingProperty bindingProperty) {
         RequestParameter annotation = bindingProperty.getAnnotation(RequestParameter.class);
         Assert.state(annotation != null, "No RequestParameter annotation found on type");
         return annotation.value();

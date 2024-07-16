@@ -116,7 +116,7 @@ public class BinderConfiguration implements BeanPostProcessor {
     }
 
     /**
-     * Add all of the resolvers from the given registry into this registry.
+     * Add all the resolvers from the given registry into this registry.
      *
      * @param propertyResolverRegistry The registry to add resolvers from. Required.
      * @return This instance of the configuration.

@@ -21,6 +21,8 @@ dependencies {
     testImplementation(libs.mockitoCore)
     testImplementation(libs.springTest)
     testCompileOnly(libs.hamcrest) // Needed for Spring mock MVC matchers
+    testImplementation(libs.jakartaWebsocketApi)
+    testImplementation(libs.jakartaWebsocketClientApi)
 }
 
 tasks.named<AsciidoctorTask>("asciidoctor").configure {

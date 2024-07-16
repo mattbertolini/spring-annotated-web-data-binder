@@ -24,7 +24,6 @@ import com.mattbertolini.spring.web.bind.introspect.ResolvedPropertyData;
 import com.mattbertolini.spring.web.reactive.bind.resolver.RequestPropertyResolver;
 import jakarta.validation.Valid;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.PropertyValues;
@@ -212,19 +211,21 @@ class BeanParameterMethodArgumentResolverTest {
     }
 
     @Test
-    @Disabled // TODO: Fix this
     void validationHasErrorsWithBindingResultMethodParameter() throws Exception {
         MethodParameter methodParameter = createMethodParameter("withBindingResult", ABeanClass.class, BindingResult.class);
 
-//        BindingResult bindingResult = mock(BindingResult.class);
-//        when(bindingResult.hasErrors()).thenReturn(true);
+        BindingResult bindingResult = mock(BindingResult.class);
+        when(bindingResult.hasErrors())
+            .thenReturn(false)
+            .thenReturn(false)
+            .thenReturn(true);
 
-//        bindingContext.setBindingResult(bindingResult);
+        bindingContext.setBindingResult(bindingResult);
 
         Mono<Object> objectMono = resolver.resolveArgument(methodParameter, bindingContext, exchange);
         objectMono.block();
 
-        assertThat(bindingContext.getDataBinder().getBindingResult().hasErrors()).isTrue();
+        assertThat(bindingContext.getDataBinder().getBindingResult()).isEqualTo(bindingResult);
     }
 
     private MethodParameter createMethodParameter(String anAnnotatedMethod, Class<?>... parameterTypes) throws NoSuchMethodException {

@@ -25,10 +25,10 @@ import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.RequestPropertyRes
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.core.MethodParameter;
-import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.method.annotation.ModelAttributeMethodProcessor;
 
 import java.util.Collection;
@@ -37,39 +37,51 @@ import java.util.Map;
 import java.util.Objects;
 
 public class BeanParameterMethodArgumentResolver extends ModelAttributeMethodProcessor {
+    private static final String BIND_VALUES_ATTRIBUTE_KEY = BeanParameterMethodArgumentResolver.class.getName() + ".bindValues";
     private final AnnotatedRequestBeanIntrospector introspector;
 
-    public BeanParameterMethodArgumentResolver(@NonNull AnnotatedRequestBeanIntrospector introspector) {
+    public BeanParameterMethodArgumentResolver(AnnotatedRequestBeanIntrospector introspector) {
         super(false);
         this.introspector = introspector;
     }
 
     @Override
-    public boolean supportsParameter(@NonNull MethodParameter parameter) {
+    public boolean supportsParameter(MethodParameter parameter) {
         return parameter.hasParameterAnnotation(BeanParameter.class) && !BeanUtils.isSimpleProperty(parameter.getParameterType());
     }
 
     @Override
-    public boolean supportsReturnType(@NonNull MethodParameter returnType) {
+    public boolean supportsReturnType(MethodParameter returnType) {
         return false;
     }
 
     @Override
-    protected void constructAttribute(WebDataBinder binder, @NonNull NativeWebRequest request) {
+    protected void constructAttribute(WebDataBinder binder, NativeWebRequest request) {
         Assert.state(binder.getTargetType() != null, "WebDataBinder must have a target type");
-        Map<String, Object> valuesToBind = getValuesToBind(Objects.requireNonNull(binder.getTargetType().getRawClass()), request);
+        Map<String, Object> valuesToBind = memoizedGetValuesToBind(Objects.requireNonNull(binder.getTargetType().getRawClass()), request);
         binder.construct(new MapValueResolver(valuesToBind));
     }
 
     @Override
-    protected void bindRequestParameters(@NonNull WebDataBinder binder, @NonNull NativeWebRequest request) {
+    protected void bindRequestParameters(WebDataBinder binder, NativeWebRequest request) {
         Assert.state(binder.getTarget() != null, "WebDataBinder must have a target object");
-        Map<String, Object> valuesToBind = getValuesToBind(binder.getTarget().getClass(), request);
+        Map<String, Object> valuesToBind = memoizedGetValuesToBind(binder.getTarget().getClass(), request);
         binder.bind(new MutablePropertyValues(valuesToBind));
+        request.removeAttribute(BIND_VALUES_ATTRIBUTE_KEY, RequestAttributes.SCOPE_REQUEST);
     }
 
-    @NonNull
-    private Map<String, Object> getValuesToBind(@NonNull Class<?> targetType, @NonNull NativeWebRequest request) {
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> memoizedGetValuesToBind(Class<?> targetType, NativeWebRequest request) {
+        Map<String, Object> memoizedValues = (Map<String, Object>) request.getAttribute(BIND_VALUES_ATTRIBUTE_KEY, NativeWebRequest.SCOPE_REQUEST);
+        if (memoizedValues != null) {
+            return memoizedValues;
+        }
+        Map<String, Object> valuesToBind = getValuesToBind(targetType, request);
+        request.setAttribute(BIND_VALUES_ATTRIBUTE_KEY, valuesToBind, NativeWebRequest.SCOPE_REQUEST);
+        return valuesToBind;
+    }
+
+    private Map<String, Object> getValuesToBind(Class<?> targetType, NativeWebRequest request) {
         Map<String, Object> values = new HashMap<>();
         Collection<ResolvedPropertyData> propertyData = introspector.getResolversFor(targetType);
         for (ResolvedPropertyData data : propertyData) {

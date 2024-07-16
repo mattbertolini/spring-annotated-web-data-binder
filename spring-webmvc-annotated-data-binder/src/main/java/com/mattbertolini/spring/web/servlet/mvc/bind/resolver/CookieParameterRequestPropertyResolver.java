@@ -20,19 +20,20 @@ import com.mattbertolini.spring.web.bind.annotation.CookieParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.util.WebUtils;
 
 public class CookieParameterRequestPropertyResolver implements RequestPropertyResolver {
     @Override
-    public boolean supports(@NonNull BindingProperty bindingProperty) {
+    public boolean supports(BindingProperty bindingProperty) {
         return bindingProperty.hasAnnotation(CookieParameter.class);
     }
 
     @Override
-    public Object resolve(@NonNull BindingProperty bindingProperty, @NonNull NativeWebRequest request) {
+    @Nullable
+    public Object resolve(BindingProperty bindingProperty, NativeWebRequest request) {
         HttpServletRequest servletRequest = request.getNativeRequest(HttpServletRequest.class);
         Assert.state(servletRequest != null, "A HttpServletRequest is required for this resolver and none found.");
         CookieParameter annotation = bindingProperty.getAnnotation(CookieParameter.class);

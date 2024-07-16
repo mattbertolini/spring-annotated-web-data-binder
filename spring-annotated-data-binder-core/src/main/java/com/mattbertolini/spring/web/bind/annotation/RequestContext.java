@@ -33,8 +33,8 @@ import java.lang.annotation.Target;
  * In Spring MVC the following additional objects are available:
  * <ul>
  *     <li>{@link org.springframework.web.context.request.WebRequest} - The Spring WebRequest.</li>
- *     <li>{@link javax.servlet.http.HttpServletRequest} - The underlying Servlet request.</li>
- *     <li>{@link javax.servlet.http.HttpSession} - The Servlet session object.</li>
+ *     <li>{@link jakarta.servlet.http.HttpServletRequest} - The underlying Servlet request.</li>
+ *     <li>{@link jakarta.servlet.http.HttpSession} - The Servlet session object.</li>
  * </ul>
  * In Spring WebFlux the following additional objects are available:
  * <ul>

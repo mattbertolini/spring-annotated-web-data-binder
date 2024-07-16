@@ -19,6 +19,7 @@ package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
 import com.mattbertolini.spring.web.bind.PropertyResolutionException;
 import com.mattbertolini.spring.web.bind.annotation.RequestParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
+import jakarta.servlet.http.Part;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -30,7 +31,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.Part;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.nio.charset.StandardCharsets;

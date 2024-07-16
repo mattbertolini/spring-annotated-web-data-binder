@@ -18,11 +18,10 @@ package com.mattbertolini.spring.test.web.bind;
 
 import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
 import com.mattbertolini.spring.web.bind.annotation.RequestBody;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.codec.multipart.Part;
 import org.springframework.util.MultiValueMap;
 import reactor.core.publisher.Flux;
-
-import javax.validation.constraints.NotNull;
 
 public class RequestBodyBean {
 

@@ -18,6 +18,7 @@ package com.mattbertolini.spring.test.web.bind;
 
 import com.mattbertolini.spring.test.web.bind.records.HeaderParameterRecord;
 import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.util.MultiValueMap;
@@ -25,7 +26,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 import java.util.Map;
 
 @RestController

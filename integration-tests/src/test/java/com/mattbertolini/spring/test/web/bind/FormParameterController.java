@@ -18,6 +18,8 @@ package com.mattbertolini.spring.test.web.bind;
 
 import com.mattbertolini.spring.test.web.bind.records.FormParameterRecord;
 import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
+import jakarta.servlet.http.Part;
+import jakarta.validation.Valid;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.MediaType;
@@ -30,8 +32,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
 
-import javax.servlet.http.Part;
-import javax.validation.Valid;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

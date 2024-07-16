@@ -1,12 +1,14 @@
 [versions]
-spring = "5.3.28" # Used in java-conventions.gradle.kts
-springBoot = "2.7.13" # Used in java-conventions.gradle.kts
+spring = "6.1.10" # Used in java-conventions.gradle.kts
+springBoot = "3.3.1" # Used in java-conventions.gradle.kts
 junit = "5.9.3" # Used in java-conventions.gradle.kts
 jacoco = "0.8.10" # Used in java-conventions.gradle.kts
 
 [libraries]
-javaxServletApi = { module = "javax.servlet:javax.servlet-api", version = "4.0.1" }
-javaxValidationApi = { module = "javax.validation:validation-api", version = "2.0.1.Final" }
+jakartaServletApi = { module = "jakarta.servlet:jakarta.servlet-api", version = "6.0.0" }
+jakartaValidationApi = { module = "jakarta.validation:jakarta.validation-api", version = "3.1.0" }
+jakartaWebsocketApi = { module = "jakarta.websocket:jakarta.websocket-api", version = "2.2.0" }
+jakartaWebsocketClientApi = { module = "jakarta.websocket:jakarta.websocket-client-api", version = "2.2.0" }
 
 findbugsJsr305 = { module = "com.google.code.findbugs:jsr305", version = "3.0.2" }
 
@@ -22,9 +24,9 @@ springBootTest = { module = "org.springframework.boot:spring-boot-test", version
 
 springAsciidoctorExtBlockSwitch = { module = "io.spring.asciidoctor:spring-asciidoctor-extensions-block-switch", version = "0.6.1" }
 
-glassfishJavaxEl = { module = "org.glassfish:javax.el", version = "3.0.1-b12" } # Needed by Hibernate Validator
-hibernateValidator = { module = "org.hibernate.validator:hibernate-validator", version = "6.0.21.Final" }
-jacksonDatabind = { module = "com.fasterxml.jackson.core:jackson-databind", version = "2.12.7.1" }
+glassfishJakartaEl = { module = "org.glassfish:jakarta.el", version = "4.0.2" } # Needed by Hibernate Validator
+hibernateValidator = { module = "org.hibernate.validator:hibernate-validator", version = "8.0.1.Final" }
+jacksonDatabind = { module = "com.fasterxml.jackson.core:jackson-databind", version = "2.17.2" }
 
 junitJupiterApi = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
 assertJCore = { module = "org.assertj:assertj-core", version = "3.24.2" }

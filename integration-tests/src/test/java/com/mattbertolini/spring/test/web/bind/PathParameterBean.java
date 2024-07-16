@@ -18,8 +18,8 @@ package com.mattbertolini.spring.test.web.bind;
 
 import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
 import com.mattbertolini.spring.web.bind.annotation.PathParameter;
+import jakarta.validation.constraints.NotEmpty;
 
-import javax.validation.constraints.NotEmpty;
 import java.util.Map;
 
 public class PathParameterBean {

@@ -18,6 +18,7 @@ package com.mattbertolini.spring.web.servlet.mvc.test;
 
 import com.mattbertolini.spring.test.web.bind.DirectFieldAccessController;
 import com.mattbertolini.spring.web.servlet.mvc.bind.config.BinderConfiguration;
+import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Bean;
@@ -33,8 +34,6 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.bind.support.ConfigurableWebBindingInitializer;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
-
-import javax.servlet.http.Cookie;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;

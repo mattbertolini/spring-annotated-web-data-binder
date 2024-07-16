@@ -20,13 +20,12 @@ import com.mattbertolini.spring.web.bind.PropertyResolutionException;
 import com.mattbertolini.spring.web.bind.annotation.RequestParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import com.mattbertolini.spring.web.bind.resolver.AbstractNamedRequestPropertyResolver;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.multipart.support.MultipartResolutionDelegate;
-
-import javax.servlet.http.HttpServletRequest;
 
 public class RequestParameterRequestPropertyResolver extends AbstractNamedRequestPropertyResolver<NativeWebRequest, Object>
     implements RequestPropertyResolver {

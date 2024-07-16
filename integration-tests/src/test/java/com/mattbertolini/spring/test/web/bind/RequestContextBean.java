@@ -17,12 +17,12 @@
 package com.mattbertolini.spring.test.web.bind;
 
 import com.mattbertolini.spring.web.bind.annotation.RequestContext;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebSession;
 
-import javax.servlet.http.HttpSession;
 import java.time.ZoneId;
 import java.util.Locale;
 import java.util.TimeZone;

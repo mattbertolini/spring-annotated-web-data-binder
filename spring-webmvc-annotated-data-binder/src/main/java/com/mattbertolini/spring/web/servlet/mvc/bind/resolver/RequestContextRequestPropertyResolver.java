@@ -18,15 +18,15 @@ package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.RequestContext;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpMethod;
 import org.springframework.lang.NonNull;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.time.ZoneId;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -64,7 +64,7 @@ public class RequestContextRequestPropertyResolver implements RequestPropertyRes
             // Not creating a session here.
             return servletRequest.getSession(false);
         } else if (HttpMethod.class.isAssignableFrom(type)) {
-            return HttpMethod.resolve(servletRequest.getMethod());
+            return HttpMethod.valueOf(servletRequest.getMethod());
         } else if (Locale.class.isAssignableFrom(type)) {
             return RequestContextUtils.getLocale(servletRequest);
         } else if(TimeZone.class.isAssignableFrom(type)) {

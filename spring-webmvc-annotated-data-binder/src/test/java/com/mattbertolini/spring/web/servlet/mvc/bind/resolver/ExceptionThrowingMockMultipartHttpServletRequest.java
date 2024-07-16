@@ -1,10 +1,10 @@
 package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Part;
 import org.springframework.mock.web.MockMultipartHttpServletRequest;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.Part;
 import java.io.IOException;
 import java.util.Collection;
 

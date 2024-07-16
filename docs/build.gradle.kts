@@ -12,7 +12,7 @@ configurations {
 dependencies {
     implementation(project(":spring-webmvc-annotated-data-binder"))
     implementation(project(":spring-webflux-annotated-data-binder"))
-    implementation(libs.javaxServletApi) // Version defined in Spring BOM file
+    implementation(libs.jakartaServletApi) // Version defined in Spring BOM file
 
     add("asciidoctorExt", libs.springAsciidoctorExtBlockSwitch)
 

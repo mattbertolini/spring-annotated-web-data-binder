@@ -22,6 +22,7 @@ import com.mattbertolini.spring.web.bind.introspect.AnnotatedRequestBeanIntrospe
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import com.mattbertolini.spring.web.bind.introspect.ResolvedPropertyData;
 import com.mattbertolini.spring.web.reactive.bind.resolver.RequestPropertyResolver;
+import jakarta.validation.Valid;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.PropertyValue;
@@ -42,7 +43,6 @@ import org.springframework.web.reactive.BindingContext;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import javax.validation.Valid;
 import java.beans.PropertyDescriptor;
 import java.util.Arrays;
 import java.util.List;

@@ -18,10 +18,10 @@ package com.mattbertolini.spring.test.web.bind;
 
 import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
 import com.mattbertolini.spring.web.bind.annotation.HeaderParameter;
+import jakarta.validation.constraints.NotEmpty;
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.MultiValueMap;
 
-import javax.validation.constraints.NotEmpty;
 import java.util.Map;
 
 public class HeaderParameterBean {

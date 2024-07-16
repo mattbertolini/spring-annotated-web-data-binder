@@ -18,6 +18,9 @@ package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.RequestContext;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
@@ -29,9 +32,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.i18n.FixedLocaleResolver;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.time.ZoneId;

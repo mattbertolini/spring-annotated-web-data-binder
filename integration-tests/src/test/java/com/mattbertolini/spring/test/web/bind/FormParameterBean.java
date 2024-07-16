@@ -18,12 +18,12 @@ package com.mattbertolini.spring.test.web.bind;
 
 import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
 import com.mattbertolini.spring.web.bind.annotation.FormParameter;
+import jakarta.servlet.http.Part;
+import jakarta.validation.constraints.NotEmpty;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.Part;
-import javax.validation.constraints.NotEmpty;
 import java.util.Map;
 
 public class FormParameterBean {

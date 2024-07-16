@@ -18,8 +18,7 @@ package com.mattbertolini.spring.test.web.bind;
 
 import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
 import com.mattbertolini.spring.web.bind.annotation.SessionParameter;
-
-import javax.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotEmpty;
 
 public class SessionParameterBean {
     @SessionParameter("annotated_field")

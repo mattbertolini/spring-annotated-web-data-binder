@@ -18,6 +18,7 @@ package com.mattbertolini.spring.test.web.bind;
 
 import com.mattbertolini.spring.test.web.bind.records.RequestBodyRecord;
 import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
+import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.Part;
 import org.springframework.util.Assert;
@@ -27,7 +28,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 
-import javax.validation.Valid;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController

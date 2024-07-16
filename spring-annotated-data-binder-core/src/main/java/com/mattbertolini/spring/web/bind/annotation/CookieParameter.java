@@ -40,7 +40,7 @@ import java.lang.annotation.Target;
  * </p>
  *
  * <p>If you need access to all attributes of a cookie (e.g. expiration date, domain, etc) you can bind to cookie
- * objects. In Spring MVC you and bind directly to a {@link javax.servlet.http.Cookie}:
+ * objects. In Spring MVC you and bind directly to a {@link jakarta.servlet.http.Cookie}:
  * <pre>{@code
  *     @CookieParameter("cookie_name")
  *     private Cookie cookie;

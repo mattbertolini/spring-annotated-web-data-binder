@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2022 the original author or authors.
+ * Copyright 2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,17 +21,15 @@ import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
 import com.mattbertolini.spring.web.bind.introspect.AnnotatedRequestBeanIntrospector;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import com.mattbertolini.spring.web.bind.introspect.ResolvedPropertyData;
+import com.mattbertolini.spring.web.bind.support.MapValueResolver;
 import com.mattbertolini.spring.web.reactive.bind.resolver.RequestPropertyResolver;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.core.MethodParameter;
-import org.springframework.core.ReactiveAdapter;
 import org.springframework.core.ReactiveAdapterRegistry;
-import org.springframework.core.ResolvableType;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.support.WebExchangeDataBinder;
-import org.springframework.web.reactive.BindingContext;
 import org.springframework.web.reactive.result.method.annotation.ModelAttributeMethodArgumentResolver;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
@@ -44,9 +42,6 @@ import java.util.Map;
 import java.util.Objects;
 
 public class BeanParameterMethodArgumentResolver extends ModelAttributeMethodArgumentResolver {
-    private static final String INTROSPECTOR_RESOLVABLE_TYPE = BeanParameterMethodArgumentResolver.class.getName()
-        + ".INTROSPECTOR_RESOLVABLE_TYPE";
-
     private final AnnotatedRequestBeanIntrospector introspector;
 
     public BeanParameterMethodArgumentResolver(
@@ -63,17 +58,13 @@ public class BeanParameterMethodArgumentResolver extends ModelAttributeMethodArg
 
     @Override
     @NonNull
-    public Mono<Object> resolveArgument(@NonNull MethodParameter parameter, @NonNull BindingContext context, ServerWebExchange exchange) {
-        try {
-            ResolvableType type = ResolvableType.forMethodParameter(parameter);
-            Class<?> resolvedType = type.resolve();
-            ReactiveAdapter adapter = (resolvedType != null ? getAdapterRegistry().getAdapter(resolvedType) : null);
-            ResolvableType valueType = (adapter != null ? type.getGeneric() : type);
-            exchange.getAttributes().put(INTROSPECTOR_RESOLVABLE_TYPE, valueType);
-            return super.resolveArgument(parameter, context, exchange);
-        } finally {
-            exchange.getAttributes().remove(INTROSPECTOR_RESOLVABLE_TYPE);
-        }
+    protected Mono<Void> constructAttribute(WebExchangeDataBinder binder, @NonNull ServerWebExchange exchange) {
+        Assert.state(binder.getTargetType() != null, "WebExchangeDataBinder must have a target type");
+        Collection<ResolvedPropertyData> propertyData = introspector.getResolversFor(Objects.requireNonNull(binder.getTargetType().getRawClass()));
+        return getValuesToBind(propertyData, exchange)
+            .map(MapValueResolver::new)
+            .doOnNext(binder::construct)
+            .then();
     }
 
     @Override
@@ -85,19 +76,6 @@ public class BeanParameterMethodArgumentResolver extends ModelAttributeMethodArg
             .map(MutablePropertyValues::new)
             .doOnNext(binder::bind)
             .then();
-    }
-
-    @Override
-    @NonNull
-    public Mono<Map<String, Object>> getValuesToBind(@NonNull WebExchangeDataBinder binder, ServerWebExchange exchange) {
-        ResolvableType resolvableType = exchange.getAttribute(INTROSPECTOR_RESOLVABLE_TYPE);
-        if (resolvableType == null) {
-            return super.getValuesToBind(binder, exchange);
-        }
-        Class<?> type = resolvableType.resolve();
-        Assert.notNull(type, "The resolved type must not be null");
-        Collection<ResolvedPropertyData> propertyData = introspector.getResolversFor(type);
-        return getValuesToBind(propertyData, exchange);
     }
 
     @NonNull

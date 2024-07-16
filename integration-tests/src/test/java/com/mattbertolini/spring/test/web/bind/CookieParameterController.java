@@ -18,12 +18,11 @@ package com.mattbertolini.spring.test.web.bind;
 
 import com.mattbertolini.spring.test.web.bind.records.CookieParameterRecord;
 import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
+import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.Valid;
 
 @RestController
 public class CookieParameterController {

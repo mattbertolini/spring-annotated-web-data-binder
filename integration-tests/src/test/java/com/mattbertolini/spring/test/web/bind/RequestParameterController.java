@@ -18,6 +18,8 @@ package com.mattbertolini.spring.test.web.bind;
 
 import com.mattbertolini.spring.test.web.bind.records.RequestParameterRecord;
 import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
+import jakarta.servlet.http.Part;
+import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StreamUtils;
@@ -27,8 +29,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.Part;
-import javax.validation.Valid;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;

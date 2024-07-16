@@ -13,10 +13,6 @@ java {
     }
 }
 
-tasks.named<JavaCompile>("compileJava").configure {
-    options.release.set(8)
-}
-
 testing {
     suites {
         named<JvmTestSuite>("test").configure {
@@ -34,25 +30,20 @@ tasks.named<Jar>("jar").configure {
     }
 }
 
-val springVersion: String = versionCatalog.findVersion("spring").orElseThrow().toString()
-val springBootVersion: String = versionCatalog.findVersion("springBoot").orElseThrow().toString()
-
 val javadocLinks = arrayOf(
-    "https://docs.oracle.com/javase/8/docs/api/",
-    "https://docs.oracle.com/javaee/7/api/",
-    "https://docs.spring.io/spring-framework/docs/$springVersion/javadoc-api/",
-    "https://docs.spring.io/spring-boot/docs/$springBootVersion/api/"
+    "https://docs.oracle.com/en/java/javase/17/docs/api",
+    "https://jakarta.ee/specifications/platform/11/apidocs/",
+    "https://docs.spring.io/spring-framework/docs/current/javadoc-api/",
+    "https://docs.spring.io/spring-boot/api/java/"
 )
 
 tasks.named<Javadoc>("javadoc").configure {
     options {
         this as StandardJavadocDocletOptions
-        source = "8"
+        source = "17"
         links(*javadocLinks)
         addStringOption("Xdoclint:none", "-quiet")
-        if (java.toolchain.languageVersion.get().asInt() >= 9) {
-            addBooleanOption("html5", true)
-        }
+        addBooleanOption("html5", true)
     }
 }
 

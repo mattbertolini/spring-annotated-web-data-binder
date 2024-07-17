@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 the original author or authors.
+ * Copyright 2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.multipart.support.MultipartResolutionDelegate;
 
+import java.util.Objects;
+
 public class RequestParameterRequestPropertyResolver extends AbstractNamedRequestPropertyResolver<NativeWebRequest, Object>
     implements RequestPropertyResolver {
 
@@ -39,7 +41,7 @@ public class RequestParameterRequestPropertyResolver extends AbstractNamedReques
 
     @Override
     @Nullable
-    protected Object resolveWithName(@NonNull BindingProperty bindingProperty, String name, @NonNull NativeWebRequest request) {
+    protected Object resolveWithName(BindingProperty bindingProperty, String name, NativeWebRequest request) {
         HttpServletRequest servletRequest = request.getNativeRequest(HttpServletRequest.class);
         if (servletRequest != null) {
             try {
@@ -58,7 +60,7 @@ public class RequestParameterRequestPropertyResolver extends AbstractNamedReques
     @Override
     protected String getName(BindingProperty bindingProperty) {
         RequestParameter annotation = bindingProperty.getAnnotation(RequestParameter.class);
-        Assert.state(annotation != null, "No RequestParameter annotation found on type");
+        Objects.requireNonNull(annotation, "No RequestParameter annotation found on type");
         return annotation.value();
     }
 }

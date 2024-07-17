@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,18 @@
 package com.mattbertolini.spring.web.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
-import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 public abstract class AbstractNamedRequestPropertyResolver<T, R> implements RequestPropertyResolverBase<T, R> {
-    @NonNull
-    protected abstract String getName(@NonNull BindingProperty bindingProperty);
+    protected abstract String getName(BindingProperty bindingProperty);
 
     @Override
-    public final R resolve(@NonNull BindingProperty bindingProperty, @NonNull T request) {
+    @Nullable
+    public final R resolve(BindingProperty bindingProperty, T request) {
         String name = getName(bindingProperty);
         return resolveWithName(bindingProperty, name, request);
     }
 
-    protected abstract R resolveWithName(@NonNull BindingProperty bindingProperty, String name, @NonNull T request);
+    @Nullable
+    protected abstract R resolveWithName(BindingProperty bindingProperty, String name, T request);
 }

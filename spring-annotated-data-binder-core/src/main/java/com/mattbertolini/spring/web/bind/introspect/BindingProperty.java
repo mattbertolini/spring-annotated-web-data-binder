@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package com.mattbertolini.spring.web.bind.introspect;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.convert.Property;
 import org.springframework.core.convert.TypeDescriptor;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import java.beans.PropertyDescriptor;
@@ -35,7 +34,7 @@ public final class BindingProperty {
     private final TypeDescriptor typeDescriptor;
     private final MethodParameter methodParameter;
 
-    private BindingProperty(@NonNull TypeDescriptor typeDescriptor, @NonNull MethodParameter methodParameter) {
+    private BindingProperty(TypeDescriptor typeDescriptor, MethodParameter methodParameter) {
         this.typeDescriptor = typeDescriptor;
         this.methodParameter = methodParameter;
     }
@@ -45,7 +44,6 @@ public final class BindingProperty {
         return typeDescriptor.getAnnotation(annotationType);
     }
 
-    @NonNull
     public MethodParameter getMethodParameter() {
         return methodParameter;
     }
@@ -69,8 +67,7 @@ public final class BindingProperty {
      * @param propertyDescriptor The Java Beans PropertyDescriptor to create a BindingProperty for.
      * @return A new BindingProperty object.
      */
-    @NonNull
-    public static BindingProperty forPropertyDescriptor(@NonNull PropertyDescriptor propertyDescriptor) {
+    public static BindingProperty forPropertyDescriptor(PropertyDescriptor propertyDescriptor) {
         Property property = new Property(
             propertyDescriptor.getPropertyType(),
             propertyDescriptor.getReadMethod(),
@@ -86,8 +83,7 @@ public final class BindingProperty {
      * This method is more or less the same as found in {@link Property} but those are not exposed publicly so I
      * needed to replicate it.
      */
-    @NonNull
-    private static MethodParameter resolveMethodParameter(@NonNull Property property) {
+    private static MethodParameter resolveMethodParameter(Property property) {
         MethodParameter readMethodParameter = resolveReadMethodParameter(property);
         MethodParameter writeMethodParameter = resolveWriteMethodParameter(property);
         if (writeMethodParameter == null) {
@@ -107,7 +103,7 @@ public final class BindingProperty {
     }
 
     @Nullable
-    private static MethodParameter resolveReadMethodParameter(@NonNull Property property) {
+    private static MethodParameter resolveReadMethodParameter(Property property) {
         if (property.getReadMethod() == null) {
             return null;
         }
@@ -115,7 +111,7 @@ public final class BindingProperty {
     }
 
     @Nullable
-    private static MethodParameter resolveWriteMethodParameter(@NonNull Property property) {
+    private static MethodParameter resolveWriteMethodParameter(Property property) {
         if (property.getWriteMethod() == null) {
             return null;
         }

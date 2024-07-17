@@ -3,6 +3,7 @@ package com.mattbertolini.buildlogic
 plugins {
     java
     jacoco
+    id("com.mattbertolini.buildlogic.error-prone")
 }
 
 val versionCatalog = versionCatalogs.named("libs")

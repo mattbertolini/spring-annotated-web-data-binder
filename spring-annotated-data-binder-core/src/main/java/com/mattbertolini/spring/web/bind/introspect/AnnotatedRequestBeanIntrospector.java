@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2022 the original author or authors.
+ * Copyright 2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@
 
 package com.mattbertolini.spring.web.bind.introspect;
 
-import org.springframework.lang.NonNull;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -32,8 +30,7 @@ public interface AnnotatedRequestBeanIntrospector {
      * @return A map of resolved property data. This map is never null but may be empty.
      * @throws CircularReferenceException If a circular reference is found while traversing the object graph.
      */
-    @NonNull
-    Map<String, ResolvedPropertyData> getResolverMapFor(@NonNull Class<?> targetType);
+    Map<String, ResolvedPropertyData> getResolverMapFor(Class<?> targetType);
 
     /**
      * Creates a list of resolved property data for the given target class. This method traverses the object graph for
@@ -43,8 +40,7 @@ public interface AnnotatedRequestBeanIntrospector {
      * @return A list of resolved property data. This list is never null but may be empty.
      * @throws CircularReferenceException If a circular reference is found while traversing the object graph.
      */
-    @NonNull
-    default Collection<ResolvedPropertyData> getResolversFor(@NonNull Class<?> targetType) {
+    default Collection<ResolvedPropertyData> getResolversFor(Class<?> targetType) {
         Map<String, ResolvedPropertyData> propertyData = getResolverMapFor(targetType);
         return Collections.unmodifiableCollection(propertyData.values());
     }

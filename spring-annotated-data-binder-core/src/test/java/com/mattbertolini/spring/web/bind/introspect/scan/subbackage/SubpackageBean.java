@@ -18,12 +18,15 @@ package com.mattbertolini.spring.web.bind.introspect.scan.subbackage;
 
 import com.mattbertolini.spring.web.bind.annotation.FormParameter;
 import com.mattbertolini.spring.web.bind.annotation.RequestBean;
+import org.springframework.lang.Nullable;
 
 @RequestBean
 public class SubpackageBean {
     @FormParameter("subpackage_property")
+    @Nullable
     private String subpackageProperty;
 
+    @Nullable
     public String getSubpackageProperty() {
         return subpackageProperty;
     }

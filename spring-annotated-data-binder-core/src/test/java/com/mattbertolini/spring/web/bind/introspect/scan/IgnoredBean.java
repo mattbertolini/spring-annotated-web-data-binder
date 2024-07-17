@@ -17,11 +17,14 @@
 package com.mattbertolini.spring.web.bind.introspect.scan;
 
 import com.mattbertolini.spring.web.bind.annotation.RequestParameter;
+import org.springframework.lang.Nullable;
 
 public class IgnoredBean {
     @RequestParameter("property")
+    @Nullable
     private String property;
 
+    @Nullable
     public String getProperty() {
         return property;
     }

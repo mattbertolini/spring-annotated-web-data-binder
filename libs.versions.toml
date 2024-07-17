@@ -3,6 +3,8 @@ spring = "6.1.10" # Used in java-conventions.gradle.kts
 springBoot = "3.3.1" # Used in java-conventions.gradle.kts
 junit = "5.9.3" # Used in java-conventions.gradle.kts
 jacoco = "0.8.10" # Used in java-conventions.gradle.kts
+errorProne = "2.29.0"
+nullAway = "0.11.0"
 
 [libraries]
 jakartaServletApi = { module = "jakarta.servlet:jakarta.servlet-api", version = "6.0.0" }
@@ -33,6 +35,11 @@ assertJCore = { module = "org.assertj:assertj-core", version = "3.24.2" }
 mockitoCore = { module = "org.mockito:mockito-core", version = "5.3.1" }
 equalsVerifier = { module = "nl.jqno.equalsverifier:equalsverifier", version = "3.14.2" }
 hamcrest = { module = "org.hamcrest:hamcrest", version = "2.2" }
+
+errorProneCore = { module = "com.google.errorprone:error_prone_core", version.ref = "errorProne" }
+errorProneAnnotations = { module = "com.google.errorprone:error_prone_annotations", version.ref = "errorProne"}
+nullAway = { module = "com.uber.nullaway:nullaway", version.ref = "nullAway" }
+nullAwayAnnotations = { module = "com.uber.nullaway:nullaway-annotations", version.ref = "nullAway" }
 
 [plugins]
 asciidoctorConvert = { id = "org.asciidoctor.jvm.convert", version = "3.3.2" }

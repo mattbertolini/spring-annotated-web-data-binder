@@ -18,12 +18,15 @@ package com.mattbertolini.spring.web.bind.introspect.scan;
 
 import com.mattbertolini.spring.web.bind.annotation.RequestBean;
 import com.mattbertolini.spring.web.bind.annotation.RequestParameter;
+import org.springframework.lang.Nullable;
 
 @RequestBean
 public class ScannedBean {
     @RequestParameter("property")
+    @Nullable
     private String property;
 
+    @Nullable
     public String getProperty() {
         return property;
     }

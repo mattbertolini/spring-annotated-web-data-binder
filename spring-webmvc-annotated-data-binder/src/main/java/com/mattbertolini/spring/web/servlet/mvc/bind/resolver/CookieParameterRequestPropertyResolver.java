@@ -25,6 +25,8 @@ import org.springframework.util.Assert;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.util.WebUtils;
 
+import java.util.Objects;
+
 public class CookieParameterRequestPropertyResolver implements RequestPropertyResolver {
     @Override
     public boolean supports(BindingProperty bindingProperty) {
@@ -37,7 +39,7 @@ public class CookieParameterRequestPropertyResolver implements RequestPropertyRe
         HttpServletRequest servletRequest = request.getNativeRequest(HttpServletRequest.class);
         Assert.state(servletRequest != null, "A HttpServletRequest is required for this resolver and none found.");
         CookieParameter annotation = bindingProperty.getAnnotation(CookieParameter.class);
-        Assert.state(annotation != null, "No CookieParameter annotation found on type");
+        Objects.requireNonNull(annotation, "No CookieParameter annotation found on type");
         Cookie cookie = WebUtils.getCookie(servletRequest, annotation.value());
         if (cookie == null) {
             return null;

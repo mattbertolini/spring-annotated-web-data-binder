@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import java.util.function.Function;
 
 public class FormParameterMapRequestPropertyResolver implements RequestPropertyResolver {
     @Override
-    public boolean supports(@NonNull BindingProperty bindingProperty) {
+    public boolean supports(BindingProperty bindingProperty) {
         FormParameter annotation = bindingProperty.getAnnotation(FormParameter.class);
         return annotation != null && !StringUtils.hasText(annotation.value()) &&
             Map.class.isAssignableFrom(bindingProperty.getType());
@@ -37,7 +37,7 @@ public class FormParameterMapRequestPropertyResolver implements RequestPropertyR
 
     @Override
     @NonNull
-    public Mono<Object> resolve(@NonNull BindingProperty bindingProperty, @NonNull ServerWebExchange exchange) {
+    public Mono<Object> resolve(BindingProperty bindingProperty, ServerWebExchange exchange) {
         if (MultiValueMap.class.isAssignableFrom(bindingProperty.getType())) {
             return exchange.getFormData().map(Function.identity());
         }

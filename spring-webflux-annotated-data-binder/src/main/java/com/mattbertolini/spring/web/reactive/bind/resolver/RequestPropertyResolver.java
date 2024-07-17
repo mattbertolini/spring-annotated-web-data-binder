@@ -27,6 +27,6 @@ import reactor.core.publisher.Mono;
  */
 public interface RequestPropertyResolver extends RequestPropertyResolverBase<ServerWebExchange, Mono<Object>> {
     @Override
-    @NonNull
-    Mono<Object> resolve(@NonNull BindingProperty bindingProperty, @NonNull ServerWebExchange request);
+    @NonNull // Explicitly setting NonNull as we are overriding a Nullable parent method
+    Mono<Object> resolve(BindingProperty bindingProperty, ServerWebExchange request);
 }

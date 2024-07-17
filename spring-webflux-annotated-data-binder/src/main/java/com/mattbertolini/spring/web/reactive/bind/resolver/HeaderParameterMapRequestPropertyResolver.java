@@ -28,7 +28,7 @@ import java.util.Map;
 
 public class HeaderParameterMapRequestPropertyResolver implements RequestPropertyResolver {
     @Override
-    public boolean supports(@NonNull BindingProperty bindingProperty) {
+    public boolean supports(BindingProperty bindingProperty) {
         HeaderParameter annotation = bindingProperty.getAnnotation(HeaderParameter.class);
         return annotation != null && !StringUtils.hasText(annotation.value()) &&
             Map.class.isAssignableFrom(bindingProperty.getType());
@@ -36,7 +36,7 @@ public class HeaderParameterMapRequestPropertyResolver implements RequestPropert
 
     @Override
     @NonNull
-    public Mono<Object> resolve(@NonNull BindingProperty bindingProperty, @NonNull ServerWebExchange exchange) {
+    public Mono<Object> resolve(BindingProperty bindingProperty, ServerWebExchange exchange) {
         // HttpHeaders class extends from MultiValueMap
         if (MultiValueMap.class.isAssignableFrom(bindingProperty.getType())) {
             return Mono.just(exchange.getRequest().getHeaders());

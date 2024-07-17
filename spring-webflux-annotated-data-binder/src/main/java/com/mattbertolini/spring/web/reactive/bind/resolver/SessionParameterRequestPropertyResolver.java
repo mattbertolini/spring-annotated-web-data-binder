@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,24 +19,24 @@ package com.mattbertolini.spring.web.reactive.bind.resolver;
 import com.mattbertolini.spring.web.bind.annotation.SessionParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.springframework.lang.NonNull;
-import org.springframework.util.Assert;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.util.Objects;
+
 public class SessionParameterRequestPropertyResolver implements RequestPropertyResolver {
     @Override
-    public boolean supports(@NonNull BindingProperty bindingProperty) {
+    public boolean supports(BindingProperty bindingProperty) {
         return bindingProperty.hasAnnotation(SessionParameter.class);
     }
 
     @NonNull
     @Override
-    public Mono<Object> resolve(@NonNull BindingProperty bindingProperty, @NonNull ServerWebExchange exchange) {
+    public Mono<Object> resolve(BindingProperty bindingProperty, ServerWebExchange exchange) {
         SessionParameter annotation = bindingProperty.getAnnotation(SessionParameter.class);
-        Assert.state(annotation != null, "No SessionParameter annotation found on type");
-        //noinspection ReactiveStreamsNullableInLambdaInTransform
+        Objects.requireNonNull(annotation, "No SessionParameter annotation found on type");
         return exchange.getSession()
             .filter(session -> session.getAttribute(annotation.value()) != null)
-            .map(session -> session.getAttribute(annotation.value()));
+            .mapNotNull(session -> session.getAttribute(annotation.value()));
     }
 }

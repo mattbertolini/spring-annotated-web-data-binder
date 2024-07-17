@@ -34,10 +34,10 @@ import org.springframework.web.multipart.MultipartRequest;
 import org.springframework.web.multipart.support.MultipartResolutionDelegate;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.Map;
 
 public class RequestParameterMapRequestPropertyResolver implements RequestPropertyResolver {
@@ -67,7 +67,7 @@ public class RequestParameterMapRequestPropertyResolver implements RequestProper
             Map<String, String[]> parameterMap = request.getParameterMap();
             MultiValueMap<String, String> ret = new LinkedMultiValueMap<>(parameterMap.size());
             for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
-                ret.put(entry.getKey(), new LinkedList<>(Arrays.asList(entry.getValue())));
+                ret.put(entry.getKey(), new ArrayList<>(Arrays.asList(entry.getValue())));
             }
             return ret;
         }
@@ -107,7 +107,7 @@ public class RequestParameterMapRequestPropertyResolver implements RequestProper
         }
     }
 
-    private LinkedHashMap<?, ?> resolveServletRequestPartsToMap(NativeWebRequest request) {
+    private Map<?, ?> resolveServletRequestPartsToMap(NativeWebRequest request) {
         try {
             HttpServletRequest servletRequest = request.getNativeRequest(HttpServletRequest.class);
             if (servletRequest != null && MultipartResolutionDelegate.isMultipartRequest(servletRequest)) {

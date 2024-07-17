@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 the original author or authors.
+ * Copyright 2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,26 +21,26 @@ import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.springframework.http.codec.multipart.FormFieldPart;
 import org.springframework.http.codec.multipart.Part;
 import org.springframework.lang.NonNull;
-import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class FormParameterRequestPropertyResolver implements RequestPropertyResolver {
     @Override
-    public boolean supports(@NonNull BindingProperty bindingProperty) {
+    public boolean supports(BindingProperty bindingProperty) {
         FormParameter annotation = bindingProperty.getAnnotation(FormParameter.class);
         return annotation != null && StringUtils.hasText(annotation.value());
     }
 
     @NonNull
     @Override
-    public Mono<Object> resolve(@NonNull BindingProperty bindingProperty, @NonNull ServerWebExchange exchange) {
+    public Mono<Object> resolve(BindingProperty bindingProperty, ServerWebExchange exchange) {
         FormParameter annotation = bindingProperty.getAnnotation(FormParameter.class);
-        Assert.state(annotation != null, "No FormParameter annotation found on type");
+        Objects.requireNonNull(annotation, "No FormParameter annotation found on type");
         return exchange.getMultipartData()
             .filter(multipartData -> multipartData.getFirst(annotation.value()) != null)
             .map(multipartData -> multipartData.get(annotation.value()))

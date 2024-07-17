@@ -45,20 +45,19 @@ public class BeanParameterMethodArgumentResolver extends ModelAttributeMethodArg
     private final AnnotatedRequestBeanIntrospector introspector;
 
     public BeanParameterMethodArgumentResolver(
-        @NonNull ReactiveAdapterRegistry adapterRegistry,
-        @NonNull AnnotatedRequestBeanIntrospector introspector) {
+        ReactiveAdapterRegistry adapterRegistry,
+        AnnotatedRequestBeanIntrospector introspector) {
         super(adapterRegistry, false);
         this.introspector = introspector;
     }
 
     @Override
-    public boolean supportsParameter(@NonNull MethodParameter parameter) {
+    public boolean supportsParameter(MethodParameter parameter) {
         return parameter.hasParameterAnnotation(BeanParameter.class) && !BeanUtils.isSimpleProperty(parameter.getParameterType());
     }
 
     @Override
-    @NonNull
-    protected Mono<Void> constructAttribute(WebExchangeDataBinder binder, @NonNull ServerWebExchange exchange) {
+    protected Mono<Void> constructAttribute(WebExchangeDataBinder binder, ServerWebExchange exchange) {
         Assert.state(binder.getTargetType() != null, "WebExchangeDataBinder must have a target type");
         Collection<ResolvedPropertyData> propertyData = introspector.getResolversFor(Objects.requireNonNull(binder.getTargetType().getRawClass()));
         return getValuesToBind(propertyData, exchange)
@@ -69,7 +68,7 @@ public class BeanParameterMethodArgumentResolver extends ModelAttributeMethodArg
 
     @Override
     @NonNull
-    protected Mono<Void> bindRequestParameters(@NonNull WebExchangeDataBinder binder, @NonNull ServerWebExchange exchange) {
+    protected Mono<Void> bindRequestParameters(WebExchangeDataBinder binder, ServerWebExchange exchange) {
         Assert.state(binder.getTarget() != null, "WebExchangeDataBinder must have a target object");
         Collection<ResolvedPropertyData> propertyData = introspector.getResolversFor(binder.getTarget().getClass());
         return getValuesToBind(propertyData, exchange)
@@ -78,8 +77,7 @@ public class BeanParameterMethodArgumentResolver extends ModelAttributeMethodArg
             .then();
     }
 
-    @NonNull
-    private Mono<Map<String, Object>> getValuesToBind(@NonNull Collection<ResolvedPropertyData> propertyData, @NonNull ServerWebExchange exchange) {
+    private Mono<Map<String, Object>> getValuesToBind(Collection<ResolvedPropertyData> propertyData, ServerWebExchange exchange) {
         return Flux.fromIterable(propertyData).flatMap(data -> {
             BindingProperty bindingProperty = data.getBindingProperty();
             RequestPropertyResolver resolver = (RequestPropertyResolver) data.getResolver();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,26 +18,30 @@ package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.HeaderParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
-import org.springframework.lang.NonNull;
-import org.springframework.util.Assert;
+import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.NativeWebRequest;
 
+import java.util.Objects;
+
 /**
+ * Resolve HTTP header values
+ *
  * @see NativeWebRequest#getHeaderValues(String)
  */
 public class HeaderParameterRequestPropertyResolver implements RequestPropertyResolver {
 
     @Override
-    public boolean supports(@NonNull BindingProperty bindingProperty) {
+    public boolean supports(BindingProperty bindingProperty) {
         HeaderParameter annotation = bindingProperty.getAnnotation(HeaderParameter.class);
         return annotation != null && StringUtils.hasText(annotation.value());
     }
 
     @Override
-    public Object resolve(@NonNull BindingProperty bindingProperty, @NonNull NativeWebRequest request) {
+    @Nullable
+    public Object resolve(BindingProperty bindingProperty, NativeWebRequest request) {
         HeaderParameter annotation = bindingProperty.getAnnotation(HeaderParameter.class);
-        Assert.state(annotation != null, "No HeaderParameter annotation found on type");
+        Objects.requireNonNull(annotation, "No HeaderParameter annotation found on type");
         return request.getHeaderValues(annotation.value());
     }
 }

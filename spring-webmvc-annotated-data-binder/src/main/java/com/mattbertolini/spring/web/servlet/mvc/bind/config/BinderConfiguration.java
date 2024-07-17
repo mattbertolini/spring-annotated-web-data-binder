@@ -36,7 +36,7 @@ import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.RequestPropertyRes
 import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.SessionParameterRequestPropertyResolver;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
@@ -90,7 +90,8 @@ public class BinderConfiguration implements BeanPostProcessor {
     }
 
     @Override
-    public Object postProcessBeforeInitialization(@NonNull Object bean, @NonNull String beanName) {
+    @Nullable
+    public Object postProcessBeforeInitialization(Object bean, String beanName) {
         if (!(bean instanceof RequestMappingHandlerAdapter adapter)) {
             return bean;
         }

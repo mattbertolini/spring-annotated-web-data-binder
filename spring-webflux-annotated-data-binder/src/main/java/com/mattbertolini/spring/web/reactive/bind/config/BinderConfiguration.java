@@ -37,7 +37,7 @@ import com.mattbertolini.spring.web.reactive.bind.resolver.SessionParameterReque
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.ReactiveAdapterRegistry;
-import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.web.reactive.result.method.annotation.ArgumentResolverConfigurer;
 import org.springframework.web.reactive.result.method.annotation.RequestMappingHandlerAdapter;
 
@@ -66,7 +66,7 @@ public class BinderConfiguration implements BeanPostProcessor {
      *
      * @param propertyResolverRegistry The resolver registry to use.
      */
-    public BinderConfiguration(@NonNull PropertyResolverRegistry propertyResolverRegistry) {
+    public BinderConfiguration(PropertyResolverRegistry propertyResolverRegistry) {
         packagesToScan = new HashSet<>();
         this.propertyResolverRegistry = propertyResolverRegistry;
     }
@@ -136,7 +136,8 @@ public class BinderConfiguration implements BeanPostProcessor {
     }
 
     @Override
-    public Object postProcessBeforeInitialization(@NonNull Object bean, @NonNull String beanName) {
+    @Nullable
+    public Object postProcessBeforeInitialization(Object bean, String beanName) {
         if (!(bean instanceof RequestMappingHandlerAdapter adapter)) {
             return bean;
         }
@@ -156,7 +157,7 @@ public class BinderConfiguration implements BeanPostProcessor {
         }
         return adapter;
     }
-    
+
     private PropertyResolverRegistry createPropertyResolverRegistry(RequestMappingHandlerAdapter adapter, ReactiveAdapterRegistry reactiveAdapterRegistry) {
         PropertyResolverRegistry registry = new PropertyResolverRegistry();
 

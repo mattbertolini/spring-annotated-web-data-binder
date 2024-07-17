@@ -18,11 +18,11 @@ package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.SessionParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
-import org.springframework.util.Assert;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.RequestAttributes;
+
+import java.util.Objects;
 
 public class SessionParameterRequestPropertyResolver implements RequestPropertyResolver {
     @Override
@@ -34,7 +34,7 @@ public class SessionParameterRequestPropertyResolver implements RequestPropertyR
     @Nullable
     public Object resolve(BindingProperty bindingProperty, NativeWebRequest request) {
         SessionParameter annotation = bindingProperty.getAnnotation(SessionParameter.class);
-        Assert.state(annotation != null, "No SessionParameter annotation found on type");
+        Objects.requireNonNull(annotation, "No SessionParameter annotation found on type");
         return request.getAttribute(annotation.value(), RequestAttributes.SCOPE_SESSION);
     }
 }

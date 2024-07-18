@@ -61,4 +61,4 @@ tasks.named<JacocoReport>("jacocoTestReport").configure {
     }
 }
 
-tasks.named("test").configure { finalizedBy(tasks.jacocoTestReport) }
+tasks.named("test").configure { finalizedBy(tasks.named("jacocoTestReport")) }

@@ -31,6 +31,7 @@ import org.springframework.http.codec.HttpMessageWriter;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.codec.multipart.MultipartHttpMessageWriter;
 import org.springframework.http.codec.multipart.Part;
+import org.springframework.lang.Nullable;
 import org.springframework.mock.http.client.reactive.MockClientHttpRequest;
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
 import org.springframework.mock.web.server.MockServerWebExchange;
@@ -215,20 +216,26 @@ class FormParameterRequestPropertyResolverTest {
 
     @SuppressWarnings("unused")
     private static class TestingBean {
+        @Nullable
         @FormParameter("testing")
         private String annotated;
 
+        @Nullable
         private String notAnnotated;
 
+        @Nullable
         @FormParameter("multiple_values")
         private List<String> multipleValues;
 
+        @Nullable
         @FormParameter
         private String missingValue;
 
+        @Nullable
         @FormParameter("file")
         private Part multipartValue;
 
+        @Nullable
         public String getAnnotated() {
             return annotated;
         }
@@ -237,6 +244,7 @@ class FormParameterRequestPropertyResolverTest {
             this.annotated = annotated;
         }
 
+        @Nullable
         public String getNotAnnotated() {
             return notAnnotated;
         }
@@ -245,6 +253,7 @@ class FormParameterRequestPropertyResolverTest {
             this.notAnnotated = notAnnotated;
         }
 
+        @Nullable
         public List<String> getMultipleValues() {
             return multipleValues;
         }
@@ -253,6 +262,7 @@ class FormParameterRequestPropertyResolverTest {
             this.multipleValues = multipleValues;
         }
 
+        @Nullable
         public String getMissingValue() {
             return missingValue;
         }
@@ -261,6 +271,7 @@ class FormParameterRequestPropertyResolverTest {
             this.missingValue = missingValue;
         }
 
+        @Nullable
         public Part getMultipartValue() {
             return multipartValue;
         }

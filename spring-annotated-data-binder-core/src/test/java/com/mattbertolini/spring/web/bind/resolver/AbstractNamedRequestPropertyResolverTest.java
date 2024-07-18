@@ -19,6 +19,7 @@ package com.mattbertolini.spring.web.bind.resolver;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.Test;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 import java.beans.PropertyDescriptor;
 
@@ -62,8 +63,10 @@ class AbstractNamedRequestPropertyResolverTest {
 
     @SuppressWarnings("unused")
     private static class TestingBean {
+        @Nullable
         private String property;
 
+        @Nullable
         public String getProperty() {
             return property;
         }

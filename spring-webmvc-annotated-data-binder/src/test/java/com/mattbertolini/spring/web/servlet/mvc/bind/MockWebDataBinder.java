@@ -13,6 +13,7 @@ public class MockWebDataBinder extends WebDataBinder {
     private boolean validateInvoked = true;
     private PropertyValues pvs;
     private List<Object> validationHints;
+    @Nullable
     private BindingResult bindingResult;
 
     public MockWebDataBinder(@Nullable Object target) {

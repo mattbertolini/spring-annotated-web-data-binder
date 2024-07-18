@@ -15,6 +15,7 @@ public class MockWebExchangeDataBinder extends WebExchangeDataBinder {
     private boolean validateInvoked = true;
     private PropertyValues pvs;
     private List<Object> validationHints;
+    @Nullable
     private BindingResult bindingResult;
 
     public MockWebExchangeDataBinder(@Nullable Object target) {

@@ -1,5 +1,6 @@
 package com.mattbertolini.spring.web.reactive.bind;
 
+import com.uber.nullaway.annotations.Initializer;
 import org.springframework.core.ResolvableType;
 import org.springframework.format.support.FormattingConversionServiceFactoryBean;
 import org.springframework.lang.Nullable;
@@ -13,10 +14,12 @@ import org.springframework.web.server.ServerWebExchange;
 public class MockBindingContext extends BindingContext {
     private final BindingAwareConcurrentModel model = new BindingAwareConcurrentModel();
     private MockWebExchangeDataBinder dataBinder;
+    @Nullable
     private BindingResult bindingResult;
 
     @Override
-    public WebExchangeDataBinder createDataBinder(ServerWebExchange exchange, Object target, String name) {
+    @Initializer
+    public WebExchangeDataBinder createDataBinder(ServerWebExchange exchange, @Nullable Object target, String name) {
         dataBinder = new MockWebExchangeDataBinder(target);
 
         if (bindingResult != null) {
@@ -31,6 +34,7 @@ public class MockBindingContext extends BindingContext {
     }
 
     @Override
+    @Initializer
     public WebExchangeDataBinder createDataBinder(ServerWebExchange exchange, @Nullable Object target, String name, ResolvableType targetType) {
         dataBinder = new MockWebExchangeDataBinder(target);
 

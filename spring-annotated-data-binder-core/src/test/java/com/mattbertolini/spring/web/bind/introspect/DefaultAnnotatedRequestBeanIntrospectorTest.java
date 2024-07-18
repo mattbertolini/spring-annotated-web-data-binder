@@ -23,6 +23,7 @@ import com.mattbertolini.spring.web.bind.resolver.RequestPropertyResolverBase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
@@ -74,12 +75,13 @@ class DefaultAnnotatedRequestBeanIntrospectorTest {
         }
 
         @Override
-        public boolean supports(@NonNull BindingProperty bindingProperty) {
+        public boolean supports(BindingProperty bindingProperty) {
             return bindingProperty.hasAnnotation(annotationType);
         }
 
         @Override
-        public Object resolve(@NonNull BindingProperty bindingProperty, @NonNull Void request) {
+        @Nullable
+        public Object resolve(BindingProperty bindingProperty, Void request) {
             // Don't need to worry about this method. No used in the introspector.
             return null;
         }
@@ -93,9 +95,11 @@ class DefaultAnnotatedRequestBeanIntrospectorTest {
 
     @SuppressWarnings("unused")
     private static class SimpleType {
+        @Nullable
         @RequestParameter("data_param")
         private String data;
 
+        @Nullable
         public String getData() {
             return data;
         }
@@ -107,9 +111,11 @@ class DefaultAnnotatedRequestBeanIntrospectorTest {
 
     @SuppressWarnings("unused")
     private static class OuterBean {
+        @Nullable
         @BeanParameter
         private InnerBean innerBean;
 
+        @Nullable
         public InnerBean getInnerBean() {
             return innerBean;
         }
@@ -121,9 +127,11 @@ class DefaultAnnotatedRequestBeanIntrospectorTest {
 
     @SuppressWarnings("unused")
     private static class InnerBean {
+        @Nullable
         @RequestParameter("inner_param")
         private String inner;
 
+        @Nullable
         public String getInner() {
             return inner;
         }
@@ -135,9 +143,11 @@ class DefaultAnnotatedRequestBeanIntrospectorTest {
 
     @SuppressWarnings("unused")
     private static class CircularReference {
+        @Nullable
         @BeanParameter
         private CircularReference circularReference;
 
+        @Nullable
         public CircularReference getCircularReference() {
             return circularReference;
         }

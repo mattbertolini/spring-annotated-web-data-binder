@@ -16,8 +16,11 @@ val nullAwayAnnotations = libsCatalog.findLibrary("nullAwayAnnotations").orElseT
 dependencies {
     errorprone(errorProneCore)
     errorprone(nullAway)
-    add("compileOnly", errorProneAnnotations)
-    add("compileOnly", nullAwayAnnotations)
+}
+
+project.extensions.getByType<SourceSetContainer>().configureEach {
+    dependencies.add(compileOnlyConfigurationName, errorProneAnnotations)
+    dependencies.add(compileOnlyConfigurationName, nullAwayAnnotations)
 }
 
 tasks.withType<JavaCompile>().configureEach {

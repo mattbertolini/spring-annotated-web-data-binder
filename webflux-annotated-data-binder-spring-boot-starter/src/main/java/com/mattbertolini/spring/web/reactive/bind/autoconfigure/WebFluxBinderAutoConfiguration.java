@@ -29,6 +29,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Role;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,7 +40,7 @@ import java.util.Set;
 @ConditionalOnMissingBean(BinderConfiguration.class)
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
 public class WebFluxBinderAutoConfiguration {
-    private final List<String> packagesToScan = new LinkedList<>();
+    private final List<String> packagesToScan = new ArrayList<>();
     private final Set<RequestPropertyResolver> customResolvers = new LinkedHashSet<>();
     private final Set<PropertyResolverRegistry> propertyResolverRegistries = new LinkedHashSet<>();
     

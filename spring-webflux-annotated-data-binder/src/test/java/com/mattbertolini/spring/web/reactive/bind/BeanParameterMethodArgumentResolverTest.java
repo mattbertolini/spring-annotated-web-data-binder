@@ -233,7 +233,9 @@ class BeanParameterMethodArgumentResolverTest {
     }
 
     private static class MockRequestPropertyResolver implements RequestPropertyResolver {
+        @Nullable
         private final Object value;
+        @Nullable
         private final RuntimeException exception;
 
         private <T> MockRequestPropertyResolver(@Nullable T value, @Nullable RuntimeException exception) {
@@ -242,14 +244,14 @@ class BeanParameterMethodArgumentResolverTest {
         }
 
         @Override
-        public boolean supports(@NonNull BindingProperty bindingProperty) {
+        public boolean supports(BindingProperty bindingProperty) {
             // Not used in this test
             return true;
         }
 
         @NonNull
         @Override
-        public Mono<Object> resolve(@NonNull BindingProperty bindingProperty, @NonNull ServerWebExchange exchange) {
+        public Mono<Object> resolve(BindingProperty bindingProperty, ServerWebExchange exchange) {
             if (exception != null) {
                 throw exception;
             }
@@ -306,10 +308,13 @@ class BeanParameterMethodArgumentResolverTest {
     }
 
     private static class ABeanClass {
+        @Nullable
         private String propertyOne;
 
+        @Nullable
         private Integer propertyTwo;
 
+        @Nullable
         public String getPropertyOne() {
             return propertyOne;
         }
@@ -318,6 +323,8 @@ class BeanParameterMethodArgumentResolverTest {
             this.propertyOne = propertyOne;
         }
 
+        @SuppressWarnings("unused")
+        @Nullable
         public Integer getPropertyTwo() {
             return propertyTwo;
         }

@@ -17,11 +17,14 @@
 package com.mattbertolini.spring.web.bind.docs;
 
 import com.mattbertolini.spring.web.bind.annotation.RequestParameter;
+import org.springframework.lang.Nullable;
 
 public class NestedBean {
+    @Nullable
     @RequestParameter("nested_request_param")
     private String nestedRequestParameter;
 
+    @Nullable
     public String getNestedRequestParameter() {
         return nestedRequestParameter;
     }

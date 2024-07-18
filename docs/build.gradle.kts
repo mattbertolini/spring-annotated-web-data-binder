@@ -20,9 +20,10 @@ dependencies {
     testImplementation(libs.assertJCore)
     testImplementation(libs.mockitoCore)
     testImplementation(libs.springTest)
-    testCompileOnly(libs.hamcrest) // Needed for Spring mock MVC matchers
     testImplementation(libs.jakartaWebsocketApi)
     testImplementation(libs.jakartaWebsocketClientApi)
+    testCompileOnly(libs.hamcrest) // Needed for Spring mock MVC matchers
+    testCompileOnly(libs.findbugsJsr305)
 }
 
 tasks.named<AsciidoctorTask>("asciidoctor").configure {

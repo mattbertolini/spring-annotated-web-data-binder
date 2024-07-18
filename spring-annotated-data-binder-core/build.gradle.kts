@@ -15,6 +15,7 @@ dependencies {
     testImplementation(libs.mockitoCore)
     testImplementation(libs.springTest)
     testImplementation(libs.equalsVerifier)
+    testCompileOnly(libs.findbugsJsr305)
 }
 
 tasks.named<Jar>("jar").configure {

@@ -20,6 +20,7 @@ import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import com.mattbertolini.spring.web.bind.resolver.RequestPropertyResolverBase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.lang.Nullable;
 
 import java.beans.PropertyDescriptor;
 import java.util.Collections;
@@ -100,8 +101,10 @@ class AbstractPropertyResolverRegistryTest {
 
     @SuppressWarnings("unused")
     private static class TestingClass {
+        @Nullable
         private String property;
 
+        @Nullable
         public String getProperty() {
             return property;
         }

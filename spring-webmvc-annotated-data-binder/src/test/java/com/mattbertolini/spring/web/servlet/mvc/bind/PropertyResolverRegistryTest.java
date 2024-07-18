@@ -5,6 +5,7 @@ import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.RequestPropertyRes
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.web.context.request.NativeWebRequest;
 
 import java.util.Collections;
@@ -46,12 +47,13 @@ class PropertyResolverRegistryTest {
     private static class FakeResolver implements RequestPropertyResolver {
 
         @Override
-        public boolean supports(@NonNull BindingProperty bindingProperty) {
+        public boolean supports(BindingProperty bindingProperty) {
             return false;
         }
 
         @Override
-        public Object resolve(@NonNull BindingProperty bindingProperty, @NonNull NativeWebRequest request) {
+        @Nullable
+        public Object resolve(BindingProperty bindingProperty, NativeWebRequest request) {
             return null;
         }
     }

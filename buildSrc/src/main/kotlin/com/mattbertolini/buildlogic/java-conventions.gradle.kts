@@ -6,8 +6,6 @@ plugins {
     id("com.mattbertolini.buildlogic.error-prone")
 }
 
-val versionCatalog = versionCatalogs.named("libs")
-
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(JavaVersion.VERSION_17.majorVersion))
@@ -48,8 +46,9 @@ tasks.named<Javadoc>("javadoc").configure {
     }
 }
 
+val versionCatalog = versionCatalogs.named("libs")
 val jacocoVersion: String = versionCatalog.findVersion("jacoco").orElseThrow().toString()
-configure<JacocoPluginExtension> {
+jacoco {
     toolVersion = jacocoVersion
 }
 

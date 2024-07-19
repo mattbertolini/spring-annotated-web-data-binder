@@ -10,6 +10,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 
 public class MockWebDataBinderFactory implements WebDataBinderFactory {
     private MockWebDataBinder binder;
+    @Nullable
     private BindingResult bindingResult;
 
     @Override

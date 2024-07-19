@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package com.mattbertolini.spring.web.bind.introspect;
 
 import com.mattbertolini.spring.web.bind.resolver.RequestPropertyResolverBase;
-import org.springframework.lang.NonNull;
 
 import java.util.Objects;
 
@@ -27,26 +26,23 @@ public final class ResolvedPropertyData {
     private final RequestPropertyResolverBase<?, ?> resolver;
 
     public ResolvedPropertyData(
-        @NonNull String propertyName,
-        @NonNull BindingProperty bindingProperty,
-        @NonNull RequestPropertyResolverBase<?, ?> resolver
+        String propertyName,
+        BindingProperty bindingProperty,
+        RequestPropertyResolverBase<?, ?> resolver
     ) {
         this.propertyName = propertyName;
         this.bindingProperty = bindingProperty;
         this.resolver = resolver;
     }
 
-    @NonNull
     public String getPropertyName() {
         return propertyName;
     }
 
-    @NonNull
     public BindingProperty getBindingProperty() {
         return bindingProperty;
     }
 
-    @NonNull
     public RequestPropertyResolverBase<?, ?> getResolver() {
         return resolver;
     }

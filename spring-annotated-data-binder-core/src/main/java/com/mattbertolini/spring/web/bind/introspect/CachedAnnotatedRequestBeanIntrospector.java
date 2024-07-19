@@ -16,8 +16,6 @@
 
 package com.mattbertolini.spring.web.bind.introspect;
 
-import org.springframework.lang.NonNull;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -26,14 +24,13 @@ public class CachedAnnotatedRequestBeanIntrospector implements AnnotatedRequestB
     private final AnnotatedRequestBeanIntrospector delegate;
     private final ConcurrentMap<Class<?>, Map<String, ResolvedPropertyData>> cache;
 
-    public CachedAnnotatedRequestBeanIntrospector(@NonNull AnnotatedRequestBeanIntrospector delegate) {
+    public CachedAnnotatedRequestBeanIntrospector(AnnotatedRequestBeanIntrospector delegate) {
         this.delegate = delegate;
         cache = new ConcurrentHashMap<>();
     }
 
     @Override
-    @NonNull
-    public Map<String, ResolvedPropertyData> getResolverMapFor(@NonNull Class<?> targetType) {
+    public Map<String, ResolvedPropertyData> getResolverMapFor(Class<?> targetType) {
         return cache.computeIfAbsent(targetType, delegate::getResolverMapFor);
     }
 }

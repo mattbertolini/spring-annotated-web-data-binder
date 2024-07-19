@@ -307,6 +307,7 @@ class BeanParameterMethodArgumentResolverTest {
         }
     }
 
+    @SuppressWarnings("unused")
     private static class ABeanClass {
         @Nullable
         private String propertyOne;
@@ -323,7 +324,6 @@ class BeanParameterMethodArgumentResolverTest {
             this.propertyOne = propertyOne;
         }
 
-        @SuppressWarnings("unused")
         @Nullable
         public Integer getPropertyTwo() {
             return propertyTwo;

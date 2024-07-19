@@ -325,6 +325,7 @@ class BeanParameterMethodArgumentResolverTest {
         }
     }
 
+    @SuppressWarnings("unused")
     private static class ABeanClass {
         @Nullable
         private String propertyOne;

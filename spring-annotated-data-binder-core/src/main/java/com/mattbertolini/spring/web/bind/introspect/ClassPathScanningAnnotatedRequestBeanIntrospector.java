@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2022 the original author or authors.
+ * Copyright 2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
@@ -39,7 +38,7 @@ public class ClassPathScanningAnnotatedRequestBeanIntrospector implements Annota
     private final CachedAnnotatedRequestBeanIntrospector introspectorCache;
     private final Set<String> basePackages;
     
-    public ClassPathScanningAnnotatedRequestBeanIntrospector(@NonNull AnnotatedRequestBeanIntrospector delegate, @Nullable Set<String> basePackages) {
+    public ClassPathScanningAnnotatedRequestBeanIntrospector(AnnotatedRequestBeanIntrospector delegate, @Nullable Set<String> basePackages) {
         this.basePackages = new HashSet<>();
         if (basePackages != null) {
             this.basePackages.addAll(basePackages);
@@ -50,8 +49,7 @@ public class ClassPathScanningAnnotatedRequestBeanIntrospector implements Annota
     }
 
     @Override
-    @NonNull
-    public Map<String, ResolvedPropertyData> getResolverMapFor(@NonNull Class<?> targetType) {
+    public Map<String, ResolvedPropertyData> getResolverMapFor(Class<?> targetType) {
         return introspectorCache.getResolverMapFor(targetType);
     }
 
@@ -62,7 +60,7 @@ public class ClassPathScanningAnnotatedRequestBeanIntrospector implements Annota
         }
     }
 
-    private void scanAndLoadRequestBeans(@NonNull String basePackage) {
+    private void scanAndLoadRequestBeans(String basePackage) {
         ClassLoader classLoader = ClassPathScanningAnnotatedRequestBeanIntrospector.class.getClassLoader();
         LOGGER.debug("Searching for @RequestBean annotated classes in package [" + basePackage + "]");
         Set<BeanDefinition> candidateComponents = scanner.findCandidateComponents(basePackage);

@@ -20,6 +20,7 @@ import com.mattbertolini.spring.web.bind.annotation.SessionParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.lang.Nullable;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -91,11 +92,14 @@ class SessionParameterRequestPropertyResolverTest {
 
     @SuppressWarnings("unused")
     private static class TestingBean {
+        @Nullable
         @SessionParameter("sessionKey")
         private String annotated;
 
+        @Nullable
         private String notAnnotated;
 
+        @Nullable
         public String getAnnotated() {
             return annotated;
         }
@@ -104,6 +108,7 @@ class SessionParameterRequestPropertyResolverTest {
             this.annotated = annotated;
         }
 
+        @Nullable
         public String getNotAnnotated() {
             return notAnnotated;
         }

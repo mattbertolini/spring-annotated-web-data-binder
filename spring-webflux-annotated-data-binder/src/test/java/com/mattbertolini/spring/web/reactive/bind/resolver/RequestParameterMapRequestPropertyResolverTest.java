@@ -20,6 +20,7 @@ import com.mattbertolini.spring.web.bind.annotation.RequestParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.lang.Nullable;
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
 import org.springframework.mock.web.server.MockServerWebExchange;
 import org.springframework.util.MultiValueMap;
@@ -100,20 +101,26 @@ class RequestParameterMapRequestPropertyResolverTest {
 
     @SuppressWarnings("unused")
     private static class TestingBean {
+        @Nullable
         @RequestParameter
         private Map<String, String> annotated;
 
+        @Nullable
         private Map<String, String> notAnnotated;
 
+        @Nullable
         @RequestParameter
         private MultiValueMap<String, String> multivalue;
 
+        @Nullable
         @RequestParameter
         private String notAMap;
 
+        @Nullable
         @RequestParameter("irrelevant")
         private Map<String, String> valuePresent;
 
+        @Nullable
         public Map<String, String> getAnnotated() {
             return annotated;
         }
@@ -122,6 +129,7 @@ class RequestParameterMapRequestPropertyResolverTest {
             this.annotated = annotated;
         }
 
+        @Nullable
         public Map<String, String> getNotAnnotated() {
             return notAnnotated;
         }
@@ -130,6 +138,7 @@ class RequestParameterMapRequestPropertyResolverTest {
             this.notAnnotated = notAnnotated;
         }
 
+        @Nullable
         public MultiValueMap<String, String> getMultivalue() {
             return multivalue;
         }
@@ -138,6 +147,7 @@ class RequestParameterMapRequestPropertyResolverTest {
             this.multivalue = multivalue;
         }
 
+        @Nullable
         public String getNotAMap() {
             return notAMap;
         }
@@ -146,6 +156,7 @@ class RequestParameterMapRequestPropertyResolverTest {
             this.notAMap = notAMap;
         }
 
+        @Nullable
         public Map<String, String> getValuePresent() {
             return valuePresent;
         }

@@ -3,6 +3,7 @@ package com.mattbertolini.buildlogic
 plugins {
     java
     jacoco
+    id("com.mattbertolini.buildlogic.project-conventions")
     id("com.mattbertolini.buildlogic.error-prone")
 }
 

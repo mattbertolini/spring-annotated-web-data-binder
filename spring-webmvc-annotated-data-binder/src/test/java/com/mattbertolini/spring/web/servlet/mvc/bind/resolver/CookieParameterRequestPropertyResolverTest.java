@@ -21,6 +21,7 @@ import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.lang.Nullable;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -107,14 +108,18 @@ class CookieParameterRequestPropertyResolverTest {
 
     @SuppressWarnings("unused")
     private static class TestingBean {
+        @Nullable
         @CookieParameter("the_cookie")
         private String annotated;
 
+        @Nullable
         private String notAnnotated;
 
+        @Nullable
         @CookieParameter("the_cookie")
         private Cookie cookieObject;
 
+        @Nullable
         public String getAnnotated() {
             return annotated;
         }
@@ -123,6 +128,7 @@ class CookieParameterRequestPropertyResolverTest {
             this.annotated = annotated;
         }
 
+        @Nullable
         public String getNotAnnotated() {
             return notAnnotated;
         }
@@ -131,6 +137,7 @@ class CookieParameterRequestPropertyResolverTest {
             this.notAnnotated = notAnnotated;
         }
 
+        @Nullable
         public Cookie getCookieObject() {
             return cookieObject;
         }

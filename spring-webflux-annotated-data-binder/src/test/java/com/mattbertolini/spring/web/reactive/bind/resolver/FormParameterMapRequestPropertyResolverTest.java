@@ -21,6 +21,7 @@ import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.lang.Nullable;
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
 import org.springframework.mock.web.server.MockServerWebExchange;
 import org.springframework.util.MultiValueMap;
@@ -104,20 +105,26 @@ class FormParameterMapRequestPropertyResolverTest {
 
     @SuppressWarnings("unused")
     private static class TestingBean {
+        @Nullable
         @FormParameter
         private Map<String, String> annotated;
 
+        @Nullable
         private Map<String, String> notAnnotated;
 
+        @Nullable
         @FormParameter
         private MultiValueMap<String, String> multivalue;
 
+        @Nullable
         @FormParameter("name")
         private String withName;
 
+        @Nullable
         @FormParameter
         private String notAMap;
 
+        @Nullable
         public Map<String, String> getAnnotated() {
             return annotated;
         }
@@ -126,6 +133,7 @@ class FormParameterMapRequestPropertyResolverTest {
             this.annotated = annotated;
         }
 
+        @Nullable
         public Map<String, String> getNotAnnotated() {
             return notAnnotated;
         }
@@ -134,6 +142,7 @@ class FormParameterMapRequestPropertyResolverTest {
             this.notAnnotated = notAnnotated;
         }
 
+        @Nullable
         public MultiValueMap<String, String> getMultivalue() {
             return multivalue;
         }
@@ -142,6 +151,7 @@ class FormParameterMapRequestPropertyResolverTest {
             this.multivalue = multivalue;
         }
 
+        @Nullable
         public String getWithName() {
             return withName;
         }
@@ -150,6 +160,7 @@ class FormParameterMapRequestPropertyResolverTest {
             this.withName = withName;
         }
 
+        @Nullable
         public String getNotAMap() {
             return notAMap;
         }

@@ -20,6 +20,7 @@ import com.mattbertolini.spring.web.bind.annotation.PathParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.lang.Nullable;
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
 import org.springframework.mock.web.server.MockServerWebExchange;
 import org.springframework.web.reactive.HandlerMapping;
@@ -119,14 +120,18 @@ class PathParameterRequestPropertyResolverTest {
 
     @SuppressWarnings("unused")
     private static class TestingBean {
+        @Nullable
         @PathParameter("pathParamName")
         private String annotated;
 
+        @Nullable
         private String notAnnotated;
 
+        @Nullable
         @PathParameter
         private String missingValue;
 
+        @Nullable
         public String getAnnotated() {
             return annotated;
         }
@@ -135,6 +140,7 @@ class PathParameterRequestPropertyResolverTest {
             this.annotated = annotated;
         }
 
+        @Nullable
         public String getNotAnnotated() {
             return notAnnotated;
         }
@@ -143,6 +149,7 @@ class PathParameterRequestPropertyResolverTest {
             this.notAnnotated = notAnnotated;
         }
 
+        @Nullable
         public String getMissingValue() {
             return missingValue;
         }

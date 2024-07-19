@@ -20,6 +20,7 @@ import com.mattbertolini.spring.web.bind.annotation.HeaderParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.lang.Nullable;
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
 import org.springframework.mock.web.server.MockServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -114,17 +115,22 @@ class HeaderParameterRequestPropertyResolverTest {
 
     @SuppressWarnings("unused")
     private static class TestingBean {
+        @Nullable
         @HeaderParameter("X-HeaderName")
         private String annotated;
 
+        @Nullable
         private String notAnnotated;
 
+        @Nullable
         @HeaderParameter
         private String missingValue;
 
+        @Nullable
         @HeaderParameter("X-Multiple")
         private List<String> multipleValues;
 
+        @Nullable
         public String getAnnotated() {
             return annotated;
         }
@@ -133,6 +139,7 @@ class HeaderParameterRequestPropertyResolverTest {
             this.annotated = annotated;
         }
 
+        @Nullable
         public String getNotAnnotated() {
             return notAnnotated;
         }
@@ -141,6 +148,7 @@ class HeaderParameterRequestPropertyResolverTest {
             this.notAnnotated = notAnnotated;
         }
 
+        @Nullable
         public String getMissingValue() {
             return missingValue;
         }
@@ -149,6 +157,7 @@ class HeaderParameterRequestPropertyResolverTest {
             this.missingValue = missingValue;
         }
 
+        @Nullable
         public List<String> getMultipleValues() {
             return multipleValues;
         }

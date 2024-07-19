@@ -1,10 +1,12 @@
 package com.mattbertolini.spring.web.servlet.mvc.bind;
 
+import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.PropertyValues;
 import org.springframework.lang.Nullable;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,10 +20,14 @@ public class MockWebDataBinder extends WebDataBinder {
 
     public MockWebDataBinder(@Nullable Object target) {
         super(target);
+        pvs = new MutablePropertyValues();
+        validationHints = new ArrayList<>();
     }
 
     public MockWebDataBinder(@Nullable Object target, String objectName) {
         super(target, objectName);
+        pvs = new MutablePropertyValues();
+        validationHints = new ArrayList<>();
     }
 
     @Override

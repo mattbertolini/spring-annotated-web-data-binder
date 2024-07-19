@@ -1,5 +1,6 @@
 package com.mattbertolini.spring.web.reactive.bind;
 
+import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.PropertyValues;
 import org.springframework.lang.Nullable;
 import org.springframework.validation.BindingResult;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.support.WebExchangeDataBinder;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,6 +22,8 @@ public class MockWebExchangeDataBinder extends WebExchangeDataBinder {
 
     public MockWebExchangeDataBinder(@Nullable Object target) {
         super(target);
+        pvs = new MutablePropertyValues();
+        validationHints = new ArrayList<>();
     }
 
     @Override

@@ -26,6 +26,7 @@ import org.springframework.core.codec.StringDecoder;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.DecoderHttpMessageReader;
 import org.springframework.http.codec.HttpMessageReader;
+import org.springframework.lang.Nullable;
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
 import org.springframework.mock.web.server.MockServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -105,12 +106,14 @@ class RequestBodyRequestPropertyResolverTest {
 
     @SuppressWarnings("unused")
     private static class TestingBean {
+        @Nullable
         @RequestBody
         private String annotated;
 
+        @Nullable
         private String notAnnotated;
 
-
+        @Nullable
         public String getAnnotated() {
             return annotated;
         }
@@ -119,6 +122,7 @@ class RequestBodyRequestPropertyResolverTest {
             this.annotated = annotated;
         }
 
+        @Nullable
         public String getNotAnnotated() {
             return notAnnotated;
         }

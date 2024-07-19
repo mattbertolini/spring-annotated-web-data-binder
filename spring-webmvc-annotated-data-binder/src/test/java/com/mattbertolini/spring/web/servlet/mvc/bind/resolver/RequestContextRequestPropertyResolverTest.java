@@ -24,6 +24,7 @@ import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
+import org.springframework.lang.Nullable;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -189,35 +190,46 @@ class RequestContextRequestPropertyResolverTest {
 
     @SuppressWarnings("unused")
     private static class TestingBean {
+        @Nullable
         private WebRequest notAnnotated;
 
+        @Nullable
         @RequestContext
         private NotKnown notKnown;
 
+        @Nullable
         @RequestContext
         private HttpServletRequest httpServletRequest;
 
+        @Nullable
         @RequestContext
         private ServletRequest servletRequest;
 
+        @Nullable
         @RequestContext
         private WebRequest webRequest;
 
+        @Nullable
         @RequestContext
         private HttpSession httpSession;
 
+        @Nullable
         @RequestContext
         private HttpMethod httpMethod;
 
+        @Nullable
         @RequestContext
         private Locale locale;
 
+        @Nullable
         @RequestContext
         private TimeZone timeZone;
 
+        @Nullable
         @RequestContext
         private ZoneId zoneId;
 
+        @Nullable
         public WebRequest getNotAnnotated() {
             return notAnnotated;
         }
@@ -226,6 +238,7 @@ class RequestContextRequestPropertyResolverTest {
             this.notAnnotated = notAnnotated;
         }
 
+        @Nullable
         public NotKnown getNotKnown() {
             return notKnown;
         }
@@ -234,6 +247,7 @@ class RequestContextRequestPropertyResolverTest {
             this.notKnown = notKnown;
         }
 
+        @Nullable
         public HttpServletRequest getHttpServletRequest() {
             return httpServletRequest;
         }
@@ -242,6 +256,7 @@ class RequestContextRequestPropertyResolverTest {
             this.httpServletRequest = httpServletRequest;
         }
 
+        @Nullable
         public ServletRequest getServletRequest() {
             return servletRequest;
         }
@@ -250,6 +265,7 @@ class RequestContextRequestPropertyResolverTest {
             this.servletRequest = servletRequest;
         }
 
+        @Nullable
         public WebRequest getWebRequest() {
             return webRequest;
         }
@@ -258,6 +274,7 @@ class RequestContextRequestPropertyResolverTest {
             this.webRequest = webRequest;
         }
 
+        @Nullable
         public HttpSession getHttpSession() {
             return httpSession;
         }
@@ -266,6 +283,7 @@ class RequestContextRequestPropertyResolverTest {
             this.httpSession = httpSession;
         }
 
+        @Nullable
         public HttpMethod getHttpMethod() {
             return httpMethod;
         }
@@ -274,6 +292,7 @@ class RequestContextRequestPropertyResolverTest {
             this.httpMethod = httpMethod;
         }
 
+        @Nullable
         public Locale getLocale() {
             return locale;
         }
@@ -282,6 +301,7 @@ class RequestContextRequestPropertyResolverTest {
             this.locale = locale;
         }
 
+        @Nullable
         public TimeZone getTimeZone() {
             return timeZone;
         }
@@ -290,6 +310,7 @@ class RequestContextRequestPropertyResolverTest {
             this.timeZone = timeZone;
         }
 
+        @Nullable
         public ZoneId getZoneId() {
             return zoneId;
         }

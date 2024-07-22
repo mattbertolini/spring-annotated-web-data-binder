@@ -19,6 +19,7 @@ package com.mattbertolini.spring.test.web.bind;
 import com.mattbertolini.spring.web.bind.annotation.RequestContext;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpMethod;
+import org.springframework.lang.Nullable;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebSession;
@@ -29,38 +30,51 @@ import java.util.TimeZone;
 
 @SuppressWarnings("unused")
 public class RequestContextBean {
+    @Nullable
     @RequestContext
     private NativeWebRequest webRequestField;
 
+    @Nullable
     private NativeWebRequest webRequestSetter;
 
+    @Nullable
     private NativeWebRequest webRequestGetter;
 
+    @Nullable
     @RequestContext
     private ServerWebExchange exchangeField;
 
+    @Nullable
     private ServerWebExchange exchangeSetter;
 
+    @Nullable
     private ServerWebExchange exchangeGetter;
 
+    @Nullable
     @RequestContext
     private Locale locale;
 
+    @Nullable
     @RequestContext
     private TimeZone timeZone;
 
+    @Nullable
     @RequestContext
     private ZoneId zoneId;
 
+    @Nullable
     @RequestContext
     private HttpMethod method;
 
+    @Nullable
     @RequestContext
     private HttpSession httpSession;
 
+    @Nullable
     @RequestContext
     private WebSession webSession;
 
+    @Nullable
     public NativeWebRequest getWebRequestField() {
         return webRequestField;
     }
@@ -69,6 +83,7 @@ public class RequestContextBean {
         this.webRequestField = webRequestField;
     }
 
+    @Nullable
     public NativeWebRequest getWebRequestSetter() {
         return webRequestSetter;
     }
@@ -78,6 +93,7 @@ public class RequestContextBean {
         this.webRequestSetter = webRequestSetter;
     }
 
+    @Nullable
     @RequestContext
     public NativeWebRequest getWebRequestGetter() {
         return webRequestGetter;
@@ -87,6 +103,7 @@ public class RequestContextBean {
         this.webRequestGetter = webRequestGetter;
     }
 
+    @Nullable
     public ServerWebExchange getExchangeField() {
         return exchangeField;
     }
@@ -95,6 +112,7 @@ public class RequestContextBean {
         this.exchangeField = exchangeField;
     }
 
+    @Nullable
     public ServerWebExchange getExchangeSetter() {
         return exchangeSetter;
     }
@@ -104,6 +122,7 @@ public class RequestContextBean {
         this.exchangeSetter = exchangeSetter;
     }
 
+    @Nullable
     @RequestContext
     public ServerWebExchange getExchangeGetter() {
         return exchangeGetter;
@@ -113,6 +132,7 @@ public class RequestContextBean {
         this.exchangeGetter = exchangeGetter;
     }
 
+    @Nullable
     public Locale getLocale() {
         return locale;
     }
@@ -121,6 +141,7 @@ public class RequestContextBean {
         this.locale = locale;
     }
 
+    @Nullable
     public TimeZone getTimeZone() {
         return timeZone;
     }
@@ -129,6 +150,7 @@ public class RequestContextBean {
         this.timeZone = timeZone;
     }
 
+    @Nullable
     public ZoneId getZoneId() {
         return zoneId;
     }
@@ -137,6 +159,7 @@ public class RequestContextBean {
         this.zoneId = zoneId;
     }
 
+    @Nullable
     public HttpMethod getMethod() {
         return method;
     }
@@ -145,6 +168,7 @@ public class RequestContextBean {
         this.method = method;
     }
 
+    @Nullable
     public HttpSession getHttpSession() {
         return httpSession;
     }
@@ -153,6 +177,7 @@ public class RequestContextBean {
         this.httpSession = httpSession;
     }
 
+    @Nullable
     public WebSession getWebSession() {
         return webSession;
     }

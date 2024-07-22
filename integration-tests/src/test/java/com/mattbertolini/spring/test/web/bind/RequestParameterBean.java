@@ -20,32 +20,41 @@ import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
 import com.mattbertolini.spring.web.bind.annotation.RequestParameter;
 import jakarta.servlet.http.Part;
 import jakarta.validation.constraints.NotEmpty;
+import org.springframework.lang.Nullable;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
 public class RequestParameterBean {
+    @Nullable
     @RequestParameter("annotated_field")
     private String annotatedField;
 
+    @Nullable
     private String annotatedSetter;
 
+    @Nullable
     private String annotatedGetter;
 
+    @Nullable
     @RequestParameter
     private Map<String, String> simpleMap;
 
+    @Nullable
     @RequestParameter
     private MultiValueMap<String, String> multiValueMap;
 
+    @Nullable
     @NotEmpty
     @RequestParameter("validated")
     private String validated;
 
+    @Nullable
     @BeanParameter
     private NestedBean nestedBean;
 
+    @Nullable
     public String getAnnotatedField() {
         return annotatedField;
     }
@@ -54,6 +63,7 @@ public class RequestParameterBean {
         this.annotatedField = annotatedField;
     }
 
+    @Nullable
     public String getAnnotatedSetter() {
         return annotatedSetter;
     }
@@ -63,6 +73,7 @@ public class RequestParameterBean {
         this.annotatedSetter = annotatedSetter;
     }
 
+    @Nullable
     @RequestParameter("annotated_getter")
     public String getAnnotatedGetter() {
         return annotatedGetter;
@@ -72,6 +83,7 @@ public class RequestParameterBean {
         this.annotatedGetter = annotatedGetter;
     }
 
+    @Nullable
     public Map<String, String> getSimpleMap() {
         return simpleMap;
     }
@@ -80,6 +92,7 @@ public class RequestParameterBean {
         this.simpleMap = simpleMap;
     }
 
+    @Nullable
     public MultiValueMap<String, String> getMultiValueMap() {
         return multiValueMap;
     }
@@ -88,6 +101,7 @@ public class RequestParameterBean {
         this.multiValueMap = multiValueMap;
     }
 
+    @Nullable
     public String getValidated() {
         return validated;
     }
@@ -96,6 +110,7 @@ public class RequestParameterBean {
         this.validated = validated;
     }
 
+    @Nullable
     public NestedBean getNestedBean() {
         return nestedBean;
     }
@@ -107,25 +122,32 @@ public class RequestParameterBean {
     /**
      * Test bean for multipart binding in a Servlet/WebMVC application
      */
-    static class ServletMultipartBean {
+    public static class ServletMultipartBean {
+        @Nullable
         @RequestParameter("file")
         private MultipartFile multipartFile;
 
+        @Nullable
         @RequestParameter("part")
         private Part part;
 
+        @Nullable
         @RequestParameter
         private Map<String, MultipartFile> multipartFileMap;
 
+        @Nullable
         @RequestParameter
         private MultiValueMap<String, MultipartFile> multiValueMultipartMap;
 
+        @Nullable
         @RequestParameter
         private Map<String, Part> partMap;
 
+        @Nullable
         @RequestParameter
         private MultiValueMap<String, Part> multiValuePartMap;
 
+        @Nullable
         public MultipartFile getMultipartFile() {
             return multipartFile;
         }
@@ -134,6 +156,7 @@ public class RequestParameterBean {
             this.multipartFile = multipartFile;
         }
 
+        @Nullable
         public Part getPart() {
             return part;
         }
@@ -142,6 +165,7 @@ public class RequestParameterBean {
             this.part = part;
         }
 
+        @Nullable
         public Map<String, MultipartFile> getMultipartFileMap() {
             return multipartFileMap;
         }
@@ -150,6 +174,7 @@ public class RequestParameterBean {
             this.multipartFileMap = multipartFileMap;
         }
 
+        @Nullable
         public MultiValueMap<String, MultipartFile> getMultiValueMultipartMap() {
             return multiValueMultipartMap;
         }
@@ -158,6 +183,7 @@ public class RequestParameterBean {
             this.multiValueMultipartMap = multiValueMultipartMap;
         }
 
+        @Nullable
         public Map<String, Part> getPartMap() {
             return partMap;
         }
@@ -166,6 +192,7 @@ public class RequestParameterBean {
             this.partMap = partMap;
         }
 
+        @Nullable
         public MultiValueMap<String, Part> getMultiValuePartMap() {
             return multiValuePartMap;
         }

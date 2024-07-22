@@ -21,6 +21,7 @@ import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
 import jakarta.servlet.http.Part;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
+import org.springframework.lang.Nullable;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StreamUtils;
 import org.springframework.validation.BindingResult;
@@ -33,35 +34,41 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
 public class RequestParameterController {
+    @Nullable
     @GetMapping(value = "/annotatedField", produces = MediaType.TEXT_PLAIN_VALUE)
     public String annotatedField(@BeanParameter RequestParameterBean requestParameterBean) {
         return requestParameterBean.getAnnotatedField();
     }
 
+    @Nullable
     @GetMapping(value = "/annotatedSetter", produces = MediaType.TEXT_PLAIN_VALUE)
     public String annotatedSetter(@BeanParameter RequestParameterBean requestParameterBean) {
         return requestParameterBean.getAnnotatedSetter();
     }
 
+    @Nullable
     @GetMapping(value = "/annotatedGetter", produces = MediaType.TEXT_PLAIN_VALUE)
     public String annotatedGetter(@BeanParameter RequestParameterBean requestParameterBean) {
         return requestParameterBean.getAnnotatedGetter();
     }
 
+    @Nullable
     @GetMapping(value = "/simpleMap", produces = MediaType.TEXT_PLAIN_VALUE)
     public String simpleMap(@BeanParameter RequestParameterBean requestParameterBean) {
         Map<String, String> simpleMap = requestParameterBean.getSimpleMap();
-        return simpleMap.get("simpleMap");
+        return Objects.requireNonNull(simpleMap).get("simpleMap");
     }
 
+    @Nullable
     @GetMapping(value = "/multiValueMap", produces = MediaType.TEXT_PLAIN_VALUE)
     public String multiValueMap(@BeanParameter RequestParameterBean requestParameterBean) {
         MultiValueMap<String, String> multiValueMap = requestParameterBean.getMultiValueMap();
-        return multiValueMap.getFirst("multiValueMap");
+        return Objects.requireNonNull(multiValueMap).getFirst("multiValueMap");
     }
 
     @GetMapping(value = "/bindingResult", produces = MediaType.TEXT_PLAIN_VALUE)
@@ -69,6 +76,7 @@ public class RequestParameterController {
         return Integer.toString(bindingResult.getErrorCount());
     }
 
+    @Nullable
     @GetMapping(value = "/validated", produces = MediaType.TEXT_PLAIN_VALUE)
     public String validated(@Valid @BeanParameter RequestParameterBean requestParameterBean) {
         return requestParameterBean.getValidated();
@@ -88,7 +96,7 @@ public class RequestParameterController {
         if (multipartFile == null || multipartFile.isEmpty()) {
             throw new RuntimeException("Multipart file is null or empty");
         }
-        return new String(multipartFile.getBytes());
+        return new String(multipartFile.getBytes(), StandardCharsets.UTF_8);
     }
 
     @PostMapping(value = "/part", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -103,9 +111,9 @@ public class RequestParameterController {
     @PostMapping(value = "/multipartFileMap", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String multipartFileMap(@BeanParameter RequestParameterBean.ServletMultipartBean requestParameterBean) throws Exception {
         Map<String, MultipartFile> multipartFileMap = requestParameterBean.getMultipartFileMap();
-        MultipartFile fileOne = multipartFileMap.get("fileOne");
+        MultipartFile fileOne = Objects.requireNonNull(multipartFileMap).get("fileOne");
         MultipartFile fileTwo = multipartFileMap.get("fileTwo");
-        return new String(fileOne.getBytes()) + ", " + new String(fileTwo.getBytes());
+        return new String(fileOne.getBytes(), StandardCharsets.UTF_8) + ", " + new String(fileTwo.getBytes(), StandardCharsets.UTF_8);
     }
 
     @PostMapping(value = "/multiValueMultipartFileMap", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -114,7 +122,7 @@ public class RequestParameterController {
         List<MultipartFile> files = multiValueMultipartMap.get("file");
         return files.stream().map(multipartFile -> {
             try {
-                return new String(multipartFile.getBytes());
+                return new String(multipartFile.getBytes(), StandardCharsets.UTF_8);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -133,7 +141,7 @@ public class RequestParameterController {
     @PostMapping(value = "/multiValuePartMap", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String multiValuePartMap(@BeanParameter RequestParameterBean.ServletMultipartBean requestParameterBean) {
         MultiValueMap<String, Part> multiValuePartMap = requestParameterBean.getMultiValuePartMap();
-        List<Part> files = multiValuePartMap.get("file");
+        List<Part> files = Objects.requireNonNull(multiValuePartMap).get("file");
         return files.stream().map(part -> {
             try {
                 return StreamUtils.copyToString(part.getInputStream(), StandardCharsets.UTF_8);
@@ -143,9 +151,10 @@ public class RequestParameterController {
         }).collect(Collectors.joining(", "));
     }
 
+    @Nullable
     @GetMapping(value = "/nested", produces = MediaType.TEXT_PLAIN_VALUE)
     public String nestedBeanParameter(@BeanParameter RequestParameterBean requestParameterBean) {
-        return requestParameterBean.getNestedBean().getQueryParam();
+        return Objects.requireNonNull(requestParameterBean.getNestedBean()).getQueryParam();
     }
 
     @GetMapping(value = "/record", produces = MediaType.TEXT_PLAIN_VALUE)

@@ -20,34 +20,44 @@ import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
 import com.mattbertolini.spring.web.bind.annotation.HeaderParameter;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.http.HttpHeaders;
+import org.springframework.lang.Nullable;
 import org.springframework.util.MultiValueMap;
 
 import java.util.Map;
 
 public class HeaderParameterBean {
+    @Nullable
     @HeaderParameter("x-annotated-field")
     private String annotatedField;
 
+    @Nullable
     private String annotatedSetter;
 
+    @Nullable
     private String annotatedGetter;
 
+    @Nullable
     @HeaderParameter
     private Map<String, String> simpleMap;
 
+    @Nullable
     @HeaderParameter
     private MultiValueMap<String, String> multiValueMap;
 
+    @Nullable
     @HeaderParameter
     private HttpHeaders httpHeaders;
 
+    @Nullable
     @NotEmpty
     @HeaderParameter("validated")
     private String validated;
 
+    @Nullable
     @BeanParameter
     private NestedBean nestedBean;
 
+    @Nullable
     public String getAnnotatedField() {
         return annotatedField;
     }
@@ -56,6 +66,7 @@ public class HeaderParameterBean {
         this.annotatedField = annotatedField;
     }
 
+    @Nullable
     public String getAnnotatedSetter() {
         return annotatedSetter;
     }
@@ -65,6 +76,7 @@ public class HeaderParameterBean {
         this.annotatedSetter = annotatedSetter;
     }
 
+    @Nullable
     @HeaderParameter("x-annotated-getter")
     public String getAnnotatedGetter() {
         return annotatedGetter;
@@ -74,6 +86,7 @@ public class HeaderParameterBean {
         this.annotatedGetter = annotatedGetter;
     }
 
+    @Nullable
     public Map<String, String> getSimpleMap() {
         return simpleMap;
     }
@@ -82,6 +95,7 @@ public class HeaderParameterBean {
         this.simpleMap = simpleMap;
     }
 
+    @Nullable
     public MultiValueMap<String, String> getMultiValueMap() {
         return multiValueMap;
     }
@@ -90,6 +104,7 @@ public class HeaderParameterBean {
         this.multiValueMap = multiValueMap;
     }
 
+    @Nullable
     public HttpHeaders getHttpHeaders() {
         return httpHeaders;
     }
@@ -98,6 +113,7 @@ public class HeaderParameterBean {
         this.httpHeaders = httpHeaders;
     }
 
+    @Nullable
     public String getValidated() {
         return validated;
     }
@@ -106,6 +122,7 @@ public class HeaderParameterBean {
         this.validated = validated;
     }
 
+    @Nullable
     public NestedBean getNestedBean() {
         return nestedBean;
     }

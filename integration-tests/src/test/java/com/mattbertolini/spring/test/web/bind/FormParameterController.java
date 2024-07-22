@@ -24,6 +24,7 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
+import org.springframework.lang.Nullable;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StreamUtils;
 import org.springframework.validation.BindingResult;
@@ -42,31 +43,36 @@ import java.util.stream.Collectors;
 
 @RestController
 public class FormParameterController {
+    @Nullable
     @PostMapping(value = "/annotatedField", produces = MediaType.TEXT_PLAIN_VALUE)
     public String annotatedField(@BeanParameter FormParameterBean formParameterBean) {
         return formParameterBean.getAnnotatedField();
     }
 
+    @Nullable
     @PostMapping(value = "/annotatedSetter", produces = MediaType.TEXT_PLAIN_VALUE)
     public String annotatedSetter(@BeanParameter FormParameterBean formParameterBean) {
         return formParameterBean.getAnnotatedSetter();
     }
 
+    @Nullable
     @PostMapping(value = "/annotatedGetter", produces = MediaType.TEXT_PLAIN_VALUE)
     public String handleRequest(@BeanParameter FormParameterBean formParameterBean) {
         return formParameterBean.getAnnotatedGetter();
     }
 
+    @Nullable
     @PostMapping(value = "/simpleMap", produces = MediaType.TEXT_PLAIN_VALUE)
     public String simpleMap(@BeanParameter FormParameterBean formParameterBean) {
         Map<String, String> simpleMap = formParameterBean.getSimpleMap();
         return Objects.requireNonNull(simpleMap).get("simple-map");
     }
 
+    @Nullable
     @PostMapping(value = "/multiValueMap", produces = MediaType.TEXT_PLAIN_VALUE)
     public String multiValueMap(@BeanParameter FormParameterBean formParameterBean) {
         MultiValueMap<String, String> multiValueMap = formParameterBean.getMultiValueMap();
-        return multiValueMap.getFirst("multi-value-map");
+        return Objects.requireNonNull(multiValueMap).getFirst("multi-value-map");
     }
 
     @SuppressWarnings("unused")
@@ -75,6 +81,7 @@ public class FormParameterController {
         return Integer.toString(bindingResult.getErrorCount());
     }
 
+    @Nullable
     @PostMapping(value = "/validated", produces = MediaType.TEXT_PLAIN_VALUE)
     public String validated(@Valid @BeanParameter FormParameterBean formParameterBean) {
         return formParameterBean.getValidated();
@@ -95,7 +102,7 @@ public class FormParameterController {
         if (multipartFile == null || multipartFile.isEmpty()) {
             throw new RuntimeException("Multipart file is null or empty");
         }
-        return new String(multipartFile.getBytes());
+        return new String(multipartFile.getBytes(), StandardCharsets.UTF_8);
     }
 
     @PostMapping(value = "/part", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -112,7 +119,7 @@ public class FormParameterController {
         Map<String, MultipartFile> multipartFileMap = formParameterBean.getMultipartFileMap();
         MultipartFile fileOne = multipartFileMap.get("fileOne");
         MultipartFile fileTwo = multipartFileMap.get("fileTwo");
-        return new String(fileOne.getBytes()) + ", " + new String(fileTwo.getBytes());
+        return new String(fileOne.getBytes(), StandardCharsets.UTF_8) + ", " + new String(fileTwo.getBytes(), StandardCharsets.UTF_8);
     }
 
     @PostMapping(value = "/multiValueMultipartFileMap", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -121,7 +128,7 @@ public class FormParameterController {
         List<MultipartFile> files = multiValueMultipartMap.get("file");
         return files.stream().map(multipartFile -> {
             try {
-                return new String(multipartFile.getBytes());
+                return new String(multipartFile.getBytes(), StandardCharsets.UTF_8);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -162,9 +169,10 @@ public class FormParameterController {
         return new String(data.toByteArray(), StandardCharsets.UTF_8);
     }
 
+    @Nullable
     @PostMapping(value = "/nested", produces = MediaType.TEXT_PLAIN_VALUE)
     public String nestedBeanParameter(@BeanParameter FormParameterBean formParameterBean) {
-        return formParameterBean.getNestedBean().getFormData();
+        return Objects.requireNonNull(formParameterBean.getNestedBean()).getFormData();
     }
 
     @PostMapping(value = "/record", produces = MediaType.TEXT_PLAIN_VALUE)

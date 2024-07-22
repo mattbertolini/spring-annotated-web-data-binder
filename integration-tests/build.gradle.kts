@@ -11,11 +11,13 @@ dependencies {
     implementation(libs.jacksonDatabind)
     implementation(libs.jakartaWebsocketApi)
     implementation(libs.jakartaWebsocketClientApi)
+    compileOnly(libs.findbugsJsr305)
 
     testImplementation(libs.junitJupiterApi)
     testImplementation(libs.assertJCore)
     testImplementation(libs.springTest)
     testCompileOnly(libs.hamcrest) // Needed for Spring mock MVC matchers
+    testCompileOnly(libs.findbugsJsr305)
 }
 
 tasks.named<JacocoReport>("jacocoTestReport").configure {

@@ -1,5 +1,6 @@
 package com.mattbertolini.spring.web.servlet.mvc.bind;
 
+import com.uber.nullaway.annotations.Initializer;
 import org.springframework.core.ResolvableType;
 import org.springframework.format.support.FormattingConversionServiceFactoryBean;
 import org.springframework.lang.Nullable;
@@ -13,6 +14,7 @@ public class MockWebDataBinderFactory implements WebDataBinderFactory {
     @Nullable
     private BindingResult bindingResult;
 
+    @Initializer
     @Override
     public WebDataBinder createBinder(NativeWebRequest webRequest, @Nullable Object target, String objectName, ResolvableType targetType) throws Exception {
         binder = new MockWebDataBinder(target, objectName);
@@ -31,6 +33,7 @@ public class MockWebDataBinderFactory implements WebDataBinderFactory {
         return binder;
     }
 
+    @Initializer
     @Override
     public WebDataBinder createBinder(NativeWebRequest webRequest, @Nullable Object target, String objectName) throws Exception {
         binder = new MockWebDataBinder(target, objectName);

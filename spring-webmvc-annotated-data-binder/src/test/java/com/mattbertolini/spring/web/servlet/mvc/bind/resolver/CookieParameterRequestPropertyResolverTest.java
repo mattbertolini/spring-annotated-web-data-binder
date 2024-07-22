@@ -64,7 +64,7 @@ class CookieParameterRequestPropertyResolverTest {
     void throwsExceptionIfResolveCalledWithNoAnnotation() throws Exception {
         // Unlikely to happen as the library always checks the supports method.
         BindingProperty bindingProperty = bindingProperty("notAnnotated");
-        assertThatExceptionOfType(IllegalStateException.class)
+        assertThatExceptionOfType(NullPointerException.class)
             .isThrownBy(() -> resolver.resolve(bindingProperty, request));
     }
 

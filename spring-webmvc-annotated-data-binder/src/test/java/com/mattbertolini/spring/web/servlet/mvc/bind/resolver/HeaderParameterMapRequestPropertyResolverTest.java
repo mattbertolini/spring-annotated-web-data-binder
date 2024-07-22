@@ -21,6 +21,7 @@ import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
+import org.springframework.lang.Nullable;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -130,23 +131,30 @@ class HeaderParameterMapRequestPropertyResolverTest {
 
     @SuppressWarnings("unused")
     private static class TestingBean {
+        @Nullable
         @HeaderParameter
         private Map<String, String> annotated;
 
+        @Nullable
         private Map<String, String> notAnnotated;
 
+        @Nullable
         @HeaderParameter
         private MultiValueMap<String, String> multivalue;
 
+        @Nullable
         @HeaderParameter
         private HttpHeaders httpHeaders;
 
+        @Nullable
         @HeaderParameter("irrelevant")
         private String withValue;
 
+        @Nullable
         @HeaderParameter
         private String notAMap;
 
+        @Nullable
         public Map<String, String> getAnnotated() {
             return annotated;
         }
@@ -155,6 +163,7 @@ class HeaderParameterMapRequestPropertyResolverTest {
             this.annotated = annotated;
         }
 
+        @Nullable
         public Map<String, String> getNotAnnotated() {
             return notAnnotated;
         }
@@ -163,6 +172,7 @@ class HeaderParameterMapRequestPropertyResolverTest {
             this.notAnnotated = notAnnotated;
         }
 
+        @Nullable
         public MultiValueMap<String, String> getMultivalue() {
             return multivalue;
         }
@@ -171,6 +181,7 @@ class HeaderParameterMapRequestPropertyResolverTest {
             this.multivalue = multivalue;
         }
 
+        @Nullable
         public HttpHeaders getHttpHeaders() {
             return httpHeaders;
         }
@@ -179,6 +190,7 @@ class HeaderParameterMapRequestPropertyResolverTest {
             this.httpHeaders = httpHeaders;
         }
 
+        @Nullable
         public String getWithValue() {
             return withValue;
         }
@@ -187,6 +199,7 @@ class HeaderParameterMapRequestPropertyResolverTest {
             this.withValue = withValue;
         }
 
+        @Nullable
         public String getNotAMap() {
             return notAMap;
         }

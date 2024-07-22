@@ -23,6 +23,7 @@ import jakarta.servlet.http.Part;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.lang.Nullable;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockMultipartHttpServletRequest;
@@ -73,7 +74,7 @@ class RequestParameterRequestPropertyResolverTest {
     void throwsExceptionIfResolveCalledWithNoAnnotation() throws Exception {
         // Unlikely to happen as the library always checks the supports method.
         BindingProperty bindingProperty = bindingProperty("notAnnotated");
-        assertThatExceptionOfType(IllegalStateException.class)
+        assertThatExceptionOfType(NullPointerException.class)
             .isThrownBy(() -> resolver.resolve(bindingProperty, request));
     }
 
@@ -172,23 +173,30 @@ class RequestParameterRequestPropertyResolverTest {
 
     @SuppressWarnings("unused")
     private static class TestingBean {
+        @Nullable
         @RequestParameter("testing")
         private String annotated;
 
+        @Nullable
         private String notAnnotated;
 
+        @Nullable
         @RequestParameter
         private String missingValue;
 
+        @Nullable
         @RequestParameter("multiple_values")
         private List<String> multipleValues;
 
+        @Nullable
         @RequestParameter("multipart_file")
         private MultipartFile multipartFile;
 
+        @Nullable
         @RequestParameter("part")
         private Part part;
 
+        @Nullable
         public String getAnnotated() {
             return annotated;
         }
@@ -197,6 +205,7 @@ class RequestParameterRequestPropertyResolverTest {
             this.annotated = annotated;
         }
 
+        @Nullable
         public String getNotAnnotated() {
             return notAnnotated;
         }
@@ -205,6 +214,7 @@ class RequestParameterRequestPropertyResolverTest {
             this.notAnnotated = notAnnotated;
         }
 
+        @Nullable
         public String getMissingValue() {
             return missingValue;
         }
@@ -213,6 +223,7 @@ class RequestParameterRequestPropertyResolverTest {
             this.missingValue = missingValue;
         }
 
+        @Nullable
         public List<String> getMultipleValues() {
             return multipleValues;
         }
@@ -221,6 +232,7 @@ class RequestParameterRequestPropertyResolverTest {
             this.multipleValues = multipleValues;
         }
 
+        @Nullable
         public MultipartFile getMultipartFile() {
             return multipartFile;
         }
@@ -229,6 +241,7 @@ class RequestParameterRequestPropertyResolverTest {
             this.multipartFile = multipartFile;
         }
 
+        @Nullable
         public Part getPart() {
             return part;
         }

@@ -23,6 +23,11 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Implementation of the {@link DataBinder.ValueResolver} to assist in mapping binding data for constructor binding.
+ *
+ * @param values The Map of values to pass to the binder
+ */
 public record MapValueResolver(Map<String, Object> values) implements DataBinder.ValueResolver {
     @Override
     @Nullable

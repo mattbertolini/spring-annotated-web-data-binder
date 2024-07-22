@@ -72,7 +72,7 @@ public class BeanParameterMethodArgumentResolver extends ModelAttributeMethodPro
 
     @SuppressWarnings("unchecked")
     private Map<String, Object> memoizedGetValuesToBind(Class<?> targetType, NativeWebRequest request) {
-        Map<String, Object> memoizedValues = (Map<String, Object>) request.getAttribute(BIND_VALUES_ATTRIBUTE_KEY, NativeWebRequest.SCOPE_REQUEST);
+        /* Nullable */ Map<String, Object> memoizedValues = (Map<String, Object>) request.getAttribute(BIND_VALUES_ATTRIBUTE_KEY, NativeWebRequest.SCOPE_REQUEST);
         if (memoizedValues != null) {
             return memoizedValues;
         }

@@ -77,7 +77,7 @@ class PathParameterRequestPropertyResolverTest {
             .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
         BindingProperty bindingProperty = bindingProperty("notAnnotated");
-        assertThatExceptionOfType(IllegalStateException.class)
+        assertThatExceptionOfType(NullPointerException.class)
             .isThrownBy(() -> resolver.resolve(bindingProperty, exchange));
     }
 

@@ -13,6 +13,7 @@ dependencies {
     implementation(project(":spring-webmvc-annotated-data-binder"))
     implementation(project(":spring-webflux-annotated-data-binder"))
     implementation(libs.jakartaServletApi) // Version defined in Spring BOM file
+    compileOnly(libs.findbugsJsr305)
 
     add("asciidoctorExt", libs.springAsciidoctorExtBlockSwitch)
 

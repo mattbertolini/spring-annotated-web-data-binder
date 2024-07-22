@@ -19,27 +19,35 @@ package com.mattbertolini.spring.test.web.bind;
 import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
 import com.mattbertolini.spring.web.bind.annotation.PathParameter;
 import jakarta.validation.constraints.NotEmpty;
+import org.springframework.lang.Nullable;
 
 import java.util.Map;
 
 public class PathParameterBean {
+    @Nullable
     @PathParameter("annotated_field")
     private String annotatedField;
 
+    @Nullable
     private String annotatedSetter;
 
+    @Nullable
     private String annotatedGetter;
 
+    @Nullable
     @PathParameter
     private Map<String, String> simpleMap;
 
+    @Nullable
     @NotEmpty
     @PathParameter("validated")
     private String validated;
 
+    @Nullable
     @BeanParameter
     private NestedBean nestedBean;
 
+    @Nullable
     public String getAnnotatedField() {
         return annotatedField;
     }
@@ -48,6 +56,7 @@ public class PathParameterBean {
         this.annotatedField = annotatedField;
     }
 
+    @Nullable
     public String getAnnotatedSetter() {
         return annotatedSetter;
     }
@@ -57,6 +66,7 @@ public class PathParameterBean {
         this.annotatedSetter = annotatedSetter;
     }
 
+    @Nullable
     @PathParameter("annotated_getter")
     public String getAnnotatedGetter() {
         return annotatedGetter;
@@ -66,6 +76,7 @@ public class PathParameterBean {
         this.annotatedGetter = annotatedGetter;
     }
 
+    @Nullable
     public Map<String, String> getSimpleMap() {
         return simpleMap;
     }
@@ -74,6 +85,7 @@ public class PathParameterBean {
         this.simpleMap = simpleMap;
     }
 
+    @Nullable
     public String getValidated() {
         return validated;
     }
@@ -82,6 +94,7 @@ public class PathParameterBean {
         this.validated = validated;
     }
 
+    @Nullable
     public NestedBean getNestedBean() {
         return nestedBean;
     }

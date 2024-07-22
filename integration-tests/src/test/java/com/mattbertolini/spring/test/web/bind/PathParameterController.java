@@ -20,6 +20,7 @@ import com.mattbertolini.spring.test.web.bind.records.PathParameterRecord;
 import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
+import org.springframework.lang.Nullable;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,21 +30,25 @@ import java.util.Map;
 @SuppressWarnings("MVCPathVariableInspection")
 @RestController
 public class PathParameterController {
+    @Nullable
     @GetMapping(value = "/annotatedField/{annotated_field}", produces = MediaType.TEXT_PLAIN_VALUE)
     public String annotatedField(@BeanParameter PathParameterBean pathParameterBean) {
         return pathParameterBean.getAnnotatedField();
     }
 
+    @Nullable
     @GetMapping(value = "/annotatedSetter/{annotated_setter}", produces = MediaType.TEXT_PLAIN_VALUE)
     public String annotatedSetter(@BeanParameter PathParameterBean pathParameterBean) {
         return pathParameterBean.getAnnotatedSetter();
     }
 
+    @Nullable
     @GetMapping(value = "/annotatedGetter/{annotated_getter}", produces = MediaType.TEXT_PLAIN_VALUE)
     public String annotatedGetter(@BeanParameter PathParameterBean pathParameterBean) {
         return pathParameterBean.getAnnotatedGetter();
     }
 
+    @Nullable
     @GetMapping(value = "/simpleMap/{simple_map}")
     public String simpleMap(@BeanParameter PathParameterBean pathParameterBean) {
         Map<String, String> simpleMap = pathParameterBean.getSimpleMap();
@@ -55,6 +60,7 @@ public class PathParameterController {
         return Integer.toString(bindingResult.getErrorCount());
     }
 
+    @Nullable
     @GetMapping(value = {"/validated", "/validated/{validated}"}, produces = MediaType.TEXT_PLAIN_VALUE)
     public String validated(@Valid @BeanParameter PathParameterBean pathParameterBean) {
         return pathParameterBean.getValidated();

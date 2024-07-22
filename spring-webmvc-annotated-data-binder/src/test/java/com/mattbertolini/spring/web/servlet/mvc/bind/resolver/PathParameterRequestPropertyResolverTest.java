@@ -20,6 +20,7 @@ import com.mattbertolini.spring.web.bind.annotation.PathParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.lang.Nullable;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.servlet.HandlerMapping;
@@ -67,7 +68,7 @@ class PathParameterRequestPropertyResolverTest {
     void throwsExceptionIfResolveCalledWithNoAnnotation() throws Exception {
         // Unlikely to happen as the library always checks the supports method.
         BindingProperty bindingProperty = bindingProperty("notAnnotated");
-        assertThatExceptionOfType(IllegalStateException.class)
+        assertThatExceptionOfType(NullPointerException.class)
             .isThrownBy(() -> resolver.resolve(bindingProperty, request));
     }
 
@@ -110,14 +111,18 @@ class PathParameterRequestPropertyResolverTest {
 
     @SuppressWarnings("unused")
     private static class TestingBean {
+        @Nullable
         @PathParameter("pathParamName")
         private String annotated;
 
+        @Nullable
         private String notAnnotated;
 
+        @Nullable
         @PathParameter
         private String missingValue;
 
+        @Nullable
         public String getAnnotated() {
             return annotated;
         }
@@ -126,6 +131,7 @@ class PathParameterRequestPropertyResolverTest {
             this.annotated = annotated;
         }
 
+        @Nullable
         public String getNotAnnotated() {
             return notAnnotated;
         }
@@ -134,6 +140,7 @@ class PathParameterRequestPropertyResolverTest {
             this.notAnnotated = notAnnotated;
         }
 
+        @Nullable
         public String getMissingValue() {
             return missingValue;
         }

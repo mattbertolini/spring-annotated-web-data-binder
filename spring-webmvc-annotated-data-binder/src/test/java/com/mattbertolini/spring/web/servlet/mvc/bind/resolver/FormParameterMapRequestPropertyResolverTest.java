@@ -23,6 +23,7 @@ import jakarta.servlet.http.Part;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.lang.Nullable;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockMultipartHttpServletRequest;
@@ -298,32 +299,42 @@ class FormParameterMapRequestPropertyResolverTest {
 
     @SuppressWarnings("unused")
     private static class TestingBean {
+        @Nullable
         @FormParameter
         private Map<String, String> annotated;
 
+        @Nullable
         private Map<String, String> notAnnotated;
 
+        @Nullable
         @FormParameter
         private MultiValueMap<String, String> multivalue;
 
+        @Nullable
         @FormParameter("name")
         private String withName;
 
+        @Nullable
         @FormParameter
         private String notAMap;
 
+        @Nullable
         @FormParameter
         private Map<String, MultipartFile> multipartFileMap;
 
+        @Nullable
         @FormParameter
         private MultiValueMap<String, MultipartFile> multiValueMultipartMap;
 
+        @Nullable
         @FormParameter
         private Map<String, Part> partMap;
 
+        @Nullable
         @FormParameter
         private MultiValueMap<String, Part> multiValuePartMap;
 
+        @Nullable
         public Map<String, String> getAnnotated() {
             return annotated;
         }
@@ -332,6 +343,7 @@ class FormParameterMapRequestPropertyResolverTest {
             this.annotated = annotated;
         }
 
+        @Nullable
         public Map<String, String> getNotAnnotated() {
             return notAnnotated;
         }
@@ -340,6 +352,7 @@ class FormParameterMapRequestPropertyResolverTest {
             this.notAnnotated = notAnnotated;
         }
 
+        @Nullable
         public MultiValueMap<String, String> getMultivalue() {
             return multivalue;
         }
@@ -348,6 +361,7 @@ class FormParameterMapRequestPropertyResolverTest {
             this.multivalue = multivalue;
         }
 
+        @Nullable
         public String getWithName() {
             return withName;
         }
@@ -356,6 +370,7 @@ class FormParameterMapRequestPropertyResolverTest {
             this.withName = withName;
         }
 
+        @Nullable
         public String getNotAMap() {
             return notAMap;
         }
@@ -364,6 +379,7 @@ class FormParameterMapRequestPropertyResolverTest {
             this.notAMap = notAMap;
         }
 
+        @Nullable
         public Map<String, MultipartFile> getMultipartFileMap() {
             return multipartFileMap;
         }
@@ -372,6 +388,7 @@ class FormParameterMapRequestPropertyResolverTest {
             this.multipartFileMap = multipartFileMap;
         }
 
+        @Nullable
         public MultiValueMap<String, MultipartFile> getMultiValueMultipartMap() {
             return multiValueMultipartMap;
         }
@@ -380,6 +397,7 @@ class FormParameterMapRequestPropertyResolverTest {
             this.multiValueMultipartMap = multiValueMultipartMap;
         }
 
+        @Nullable
         public Map<String, Part> getPartMap() {
             return partMap;
         }
@@ -388,6 +406,7 @@ class FormParameterMapRequestPropertyResolverTest {
             this.partMap = partMap;
         }
 
+        @Nullable
         public MultiValueMap<String, Part> getMultiValuePartMap() {
             return multiValuePartMap;
         }

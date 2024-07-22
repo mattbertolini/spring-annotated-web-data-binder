@@ -21,32 +21,41 @@ import com.mattbertolini.spring.web.bind.annotation.FormParameter;
 import jakarta.servlet.http.Part;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.http.codec.multipart.FilePart;
+import org.springframework.lang.Nullable;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
 public class FormParameterBean {
+    @Nullable
     @FormParameter("annotated_field")
     private String annotatedField;
 
+    @Nullable
     private String annotatedSetter;
 
+    @Nullable
     private String annotatedGetter;
 
+    @Nullable
     @FormParameter
     private Map<String, String> simpleMap;
 
+    @Nullable
     @FormParameter
     private MultiValueMap<String, String> multiValueMap;
 
+    @Nullable
     @NotEmpty
     @FormParameter("validated")
     private String validated;
 
+    @Nullable
     @BeanParameter
     private NestedBean nestedBean;
 
+    @Nullable
     public String getAnnotatedField() {
         return annotatedField;
     }
@@ -55,6 +64,7 @@ public class FormParameterBean {
         this.annotatedField = annotatedField;
     }
 
+    @Nullable
     public String getAnnotatedSetter() {
         return annotatedSetter;
     }
@@ -64,6 +74,7 @@ public class FormParameterBean {
         this.annotatedSetter = annotatedSetter;
     }
 
+    @Nullable
     @FormParameter("annotated_getter")
     public String getAnnotatedGetter() {
         return annotatedGetter;
@@ -73,6 +84,7 @@ public class FormParameterBean {
         this.annotatedGetter = annotatedGetter;
     }
 
+    @Nullable
     public Map<String, String> getSimpleMap() {
         return simpleMap;
     }
@@ -81,6 +93,7 @@ public class FormParameterBean {
         this.simpleMap = simpleMap;
     }
 
+    @Nullable
     public MultiValueMap<String, String> getMultiValueMap() {
         return multiValueMap;
     }
@@ -89,6 +102,7 @@ public class FormParameterBean {
         this.multiValueMap = multiValueMap;
     }
 
+    @Nullable
     public String getValidated() {
         return validated;
     }
@@ -97,6 +111,7 @@ public class FormParameterBean {
         this.validated = validated;
     }
 
+    @Nullable
     public NestedBean getNestedBean() {
         return nestedBean;
     }
@@ -109,24 +124,31 @@ public class FormParameterBean {
      * Test bean for multipart binding in a Servlet/WebMVC application
      */
     static class ServletMultipartBean {
+        @Nullable
         @FormParameter("file")
         private MultipartFile multipartFile;
 
+        @Nullable
         @FormParameter("part")
         private Part part;
 
+        @Nullable
         @FormParameter
         private Map<String, MultipartFile> multipartFileMap;
 
+        @Nullable
         @FormParameter
         private MultiValueMap<String, MultipartFile> multiValueMultipartMap;
 
+        @Nullable
         @FormParameter
         private Map<String, Part> partMap;
 
+        @Nullable
         @FormParameter
         private MultiValueMap<String, Part> multiValuePartMap;
 
+        @Nullable
         public MultipartFile getMultipartFile() {
             return multipartFile;
         }
@@ -135,6 +157,7 @@ public class FormParameterBean {
             this.multipartFile = multipartFile;
         }
 
+        @Nullable
         public Part getPart() {
             return part;
         }
@@ -143,6 +166,7 @@ public class FormParameterBean {
             this.part = part;
         }
 
+        @Nullable
         public Map<String, MultipartFile> getMultipartFileMap() {
             return multipartFileMap;
         }
@@ -151,6 +175,7 @@ public class FormParameterBean {
             this.multipartFileMap = multipartFileMap;
         }
 
+        @Nullable
         public MultiValueMap<String, MultipartFile> getMultiValueMultipartMap() {
             return multiValueMultipartMap;
         }
@@ -159,6 +184,7 @@ public class FormParameterBean {
             this.multiValueMultipartMap = multiValueMultipartMap;
         }
 
+        @Nullable
         public Map<String, Part> getPartMap() {
             return partMap;
         }
@@ -167,6 +193,7 @@ public class FormParameterBean {
             this.partMap = partMap;
         }
 
+        @Nullable
         public MultiValueMap<String, Part> getMultiValuePartMap() {
             return multiValuePartMap;
         }
@@ -180,9 +207,11 @@ public class FormParameterBean {
      * Test bean for multipart binding in a WebFlux application
      */
     static class WebfluxMultipartBean {
+        @Nullable
         @FormParameter("file")
         private FilePart filePart;
 
+        @Nullable
         public FilePart getFilePart() {
             return filePart;
         }

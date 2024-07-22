@@ -19,22 +19,29 @@ package com.mattbertolini.spring.test.web.bind;
 import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
 import com.mattbertolini.spring.web.bind.annotation.CookieParameter;
 import jakarta.validation.constraints.NotEmpty;
+import org.springframework.lang.Nullable;
 
 public class CookieParameterBean {
+    @Nullable
     @CookieParameter("annotated_field")
     private String annotatedField;
 
+    @Nullable
     private String annotatedSetter;
 
+    @Nullable
     private String annotatedGetter;
 
+    @Nullable
     @NotEmpty
     @CookieParameter("validated")
     private String validated;
 
+    @Nullable
     @BeanParameter
     private NestedBean nestedBean;
 
+    @Nullable
     public String getAnnotatedField() {
         return annotatedField;
     }
@@ -43,6 +50,7 @@ public class CookieParameterBean {
         this.annotatedField = annotatedField;
     }
 
+    @Nullable
     public String getAnnotatedSetter() {
         return annotatedSetter;
     }
@@ -52,6 +60,7 @@ public class CookieParameterBean {
         this.annotatedSetter = annotatedSetter;
     }
 
+    @Nullable
     @CookieParameter("annotated_getter")
     public String getAnnotatedGetter() {
         return annotatedGetter;
@@ -61,6 +70,7 @@ public class CookieParameterBean {
         this.annotatedGetter = annotatedGetter;
     }
 
+    @Nullable
     public String getValidated() {
         return validated;
     }
@@ -69,6 +79,7 @@ public class CookieParameterBean {
         this.validated = validated;
     }
 
+    @Nullable
     public NestedBean getNestedBean() {
         return nestedBean;
     }

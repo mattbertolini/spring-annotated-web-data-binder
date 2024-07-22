@@ -23,27 +23,35 @@ import com.mattbertolini.spring.web.bind.annotation.PathParameter;
 import com.mattbertolini.spring.web.bind.annotation.RequestBody;
 import com.mattbertolini.spring.web.bind.annotation.RequestParameter;
 import com.mattbertolini.spring.web.bind.annotation.SessionParameter;
+import org.springframework.lang.Nullable;
 
 @SuppressWarnings("unused")
 public class NestedBean {
+    @Nullable
     @RequestParameter("nested_query_param")
     private String queryParam;
 
+    @Nullable
     @FormParameter("nested_form_param")
     private String formData;
 
+    @Nullable
     @CookieParameter("nested_cookie_param")
     private String cookieValue;
 
+    @Nullable
     @HeaderParameter("nested_header_param")
     private String headerValue;
 
+    @Nullable
     @PathParameter("nested_path_param")
     private String pathVariable;
 
+    @Nullable
     @SessionParameter("nested_session_param")
     private String sessionAttribute;
 
+    @Nullable
     public String getQueryParam() {
         return queryParam;
     }
@@ -52,6 +60,7 @@ public class NestedBean {
         this.queryParam = queryParam;
     }
 
+    @Nullable
     public String getFormData() {
         return formData;
     }
@@ -60,6 +69,7 @@ public class NestedBean {
         this.formData = formData;
     }
 
+    @Nullable
     public String getCookieValue() {
         return cookieValue;
     }
@@ -68,6 +78,7 @@ public class NestedBean {
         this.cookieValue = cookieValue;
     }
 
+    @Nullable
     public String getHeaderValue() {
         return headerValue;
     }
@@ -76,6 +87,7 @@ public class NestedBean {
         this.headerValue = headerValue;
     }
 
+    @Nullable
     public String getPathVariable() {
         return pathVariable;
     }
@@ -84,6 +96,7 @@ public class NestedBean {
         this.pathVariable = pathVariable;
     }
 
+    @Nullable
     public String getSessionAttribute() {
         return sessionAttribute;
     }
@@ -93,9 +106,11 @@ public class NestedBean {
     }
 
     public static class RequestBodyBean {
+        @Nullable
         @RequestBody
         private JsonBody requestBody;
 
+        @Nullable
         public JsonBody getRequestBody() {
             return requestBody;
         }

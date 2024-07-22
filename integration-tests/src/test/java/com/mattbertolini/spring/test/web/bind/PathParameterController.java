@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
+import java.util.Objects;
 
 @SuppressWarnings("MVCPathVariableInspection")
 @RestController
@@ -52,7 +53,7 @@ public class PathParameterController {
     @GetMapping(value = "/simpleMap/{simple_map}")
     public String simpleMap(@BeanParameter PathParameterBean pathParameterBean) {
         Map<String, String> simpleMap = pathParameterBean.getSimpleMap();
-        return simpleMap.get("simple_map");
+        return Objects.requireNonNull(simpleMap).get("simple_map");
     }
 
     @GetMapping(value = "/bindingResult/{validated}", produces = MediaType.TEXT_PLAIN_VALUE)
@@ -74,9 +75,10 @@ public class PathParameterController {
         return "valid";
     }
 
+    @Nullable
     @GetMapping(value = "/nested/{nested_path_param}", produces = MediaType.TEXT_PLAIN_VALUE)
     public String nestedBean(@BeanParameter PathParameterBean pathParameterBean) {
-        return pathParameterBean.getNestedBean().getPathVariable();
+        return Objects.requireNonNull(pathParameterBean.getNestedBean()).getPathVariable();
     }
 
     @GetMapping(value = "/record/{annotated_field}", produces = MediaType.TEXT_PLAIN_VALUE)

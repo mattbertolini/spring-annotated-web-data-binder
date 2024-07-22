@@ -19,13 +19,16 @@ package com.mattbertolini.spring.test.web.bind;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.lang.Nullable;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class JsonBody {
+    @Nullable
     @JsonProperty("json_property")
     private String property;
 
+    @Nullable
     public String getProperty() {
         return property;
     }

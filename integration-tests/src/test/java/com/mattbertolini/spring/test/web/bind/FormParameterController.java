@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
@@ -59,7 +60,7 @@ public class FormParameterController {
     @PostMapping(value = "/simpleMap", produces = MediaType.TEXT_PLAIN_VALUE)
     public String simpleMap(@BeanParameter FormParameterBean formParameterBean) {
         Map<String, String> simpleMap = formParameterBean.getSimpleMap();
-        return simpleMap.get("simple-map");
+        return Objects.requireNonNull(simpleMap).get("simple-map");
     }
 
     @PostMapping(value = "/multiValueMap", produces = MediaType.TEXT_PLAIN_VALUE)

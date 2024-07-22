@@ -19,23 +19,30 @@ package com.mattbertolini.spring.test.web.bind;
 import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
 import com.mattbertolini.spring.web.bind.annotation.SessionParameter;
 import jakarta.validation.constraints.NotEmpty;
+import org.springframework.lang.Nullable;
 
 public class SessionParameterBean {
+    @Nullable
     @SessionParameter("annotated_field")
     private String annotatedField;
 
+    @Nullable
     private String annotatedSetter;
 
+    @Nullable
     private String annotatedGetter;
 
+    @Nullable
     public String getAnnotatedField() {
         return annotatedField;
     }
 
+    @Nullable
     @NotEmpty
     @SessionParameter("validated")
     private String validated;
 
+    @Nullable
     @BeanParameter
     private NestedBean nestedBean;
 
@@ -43,6 +50,7 @@ public class SessionParameterBean {
         this.annotatedField = annotatedField;
     }
 
+    @Nullable
     public String getAnnotatedSetter() {
         return annotatedSetter;
     }
@@ -52,6 +60,7 @@ public class SessionParameterBean {
         this.annotatedSetter = annotatedSetter;
     }
 
+    @Nullable
     @SessionParameter("annotated_getter")
     public String getAnnotatedGetter() {
         return annotatedGetter;
@@ -61,6 +70,7 @@ public class SessionParameterBean {
         this.annotatedGetter = annotatedGetter;
     }
 
+    @Nullable
     public String getValidated() {
         return validated;
     }
@@ -69,6 +79,7 @@ public class SessionParameterBean {
         this.validated = validated;
     }
 
+    @Nullable
     public NestedBean getNestedBean() {
         return nestedBean;
     }

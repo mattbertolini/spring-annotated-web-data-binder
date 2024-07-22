@@ -20,6 +20,7 @@ import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
 import com.mattbertolini.spring.web.bind.annotation.RequestBody;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.codec.multipart.Part;
+import org.springframework.lang.Nullable;
 import org.springframework.util.MultiValueMap;
 import reactor.core.publisher.Flux;
 
@@ -27,9 +28,11 @@ public class RequestBodyBean {
 
     @SuppressWarnings("unused")
     public static class AnnotatedField {
+        @Nullable
         @RequestBody
         private JsonBody jsonBody;
 
+        @Nullable
         public JsonBody getJsonBody() {
             return jsonBody;
         }
@@ -41,8 +44,10 @@ public class RequestBodyBean {
 
     @SuppressWarnings("unused")
     public static class AnnotatedSetter {
+        @Nullable
         private JsonBody jsonBody;
 
+        @Nullable
         public JsonBody getJsonBody() {
             return jsonBody;
         }
@@ -55,8 +60,10 @@ public class RequestBodyBean {
 
     @SuppressWarnings("unused")
     public static class AnnotatedGetter {
+        @Nullable
         private JsonBody jsonBody;
 
+        @Nullable
         @RequestBody
         public JsonBody getJsonBody() {
             return jsonBody;
@@ -69,9 +76,11 @@ public class RequestBodyBean {
 
     @SuppressWarnings("unused")
     public static class BindingResult {
+        @Nullable
         @RequestBody
         private JsonBody jsonBody;
 
+        @Nullable
         public JsonBody getJsonBody() {
             return jsonBody;
         }
@@ -83,10 +92,13 @@ public class RequestBodyBean {
 
     @SuppressWarnings("unused")
     public static class Validation {
+        @SuppressWarnings("MultipleNullnessAnnotations")
+        @Nullable
         @NotNull
         @RequestBody
         private JsonBody jsonBody;
-        
+
+        @Nullable
         public JsonBody getJsonBody() {
             return jsonBody;
         }
@@ -98,9 +110,11 @@ public class RequestBodyBean {
 
     @SuppressWarnings("unused")
     public static class Nested {
+        @Nullable
         @BeanParameter
         private NestedBean.RequestBodyBean nestedBean;
 
+        @Nullable
         public NestedBean.RequestBodyBean getNestedBean() {
             return nestedBean;
         }
@@ -112,9 +126,11 @@ public class RequestBodyBean {
 
     @SuppressWarnings("unused")
     public static class WebFluxMultipartMultiValueMap {
+        @Nullable
         @RequestBody
         private MultiValueMap<String, Part> parts;
 
+        @Nullable
         public MultiValueMap<String, Part> getParts() {
             return parts;
         }
@@ -126,9 +142,11 @@ public class RequestBodyBean {
 
     @SuppressWarnings("unused")
     public static class WebFluxMultipartFlux {
+        @Nullable
         @RequestBody
         private Flux<Part> parts;
 
+        @Nullable
         public Flux<Part> getParts() {
             return parts;
         }

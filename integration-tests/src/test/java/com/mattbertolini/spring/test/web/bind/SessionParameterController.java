@@ -20,22 +20,28 @@ import com.mattbertolini.spring.test.web.bind.records.SessionParameterRecord;
 import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
+import org.springframework.lang.Nullable;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Objects;
+
 @RestController
 public class SessionParameterController {
+    @Nullable
     @GetMapping(value = "/annotatedField", produces = MediaType.TEXT_PLAIN_VALUE)
     public String annotatedField(@BeanParameter SessionParameterBean sessionParameterBean) {
         return sessionParameterBean.getAnnotatedField();
     }
 
+    @Nullable
     @GetMapping(value = "/annotatedSetter", produces = MediaType.TEXT_PLAIN_VALUE)
     public String annotatedSetter(@BeanParameter SessionParameterBean sessionParameterBean) {
         return sessionParameterBean.getAnnotatedSetter();
     }
 
+    @Nullable
     @GetMapping(value = "/annotatedGetter", produces = MediaType.TEXT_PLAIN_VALUE)
     public String annotatedGetter(@BeanParameter SessionParameterBean sessionParameterBean) {
         return sessionParameterBean.getAnnotatedGetter();
@@ -46,6 +52,7 @@ public class SessionParameterController {
         return Integer.toString(bindingResult.getErrorCount());
     }
 
+    @Nullable
     @GetMapping(value = "/validated", produces = MediaType.TEXT_PLAIN_VALUE)
     public String validated(@Valid @BeanParameter SessionParameterBean sessionParameterBean) {
         return sessionParameterBean.getValidated();
@@ -59,9 +66,10 @@ public class SessionParameterController {
         return "valid";
     }
 
+    @Nullable
     @GetMapping(value = "/nested", produces = MediaType.TEXT_PLAIN_VALUE)
     public String nestedBean(@BeanParameter SessionParameterBean sessionParameterBean) {
-        return sessionParameterBean.getNestedBean().getSessionAttribute();
+        return Objects.requireNonNull(sessionParameterBean.getNestedBean()).getSessionAttribute();
     }
 
     @GetMapping(value = "/record", produces = MediaType.TEXT_PLAIN_VALUE)

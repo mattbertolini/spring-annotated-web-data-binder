@@ -26,6 +26,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.ReactiveAdapterRegistry;
+import org.springframework.core.ResolvableType;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.support.WebExchangeDataBinder;
@@ -57,8 +58,8 @@ public class BeanParameterMethodArgumentResolver extends ModelAttributeMethodArg
 
     @Override
     protected Mono<Void> constructAttribute(WebExchangeDataBinder binder, ServerWebExchange exchange) {
-        Objects.requireNonNull(binder.getTargetType(), "WebExchangeDataBinder must have a target type");
-        Collection<ResolvedPropertyData> propertyData = introspector.getResolversFor(Objects.requireNonNull(binder.getTargetType().getRawClass()));
+        ResolvableType targetType = Objects.requireNonNull(binder.getTargetType(), "WebExchangeDataBinder must have a target type");
+        Collection<ResolvedPropertyData> propertyData = introspector.getResolversFor(Objects.requireNonNull(targetType.getRawClass()));
         return getValuesToBind(propertyData, exchange)
             .map(MapValueResolver::new)
             .doOnNext(binder::construct)
@@ -68,8 +69,8 @@ public class BeanParameterMethodArgumentResolver extends ModelAttributeMethodArg
     @Override
     @NonNull
     protected Mono<Void> bindRequestParameters(WebExchangeDataBinder binder, ServerWebExchange exchange) {
-        Assert.state(binder.getTarget() != null, "WebExchangeDataBinder must have a target object");
-        Collection<ResolvedPropertyData> propertyData = introspector.getResolversFor(binder.getTarget().getClass());
+        Object target = Objects.requireNonNull(binder.getTarget(), "WebExchangeDataBinder must have a target object");
+        Collection<ResolvedPropertyData> propertyData = introspector.getResolversFor(target.getClass());
         return getValuesToBind(propertyData, exchange)
             .map(MutablePropertyValues::new)
             .doOnNext(binder::bind)

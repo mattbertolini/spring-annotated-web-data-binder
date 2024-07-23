@@ -42,11 +42,6 @@ public class MockWebExchangeDataBinder extends WebExchangeDataBinder {
     }
 
     @Override
-    public Mono<Void> construct(ServerWebExchange exchange) {
-        return super.construct(exchange); // TODO
-    }
-
-    @Override
     public void bind(PropertyValues pvs) {
         this.pvs = pvs;
         bindInvoked = true;

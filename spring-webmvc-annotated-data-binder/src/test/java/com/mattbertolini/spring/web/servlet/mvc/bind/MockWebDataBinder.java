@@ -46,11 +46,6 @@ public class MockWebDataBinder extends WebDataBinder {
     }
 
     @Override
-    public void construct(ValueResolver valueResolver) {
-        super.construct(valueResolver); // TODO
-    }
-
-    @Override
     public void bind(PropertyValues pvs) {
         this.pvs = pvs;
         bindInvoked = true;

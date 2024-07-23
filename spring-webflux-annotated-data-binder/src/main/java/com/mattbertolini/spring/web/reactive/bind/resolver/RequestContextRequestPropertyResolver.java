@@ -79,8 +79,7 @@ public class RequestContextRequestPropertyResolver implements RequestPropertyRes
     @Nullable
     private TimeZone getTimeZone(@NonNull ServerWebExchange exchange) {
         LocaleContext localeContext = exchange.getLocaleContext();
-        if (localeContext instanceof TimeZoneAwareLocaleContext) {
-            TimeZoneAwareLocaleContext timeZoneAwareLocaleContext = (TimeZoneAwareLocaleContext) localeContext;
+        if (localeContext instanceof TimeZoneAwareLocaleContext timeZoneAwareLocaleContext) {
             return timeZoneAwareLocaleContext.getTimeZone();
         }
         return null;

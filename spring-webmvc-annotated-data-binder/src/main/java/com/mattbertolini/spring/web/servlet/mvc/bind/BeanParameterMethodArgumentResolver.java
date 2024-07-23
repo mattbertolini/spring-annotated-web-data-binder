@@ -24,7 +24,7 @@ import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.RequestPropertyRes
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.core.MethodParameter;
-import org.springframework.util.Assert;
+import org.springframework.core.ResolvableType;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.RequestAttributes;
@@ -56,15 +56,15 @@ public class BeanParameterMethodArgumentResolver extends ModelAttributeMethodPro
 
     @Override
     protected void constructAttribute(WebDataBinder binder, NativeWebRequest request) {
-        Assert.state(binder.getTargetType() != null, "WebDataBinder must have a target type");
-        Map<String, Object> valuesToBind = memoizedGetValuesToBind(Objects.requireNonNull(binder.getTargetType().getRawClass()), request);
+        ResolvableType targetType = Objects.requireNonNull(binder.getTargetType(), "WebDataBinder must have a target type");
+        Map<String, Object> valuesToBind = memoizedGetValuesToBind(Objects.requireNonNull(targetType.getRawClass()), request);
         binder.construct(new MapValueResolver(valuesToBind));
     }
 
     @Override
     protected void bindRequestParameters(WebDataBinder binder, NativeWebRequest request) {
-        Assert.state(binder.getTarget() != null, "WebDataBinder must have a target object");
-        Map<String, Object> valuesToBind = memoizedGetValuesToBind(binder.getTarget().getClass(), request);
+        Object target = Objects.requireNonNull(binder.getTarget(), "WebDataBinder must have a target object");
+        Map<String, Object> valuesToBind = memoizedGetValuesToBind(target.getClass(), request);
         binder.bind(new MutablePropertyValues(valuesToBind));
         request.removeAttribute(BIND_VALUES_ATTRIBUTE_KEY, RequestAttributes.SCOPE_REQUEST);
     }

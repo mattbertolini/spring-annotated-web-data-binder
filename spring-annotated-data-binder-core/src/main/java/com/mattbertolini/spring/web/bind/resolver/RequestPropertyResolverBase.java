@@ -16,7 +16,6 @@
 package com.mattbertolini.spring.web.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 /**

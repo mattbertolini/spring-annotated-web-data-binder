@@ -52,7 +52,7 @@ class DefaultAnnotatedRequestBeanIntrospectorTest {
         Collection<ResolvedPropertyData> resolvers = introspector.getResolversFor(SimpleType.class);
         assertThat(resolvers).hasSize(1);
         ResolvedPropertyData data = resolvers.iterator().next();
-        assertThat(data.getPropertyName()).isEqualTo("data");
+        assertThat(data.propertyName()).isEqualTo("data");
     }
 
     @Test
@@ -62,7 +62,7 @@ class DefaultAnnotatedRequestBeanIntrospectorTest {
         Collection<ResolvedPropertyData> resolvers = introspector.getResolversFor(OuterBean.class);
         assertThat(resolvers).hasSize(1);
         ResolvedPropertyData data = resolvers.iterator().next();
-        assertThat(data.getPropertyName()).isEqualTo("innerBean.inner");
+        assertThat(data.propertyName()).isEqualTo("innerBean.inner");
     }
 
     private static class FakeResolver implements RequestPropertyResolverBase<Void, Object> {

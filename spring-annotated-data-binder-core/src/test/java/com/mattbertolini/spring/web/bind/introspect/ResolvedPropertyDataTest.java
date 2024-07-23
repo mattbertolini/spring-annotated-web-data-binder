@@ -39,20 +39,20 @@ class ResolvedPropertyDataTest {
 
     @Test
     void returnsPropertyName() {
-        assertThat(propertyData.getPropertyName()).isEqualTo("name");
+        assertThat(propertyData.propertyName()).isEqualTo("name");
     }
 
     @Test
     void returnsBindingProperty() throws Exception {
         BindingProperty expected = BindingProperty.forPropertyDescriptor(
             new PropertyDescriptor("property", TestingClass.class));
-        assertThat(propertyData.getBindingProperty()).isEqualTo(expected);
+        assertThat(propertyData.bindingProperty()).isEqualTo(expected);
     }
 
     @Test
     void returnsResolver() {
-        assertThat(propertyData.getResolver()).isNotNull();
-        assertThat(propertyData.getResolver()).isInstanceOf(StubResolver.class);
+        assertThat(propertyData.resolver()).isNotNull();
+        assertThat(propertyData.resolver()).isInstanceOf(StubResolver.class);
     }
 
     @Test

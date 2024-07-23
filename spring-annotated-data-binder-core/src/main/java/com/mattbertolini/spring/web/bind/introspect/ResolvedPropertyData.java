@@ -17,51 +17,7 @@ package com.mattbertolini.spring.web.bind.introspect;
 
 import com.mattbertolini.spring.web.bind.resolver.RequestPropertyResolverBase;
 
-import java.util.Objects;
-
-public final class ResolvedPropertyData {
-    private final String propertyName;
-    private final BindingProperty bindingProperty;
-    private final RequestPropertyResolverBase<?, ?> resolver;
-
-    public ResolvedPropertyData(
-        String propertyName,
-        BindingProperty bindingProperty,
-        RequestPropertyResolverBase<?, ?> resolver
-    ) {
-        this.propertyName = propertyName;
-        this.bindingProperty = bindingProperty;
-        this.resolver = resolver;
-    }
-
-    public String getPropertyName() {
-        return propertyName;
-    }
-
-    public BindingProperty getBindingProperty() {
-        return bindingProperty;
-    }
-
-    public RequestPropertyResolverBase<?, ?> getResolver() {
-        return resolver;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof ResolvedPropertyData)) {
-            return false;
-        }
-        ResolvedPropertyData that = (ResolvedPropertyData) o;
-        return Objects.equals(propertyName, that.propertyName) &&
-            Objects.equals(bindingProperty, that.bindingProperty) &&
-            Objects.equals(resolver, that.resolver);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(propertyName, bindingProperty, resolver);
-    }
-}
+public record ResolvedPropertyData(
+    String propertyName,
+    BindingProperty bindingProperty,
+    RequestPropertyResolverBase<?, ?> resolver) {}

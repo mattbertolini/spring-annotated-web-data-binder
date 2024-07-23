@@ -84,11 +84,11 @@ public class BeanParameterMethodArgumentResolver extends ModelAttributeMethodPro
         Map<String, Object> values = new HashMap<>();
         Collection<ResolvedPropertyData> propertyData = introspector.getResolversFor(targetType);
         for (ResolvedPropertyData data : propertyData) {
-            RequestPropertyResolver resolver = (RequestPropertyResolver) data.getResolver();
+            RequestPropertyResolver resolver = (RequestPropertyResolver) data.resolver();
             try {
-                Object value = resolver.resolve(data.getBindingProperty(), request);
+                Object value = resolver.resolve(data.bindingProperty(), request);
                 if (value != null) {
-                    String propertyName = data.getPropertyName();
+                    String propertyName = data.propertyName();
                     values.put(propertyName, value);
                 }
             } catch (Exception e) {

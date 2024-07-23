@@ -78,9 +78,9 @@ public class BeanParameterMethodArgumentResolver extends ModelAttributeMethodArg
 
     private Mono<Map<String, Object>> getValuesToBind(Collection<ResolvedPropertyData> propertyData, ServerWebExchange exchange) {
         return Flux.fromIterable(propertyData).flatMap(data -> {
-            BindingProperty bindingProperty = data.getBindingProperty();
-            RequestPropertyResolver resolver = (RequestPropertyResolver) data.getResolver();
-            return resolver.resolve(bindingProperty, exchange).map(resolvedValue -> Tuples.of(data.getPropertyName(), resolvedValue));
+            BindingProperty bindingProperty = data.bindingProperty();
+            RequestPropertyResolver resolver = (RequestPropertyResolver) data.resolver();
+            return resolver.resolve(bindingProperty, exchange).map(resolvedValue -> Tuples.of(data.propertyName(), resolvedValue));
         }).collectMap(Tuple2::getT1, Tuple2::getT2)
             .onErrorMap(e -> new RequestPropertyBindingException("Unable to resolve property. " + e.getMessage(), e))
             .doOnSuccess(valuesMap -> valuesMap.values().removeIf(Objects::isNull));

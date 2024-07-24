@@ -1,11 +1,11 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.mattbertolini.spring.web.bind.introspect;
 
 import com.mattbertolini.spring.web.bind.resolver.RequestPropertyResolverBase;
@@ -21,7 +20,7 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.convert.TypeDescriptor;
-import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 import java.beans.PropertyDescriptor;
 
@@ -40,20 +39,20 @@ class ResolvedPropertyDataTest {
 
     @Test
     void returnsPropertyName() {
-        assertThat(propertyData.getPropertyName()).isEqualTo("name");
+        assertThat(propertyData.propertyName()).isEqualTo("name");
     }
 
     @Test
     void returnsBindingProperty() throws Exception {
         BindingProperty expected = BindingProperty.forPropertyDescriptor(
             new PropertyDescriptor("property", TestingClass.class));
-        assertThat(propertyData.getBindingProperty()).isEqualTo(expected);
+        assertThat(propertyData.bindingProperty()).isEqualTo(expected);
     }
 
     @Test
     void returnsResolver() {
-        assertThat(propertyData.getResolver()).isNotNull();
-        assertThat(propertyData.getResolver()).isInstanceOf(StubResolver.class);
+        assertThat(propertyData.resolver()).isNotNull();
+        assertThat(propertyData.resolver()).isInstanceOf(StubResolver.class);
     }
 
     @Test
@@ -69,22 +68,26 @@ class ResolvedPropertyDataTest {
     private static class StubResolver implements RequestPropertyResolverBase<Object, Object> {
 
         @Override
-        public boolean supports(@NonNull BindingProperty bindingProperty) {
+        public boolean supports(BindingProperty bindingProperty) {
             return false;
         }
 
         @Override
-        public Object resolve(@NonNull BindingProperty bindingProperty, @NonNull Object request) {
+        @Nullable
+        public Object resolve(BindingProperty bindingProperty, Object request) {
             return null;
         }
     }
 
     @SuppressWarnings("unused")
     private static class TestingClass {
+        @Nullable
         private String property;
 
+        @Nullable
         private String another;
 
+        @Nullable
         public String getProperty() {
             return property;
         }
@@ -93,6 +96,7 @@ class ResolvedPropertyDataTest {
             this.property = property;
         }
 
+        @Nullable
         public String getAnother() {
             return another;
         }

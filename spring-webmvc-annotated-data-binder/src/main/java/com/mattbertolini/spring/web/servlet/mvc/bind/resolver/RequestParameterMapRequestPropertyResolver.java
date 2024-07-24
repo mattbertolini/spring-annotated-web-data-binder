@@ -1,11 +1,11 @@
 /*
- * Copyright 2019-2021 the original author or authors.
+ * Copyright 2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,14 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.PropertyResolutionException;
 import com.mattbertolini.spring.web.bind.annotation.RequestParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Part;
 import org.springframework.core.ResolvableType;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
@@ -29,14 +32,11 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
 import org.springframework.web.multipart.support.MultipartResolutionDelegate;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.Part;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.Map;
 
 public class RequestParameterMapRequestPropertyResolver implements RequestPropertyResolver {
@@ -48,6 +48,7 @@ public class RequestParameterMapRequestPropertyResolver implements RequestProper
     }
 
     @Override
+    @Nullable
     public Object resolve(@NonNull BindingProperty bindingProperty, @NonNull NativeWebRequest request) {
         ResolvableType resolvableType = ResolvableType.forMethodParameter(bindingProperty.getMethodParameter());
 
@@ -65,7 +66,7 @@ public class RequestParameterMapRequestPropertyResolver implements RequestProper
             Map<String, String[]> parameterMap = request.getParameterMap();
             MultiValueMap<String, String> ret = new LinkedMultiValueMap<>(parameterMap.size());
             for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
-                ret.put(entry.getKey(), new LinkedList<>(Arrays.asList(entry.getValue())));
+                ret.put(entry.getKey(), new ArrayList<>(Arrays.asList(entry.getValue())));
             }
             return ret;
         }
@@ -105,7 +106,7 @@ public class RequestParameterMapRequestPropertyResolver implements RequestProper
         }
     }
 
-    private LinkedHashMap<?, ?> resolveServletRequestPartsToMap(NativeWebRequest request) {
+    private Map<?, ?> resolveServletRequestPartsToMap(NativeWebRequest request) {
         try {
             HttpServletRequest servletRequest = request.getNativeRequest(HttpServletRequest.class);
             if (servletRequest != null && MultipartResolutionDelegate.isMultipartRequest(servletRequest)) {

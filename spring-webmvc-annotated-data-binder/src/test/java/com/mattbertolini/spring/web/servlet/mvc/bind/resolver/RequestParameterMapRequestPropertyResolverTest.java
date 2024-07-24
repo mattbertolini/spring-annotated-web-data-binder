@@ -1,11 +1,11 @@
 /*
- * Copyright 2019-2021 the original author or authors.
+ * Copyright 2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.PropertyResolutionException;
 import com.mattbertolini.spring.web.bind.annotation.RequestParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
+import jakarta.servlet.http.Part;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.lang.Nullable;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockMultipartHttpServletRequest;
@@ -30,7 +31,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.Part;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.nio.charset.StandardCharsets;
@@ -298,32 +298,42 @@ class RequestParameterMapRequestPropertyResolverTest {
 
     @SuppressWarnings("unused")
     private static class TestingBean {
+        @Nullable
         @RequestParameter
         private Map<String, String> annotated;
 
+        @Nullable
         private Map<String, String> notAnnotated;
 
+        @Nullable
         @RequestParameter
         private MultiValueMap<String, String> multivalue;
 
+        @Nullable
         @RequestParameter
         private String notAMap;
 
+        @Nullable
         @RequestParameter("irrelevant")
         private Map<String, String> valuePresent;
 
+        @Nullable
         @RequestParameter
         private Map<String, MultipartFile> multipartFileMap;
 
+        @Nullable
         @RequestParameter
         private MultiValueMap<String, MultipartFile> multiValueMultipartMap;
 
+        @Nullable
         @RequestParameter
         private Map<String, Part> partMap;
 
+        @Nullable
         @RequestParameter
         private MultiValueMap<String, Part> multiValuePartMap;
 
+        @Nullable
         public Map<String, String> getAnnotated() {
             return annotated;
         }
@@ -332,6 +342,7 @@ class RequestParameterMapRequestPropertyResolverTest {
             this.annotated = annotated;
         }
 
+        @Nullable
         public Map<String, String> getNotAnnotated() {
             return notAnnotated;
         }
@@ -340,6 +351,7 @@ class RequestParameterMapRequestPropertyResolverTest {
             this.notAnnotated = notAnnotated;
         }
 
+        @Nullable
         public MultiValueMap<String, String> getMultivalue() {
             return multivalue;
         }
@@ -348,6 +360,7 @@ class RequestParameterMapRequestPropertyResolverTest {
             this.multivalue = multivalue;
         }
 
+        @Nullable
         public String getNotAMap() {
             return notAMap;
         }
@@ -356,6 +369,7 @@ class RequestParameterMapRequestPropertyResolverTest {
             this.notAMap = notAMap;
         }
 
+        @Nullable
         public Map<String, String> getValuePresent() {
             return valuePresent;
         }
@@ -364,6 +378,7 @@ class RequestParameterMapRequestPropertyResolverTest {
             this.valuePresent = valuePresent;
         }
 
+        @Nullable
         public Map<String, MultipartFile> getMultipartFileMap() {
             return multipartFileMap;
         }
@@ -372,6 +387,7 @@ class RequestParameterMapRequestPropertyResolverTest {
             this.multipartFileMap = multipartFileMap;
         }
 
+        @Nullable
         public MultiValueMap<String, MultipartFile> getMultiValueMultipartMap() {
             return multiValueMultipartMap;
         }
@@ -380,6 +396,7 @@ class RequestParameterMapRequestPropertyResolverTest {
             this.multiValueMultipartMap = multiValueMultipartMap;
         }
 
+        @Nullable
         public Map<String, Part> getPartMap() {
             return partMap;
         }
@@ -388,6 +405,7 @@ class RequestParameterMapRequestPropertyResolverTest {
             this.partMap = partMap;
         }
 
+        @Nullable
         public MultiValueMap<String, Part> getMultiValuePartMap() {
             return multiValuePartMap;
         }

@@ -1,11 +1,11 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.PathParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.lang.Nullable;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.servlet.HandlerMapping;
@@ -100,17 +100,22 @@ class PathParameterMapRequestPropertyResolverTest {
 
     @SuppressWarnings("unused")
     private static class TestingBean {
+        @Nullable
         @PathParameter
         private Map<String, String> annotated;
 
+        @Nullable
         private Map<String, String> notAnnotated;
 
+        @Nullable
         @PathParameter("irrelevant")
         private String withValue;
 
+        @Nullable
         @PathParameter
         private String notAMap;
 
+        @Nullable
         public Map<String, String> getAnnotated() {
             return annotated;
         }
@@ -119,6 +124,7 @@ class PathParameterMapRequestPropertyResolverTest {
             this.annotated = annotated;
         }
 
+        @Nullable
         public Map<String, String> getNotAnnotated() {
             return notAnnotated;
         }
@@ -127,6 +133,7 @@ class PathParameterMapRequestPropertyResolverTest {
             this.notAnnotated = notAnnotated;
         }
 
+        @Nullable
         public String getWithValue() {
             return withValue;
         }
@@ -135,6 +142,7 @@ class PathParameterMapRequestPropertyResolverTest {
             this.withValue = withValue;
         }
 
+        @Nullable
         public String getNotAMap() {
             return notAMap;
         }

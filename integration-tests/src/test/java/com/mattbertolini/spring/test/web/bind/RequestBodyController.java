@@ -1,11 +1,11 @@
 /*
- * Copyright 2019-2022 the original author or authors.
+ * Copyright 2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.mattbertolini.spring.test.web.bind;
 
 import com.mattbertolini.spring.test.web.bind.records.RequestBodyRecord;
 import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
+import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.Part;
+import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
@@ -27,27 +28,31 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 
-import javax.validation.Valid;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@SuppressWarnings("NullAway")
 @RestController
 public class RequestBodyController {
+    @Nullable
     @PostMapping(value = "/annotatedField", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public String annotatedField(@BeanParameter RequestBodyBean.AnnotatedField requestBodyBean) {
         JsonBody jsonBody = requestBodyBean.getJsonBody();
-        return jsonBody.getProperty();
+        return Objects.requireNonNull(jsonBody).getProperty();
     }
 
+    @Nullable
     @PostMapping(value = "/annotatedSetter", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public String annotatedSetter(@BeanParameter RequestBodyBean.AnnotatedSetter requestBodyBean) {
         JsonBody jsonBody = requestBodyBean.getJsonBody();
-        return jsonBody.getProperty();
+        return Objects.requireNonNull(jsonBody).getProperty();
     }
 
+    @Nullable
     @PostMapping(value = "/annotatedGetter", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public String annotatedGetter(@BeanParameter RequestBodyBean.AnnotatedGetter requestBodyBean) {
         JsonBody jsonBody = requestBodyBean.getJsonBody();
-        return jsonBody.getProperty();
+        return Objects.requireNonNull(jsonBody).getProperty();
     }
 
     @SuppressWarnings("unused")
@@ -56,9 +61,10 @@ public class RequestBodyController {
         return Integer.toString(bindingResult.getErrorCount());
     }
 
+    @Nullable
     @PostMapping(value = "/validated", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public String validated(@Valid @BeanParameter RequestBodyBean.Validation requestBodyBean) {
-        return requestBodyBean.getJsonBody().getProperty();
+        return Objects.requireNonNull(requestBodyBean.getJsonBody()).getProperty();
     }
 
     @SuppressWarnings("unused")
@@ -70,9 +76,10 @@ public class RequestBodyController {
         return "valid";
     }
 
+    @Nullable
     @PostMapping(value = "/nested", produces = MediaType.TEXT_PLAIN_VALUE)
     public String nestedBeanParameter(@BeanParameter RequestBodyBean.Nested requestBodyBean) {
-        return requestBodyBean.getNestedBean().getRequestBody().getProperty();
+        return Objects.requireNonNull(Objects.requireNonNull(requestBodyBean.getNestedBean()).getRequestBody()).getProperty();
     }
 
     @PostMapping(value = "/multipartMultiValueMap", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -93,6 +100,7 @@ public class RequestBodyController {
         return "multipartFlux " + count.get();
     }
 
+    @Nullable
     @PostMapping(value = "/record", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public String javaRecord(@BeanParameter RequestBodyRecord requestBodyRecord) {
         JsonBody jsonBody = requestBodyRecord.jsonBody();

@@ -166,7 +166,7 @@ public class ExampleConfiguration {
 
 ### Build Requirements
 
-* Java 17 or above to build. The release jars are compiled to Java 8 bytecode. Integration tests are compiled to Java 17 bytecode.
+* Java 17 or above to build and use.
 
 To build:
 

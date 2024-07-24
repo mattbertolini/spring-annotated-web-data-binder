@@ -1,11 +1,11 @@
 /*
- * Copyright 2019-2021 the original author or authors.
+ * Copyright 2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.mattbertolini.spring.web.reactive.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.FormParameter;
@@ -31,6 +30,7 @@ import org.springframework.http.codec.HttpMessageWriter;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.codec.multipart.MultipartHttpMessageWriter;
 import org.springframework.http.codec.multipart.Part;
+import org.springframework.lang.Nullable;
 import org.springframework.mock.http.client.reactive.MockClientHttpRequest;
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
 import org.springframework.mock.web.server.MockServerWebExchange;
@@ -89,7 +89,7 @@ class FormParameterRequestPropertyResolverTest {
             .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
         BindingProperty bindingProperty = bindingProperty("notAnnotated");
-        assertThatExceptionOfType(IllegalStateException.class)
+        assertThatExceptionOfType(NullPointerException.class)
             .isThrownBy(() -> resolver.resolve(bindingProperty, exchange));
     }
 
@@ -215,20 +215,26 @@ class FormParameterRequestPropertyResolverTest {
 
     @SuppressWarnings("unused")
     private static class TestingBean {
+        @Nullable
         @FormParameter("testing")
         private String annotated;
 
+        @Nullable
         private String notAnnotated;
 
+        @Nullable
         @FormParameter("multiple_values")
         private List<String> multipleValues;
 
+        @Nullable
         @FormParameter
         private String missingValue;
 
+        @Nullable
         @FormParameter("file")
         private Part multipartValue;
 
+        @Nullable
         public String getAnnotated() {
             return annotated;
         }
@@ -237,6 +243,7 @@ class FormParameterRequestPropertyResolverTest {
             this.annotated = annotated;
         }
 
+        @Nullable
         public String getNotAnnotated() {
             return notAnnotated;
         }
@@ -245,6 +252,7 @@ class FormParameterRequestPropertyResolverTest {
             this.notAnnotated = notAnnotated;
         }
 
+        @Nullable
         public List<String> getMultipleValues() {
             return multipleValues;
         }
@@ -253,6 +261,7 @@ class FormParameterRequestPropertyResolverTest {
             this.multipleValues = multipleValues;
         }
 
+        @Nullable
         public String getMissingValue() {
             return missingValue;
         }
@@ -261,6 +270,7 @@ class FormParameterRequestPropertyResolverTest {
             this.missingValue = missingValue;
         }
 
+        @Nullable
         public Part getMultipartValue() {
             return multipartValue;
         }

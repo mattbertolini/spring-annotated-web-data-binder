@@ -1,11 +1,11 @@
 /*
- * Copyright 2019-2021 the original author or authors.
+ * Copyright 2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.PropertyResolutionException;
 import com.mattbertolini.spring.web.bind.annotation.RequestParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
+import jakarta.servlet.http.Part;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.lang.Nullable;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockMultipartHttpServletRequest;
@@ -29,7 +30,6 @@ import org.springframework.mock.web.MockPart;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.Part;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.nio.charset.StandardCharsets;
@@ -73,7 +73,7 @@ class RequestParameterRequestPropertyResolverTest {
     void throwsExceptionIfResolveCalledWithNoAnnotation() throws Exception {
         // Unlikely to happen as the library always checks the supports method.
         BindingProperty bindingProperty = bindingProperty("notAnnotated");
-        assertThatExceptionOfType(IllegalStateException.class)
+        assertThatExceptionOfType(NullPointerException.class)
             .isThrownBy(() -> resolver.resolve(bindingProperty, request));
     }
 
@@ -172,23 +172,30 @@ class RequestParameterRequestPropertyResolverTest {
 
     @SuppressWarnings("unused")
     private static class TestingBean {
+        @Nullable
         @RequestParameter("testing")
         private String annotated;
 
+        @Nullable
         private String notAnnotated;
 
+        @Nullable
         @RequestParameter
         private String missingValue;
 
+        @Nullable
         @RequestParameter("multiple_values")
         private List<String> multipleValues;
 
+        @Nullable
         @RequestParameter("multipart_file")
         private MultipartFile multipartFile;
 
+        @Nullable
         @RequestParameter("part")
         private Part part;
 
+        @Nullable
         public String getAnnotated() {
             return annotated;
         }
@@ -197,6 +204,7 @@ class RequestParameterRequestPropertyResolverTest {
             this.annotated = annotated;
         }
 
+        @Nullable
         public String getNotAnnotated() {
             return notAnnotated;
         }
@@ -205,6 +213,7 @@ class RequestParameterRequestPropertyResolverTest {
             this.notAnnotated = notAnnotated;
         }
 
+        @Nullable
         public String getMissingValue() {
             return missingValue;
         }
@@ -213,6 +222,7 @@ class RequestParameterRequestPropertyResolverTest {
             this.missingValue = missingValue;
         }
 
+        @Nullable
         public List<String> getMultipleValues() {
             return multipleValues;
         }
@@ -221,6 +231,7 @@ class RequestParameterRequestPropertyResolverTest {
             this.multipleValues = multipleValues;
         }
 
+        @Nullable
         public MultipartFile getMultipartFile() {
             return multipartFile;
         }
@@ -229,6 +240,7 @@ class RequestParameterRequestPropertyResolverTest {
             this.multipartFile = multipartFile;
         }
 
+        @Nullable
         public Part getPart() {
             return part;
         }

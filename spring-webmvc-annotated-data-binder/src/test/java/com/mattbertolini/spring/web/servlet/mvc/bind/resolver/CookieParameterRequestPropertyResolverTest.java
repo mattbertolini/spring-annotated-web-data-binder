@@ -1,11 +1,11 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.mattbertolini.spring.web.servlet.mvc.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.CookieParameter;
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
+import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.lang.Nullable;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.ServletWebRequest;
 
-import javax.servlet.http.Cookie;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 
@@ -63,7 +63,7 @@ class CookieParameterRequestPropertyResolverTest {
     void throwsExceptionIfResolveCalledWithNoAnnotation() throws Exception {
         // Unlikely to happen as the library always checks the supports method.
         BindingProperty bindingProperty = bindingProperty("notAnnotated");
-        assertThatExceptionOfType(IllegalStateException.class)
+        assertThatExceptionOfType(NullPointerException.class)
             .isThrownBy(() -> resolver.resolve(bindingProperty, request));
     }
 
@@ -107,14 +107,18 @@ class CookieParameterRequestPropertyResolverTest {
 
     @SuppressWarnings("unused")
     private static class TestingBean {
+        @Nullable
         @CookieParameter("the_cookie")
         private String annotated;
 
+        @Nullable
         private String notAnnotated;
 
+        @Nullable
         @CookieParameter("the_cookie")
         private Cookie cookieObject;
 
+        @Nullable
         public String getAnnotated() {
             return annotated;
         }
@@ -123,6 +127,7 @@ class CookieParameterRequestPropertyResolverTest {
             this.annotated = annotated;
         }
 
+        @Nullable
         public String getNotAnnotated() {
             return notAnnotated;
         }
@@ -131,6 +136,7 @@ class CookieParameterRequestPropertyResolverTest {
             this.notAnnotated = notAnnotated;
         }
 
+        @Nullable
         public Cookie getCookieObject() {
             return cookieObject;
         }

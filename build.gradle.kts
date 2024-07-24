@@ -6,10 +6,8 @@ plugins {
 }
 
 allprojects {
-    apply(plugin = "com.mattbertolini.buildlogic.project-conventions")
-
     group = "com.mattbertolini"
-    version = "0.7.0-SNAPSHOT"
+    version = "1.0.0-SNAPSHOT"
 }
 
 val rootJacocoDir = "reports/jacoco/testCodeCoverageReport"

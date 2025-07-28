@@ -3,6 +3,7 @@ plugins {
     jacoco
     `jacoco-report-aggregation`
     alias(libs.plugins.sonarqube)
+    id("com.gradleup.nmcp.aggregation")
 }
 
 allprojects {
@@ -30,6 +31,20 @@ dependencies {
     jacocoAggregation(project(":spring-webmvc-annotated-data-binder"))
     jacocoAggregation(project(":webflux-annotated-data-binder-spring-boot-starter"))
     jacocoAggregation(project(":webmvc-annotated-data-binder-spring-boot-starter"))
+
+    nmcpAggregation(project(":spring-annotated-data-binder-core"))
+    nmcpAggregation(project(":spring-webflux-annotated-data-binder"))
+    nmcpAggregation(project(":spring-webmvc-annotated-data-binder"))
+    nmcpAggregation(project(":webflux-annotated-data-binder-spring-boot-starter"))
+    nmcpAggregation(project(":webmvc-annotated-data-binder-spring-boot-starter"))
+}
+
+nmcpAggregation {
+    centralPortal {
+        username = findProperty("sonatype.ossrh.username") as String?
+        password = findProperty("sonatype.ossrh.password")  as String?
+        publishingType = "USER_MANAGED"
+    }
 }
 
 sonar {

@@ -41,6 +41,8 @@ errorProneAnnotations = { module = "com.google.errorprone:error_prone_annotation
 nullAway = { module = "com.uber.nullaway:nullaway", version.ref = "nullAway" }
 nullAwayAnnotations = { module = "com.uber.nullaway:nullaway-annotations", version.ref = "nullAway" }
 
+nmcpPlugin = { module = "com.gradleup.nmcp:nmcp", version = "1.0.2" }
+
 [plugins]
 asciidoctorConvert = { id = "org.asciidoctor.jvm.convert", version = "3.3.2" }
 sonarqube = { id = "org.sonarqube", version = "5.0.0.4638" }

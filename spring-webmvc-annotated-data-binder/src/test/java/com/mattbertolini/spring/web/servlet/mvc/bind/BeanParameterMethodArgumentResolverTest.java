@@ -1,11 +1,11 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.mattbertolini.spring.web.servlet.mvc.bind;
 
 import com.mattbertolini.spring.web.bind.RequestPropertyBindingException;
@@ -22,25 +21,21 @@ import com.mattbertolini.spring.web.bind.introspect.AnnotatedRequestBeanIntrospe
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import com.mattbertolini.spring.web.bind.introspect.ResolvedPropertyData;
 import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.RequestPropertyResolver;
+import jakarta.validation.Valid;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.PropertyValues;
 import org.springframework.core.MethodParameter;
-import org.springframework.format.support.FormattingConversionServiceFactoryBean;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import javax.validation.Valid;
 import java.beans.PropertyDescriptor;
 import java.util.Arrays;
 import java.util.List;
@@ -49,9 +44,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.catchThrowableOfType;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -62,7 +54,7 @@ class BeanParameterMethodArgumentResolverTest {
     private ServletWebRequest request;
     private ModelAndViewContainer mavContainer;
     private AnnotatedRequestBeanIntrospector introspector;
-    private WebDataBinderFactory webDataBinderFactory;
+    private MockWebDataBinderFactory webDataBinderFactory;
 
     @BeforeEach
     void setUp() {
@@ -70,7 +62,7 @@ class BeanParameterMethodArgumentResolverTest {
         request = new ServletWebRequest(servletRequest);
         mavContainer = new ModelAndViewContainer();
         introspector = mock(AnnotatedRequestBeanIntrospector.class);
-        webDataBinderFactory = mock(WebDataBinderFactory.class);
+        webDataBinderFactory = new MockWebDataBinderFactory();
         resolver = new BeanParameterMethodArgumentResolver(introspector);
     }
 
@@ -120,8 +112,6 @@ class BeanParameterMethodArgumentResolverTest {
     @Test
     void resolveArgumentReturnsTheTargetObject() throws Exception {
         MethodParameter methodParameter = createMethodParameter("anAnnotatedMethod", ABeanClass.class);
-        ABeanClass target = new ABeanClass();
-        when(webDataBinderFactory.createBinder(eq(request), any(ABeanClass.class), anyString())).thenReturn(new StubWebDataBinder(target));
         Object actual = resolver.resolveArgument(methodParameter, mavContainer, request, webDataBinderFactory);
         assertThat(actual).isNotNull();
         assertThat(actual.getClass()).isEqualTo(ABeanClass.class);
@@ -130,8 +120,6 @@ class BeanParameterMethodArgumentResolverTest {
     @Test
     void resolveArgumentUnwrapTheTargetObjectFromOptional() throws Exception {
         MethodParameter methodParameter = createMethodParameter("optionalTypeAnnotated", Optional.class);
-        Object target = new ABeanClass();
-        when(webDataBinderFactory.createBinder(eq(request), any(Optional.class), anyString())).thenReturn(new StubWebDataBinder(target));
         Object actual = resolver.resolveArgument(methodParameter, mavContainer, request, webDataBinderFactory);
         assertThat(actual).isNotNull();
         assertThat(actual.getClass()).isEqualTo(Optional.class);
@@ -143,8 +131,8 @@ class BeanParameterMethodArgumentResolverTest {
     @Test
     void resolveArgumentCallsBinderBind() throws Exception {
         MethodParameter methodParameter = createMethodParameter("anAnnotatedMethod", ABeanClass.class);
-        StubWebDataBinder dataBinder = new StubWebDataBinder(new ABeanClass());
-        resolver.resolveArgument(methodParameter, mavContainer, request, (webRequest, target, objectName) -> dataBinder);
+        resolver.resolveArgument(methodParameter, mavContainer, request, webDataBinderFactory);
+        MockWebDataBinder dataBinder = webDataBinderFactory.getBinder();
         assertThat(dataBinder.isBindInvoked()).isTrue();
     }
 
@@ -157,13 +145,10 @@ class BeanParameterMethodArgumentResolverTest {
 
         MethodParameter methodParameter = createMethodParameter("anAnnotatedMethod", ABeanClass.class);
 
-        StubWebDataBinder dataBinder = new StubWebDataBinder(new ABeanClass());
-        when(webDataBinderFactory.createBinder(eq(request), any(ABeanClass.class), anyString())).thenReturn(dataBinder);
-
         when(introspector.getResolversFor(ABeanClass.class)).thenReturn(propertyData);
         resolver.resolveArgument(methodParameter, mavContainer, request, webDataBinderFactory);
 
-        PropertyValues propertyValues = dataBinder.getPropertyValues();
+        PropertyValues propertyValues = webDataBinderFactory.getBinder().getPropertyValues();
         assertThat(propertyValues.contains("propertyOne")).isTrue();
         assertThat(propertyValues.contains("propertyTwo")).isTrue();
 
@@ -184,13 +169,10 @@ class BeanParameterMethodArgumentResolverTest {
 
         MethodParameter methodParameter = createMethodParameter("anAnnotatedMethod", ABeanClass.class);
 
-        StubWebDataBinder dataBinder = new StubWebDataBinder(new ABeanClass());
-        when(webDataBinderFactory.createBinder(eq(request), any(ABeanClass.class), anyString())).thenReturn(dataBinder);
-
         when(introspector.getResolversFor(ABeanClass.class)).thenReturn(propertyData);
         resolver.resolveArgument(methodParameter, mavContainer, request, webDataBinderFactory);
 
-        PropertyValues propertyValues = dataBinder.getPropertyValues();
+        PropertyValues propertyValues = webDataBinderFactory.getBinder().getPropertyValues();
         assertThat(propertyValues.contains("propertyOne")).isFalse();
         assertThat(propertyValues.contains("propertyTwo")).isTrue();
 
@@ -208,7 +190,6 @@ class BeanParameterMethodArgumentResolverTest {
         
         MethodParameter methodParameter = createMethodParameter("anAnnotatedMethod", ABeanClass.class);
 
-        when(webDataBinderFactory.createBinder(eq(request), any(ABeanClass.class), anyString())).thenReturn(new StubWebDataBinder(new ABeanClass()));
         when(introspector.getResolversFor(ABeanClass.class)).thenReturn(propertyData);
         assertThatThrownBy(() -> resolver.resolveArgument(methodParameter, mavContainer, request, webDataBinderFactory))
             .isInstanceOf(RequestPropertyBindingException.class);
@@ -217,36 +198,23 @@ class BeanParameterMethodArgumentResolverTest {
     @Test
     void validatesWhenValidAnnotationPresent() throws Exception {
         MethodParameter methodParameter = createMethodParameter("aValidMethod", ABeanClass.class);
-
-        StubWebDataBinder dataBinder = new StubWebDataBinder(new ABeanClass());
-        when(webDataBinderFactory.createBinder(eq(request), any(ABeanClass.class), anyString())).thenReturn(dataBinder);
-
         resolver.resolveArgument(methodParameter, mavContainer, request, webDataBinderFactory);
-
-        assertThat(dataBinder.isValidateInvoked()).isTrue();
+        assertThat(webDataBinderFactory.getBinder().isValidateInvoked()).isTrue();
     }
 
     @Test
     void validatesWhenValidatedAnnotationPresent() throws Exception {
         MethodParameter methodParameter = createMethodParameter("aValidatedMethod", ABeanClass.class);
-
-        StubWebDataBinder dataBinder = new StubWebDataBinder(new ABeanClass());
-        when(webDataBinderFactory.createBinder(eq(request), any(ABeanClass.class), anyString())).thenReturn(dataBinder);
-
         resolver.resolveArgument(methodParameter, mavContainer, request, webDataBinderFactory);
-
-        assertThat(dataBinder.isValidateInvoked()).isTrue();
+        assertThat(webDataBinderFactory.getBinder().isValidateInvoked()).isTrue();
     }
 
     @Test
     void validatesWithGroups() throws Exception {
         MethodParameter methodParameter = createMethodParameter("validationGroups", ABeanClass.class);
 
-        StubWebDataBinder dataBinder = new StubWebDataBinder(new ABeanClass());
-        when(webDataBinderFactory.createBinder(eq(request), any(ABeanClass.class), anyString())).thenReturn(dataBinder);
-
         resolver.resolveArgument(methodParameter, mavContainer, request, webDataBinderFactory);
-
+        MockWebDataBinder dataBinder = webDataBinderFactory.getBinder();
         assertThat(dataBinder.isValidateInvoked()).isTrue();
         assertThat(dataBinder.getValidationHints()).contains(ValidationGroupOne.class, ValidationGroupTwo.class);
     }
@@ -258,9 +226,7 @@ class BeanParameterMethodArgumentResolverTest {
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        StubWebDataBinder dataBinder = new StubWebDataBinder(new ABeanClass());
-        dataBinder.setBindingResult(bindingResult);
-        when(webDataBinderFactory.createBinder(eq(request), any(ABeanClass.class), anyString())).thenReturn(dataBinder);
+        webDataBinderFactory.setBindingResult(bindingResult);
 
         BindException exception = catchThrowableOfType(() -> resolver.resolveArgument(methodParameter, mavContainer, request, webDataBinderFactory), BindException.class);
         assertThat(exception.getBindingResult()).isEqualTo(bindingResult);
@@ -273,81 +239,19 @@ class BeanParameterMethodArgumentResolverTest {
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        StubWebDataBinder dataBinder = new StubWebDataBinder(new ABeanClass());
-        dataBinder.setBindingResult(bindingResult);
-        when(webDataBinderFactory.createBinder(eq(request), any(ABeanClass.class), anyString())).thenReturn(dataBinder);
-
+        webDataBinderFactory.setBindingResult(bindingResult);
         resolver.resolveArgument(methodParameter, mavContainer, request, webDataBinderFactory);
-
-        assertThat(dataBinder.getBindingResult()).isEqualTo(bindingResult);
+        assertThat(webDataBinderFactory.getBinder().getBindingResult()).isEqualTo(bindingResult);
     }
 
     private MethodParameter createMethodParameter(String anAnnotatedMethod, Class<?>... parameterTypes) throws NoSuchMethodException {
         return new MethodParameter(FakeHandlerMethod.class.getMethod(anAnnotatedMethod, parameterTypes), 0);
     }
 
-    private static class StubWebDataBinder extends WebDataBinder {
-        private boolean bindInvoked = false;
-        private boolean validateInvoked = true;
-        private PropertyValues pvs;
-        private List<Object> validationHints;
-        private BindingResult bindingResult;
-
-        public StubWebDataBinder(Object target) {
-            super(target);
-            FormattingConversionServiceFactoryBean conversionServiceFactoryBean = new FormattingConversionServiceFactoryBean();
-            conversionServiceFactoryBean.afterPropertiesSet();
-            setConversionService(conversionServiceFactoryBean.getObject());
-        }
-
-        @Override
-        public void bind(PropertyValues pvs) {
-            this.pvs = pvs;
-            bindInvoked = true;
-        }
-
-        @Override
-        public void validate() {
-            validateInvoked = true;
-        }
-
-        @Override
-        public void validate(Object... validationHints) {
-            this.validationHints = Arrays.asList(validationHints);
-            validateInvoked = true;
-        }
-
-        @Override
-        public BindingResult getBindingResult() {
-            if (bindingResult == null) {
-                return super.getBindingResult();
-            }
-            return bindingResult;
-        }
-
-        public void setBindingResult(BindingResult bindingResult) {
-            this.bindingResult = bindingResult;
-        }
-
-        public boolean isBindInvoked() {
-            return bindInvoked;
-        }
-
-        public boolean isValidateInvoked() {
-            return validateInvoked;
-        }
-
-        public List<Object> getValidationHints() {
-            return validationHints;
-        }
-
-        public PropertyValues getPropertyValues() {
-            return pvs;
-        }
-    }
-
     private static class MockRequestPropertyResolver implements RequestPropertyResolver {
+        @Nullable
         private final Object value;
+        @Nullable
         private final RuntimeException exception;
 
         private <T> MockRequestPropertyResolver(@Nullable T value, @Nullable RuntimeException exception) {
@@ -356,13 +260,14 @@ class BeanParameterMethodArgumentResolverTest {
         }
 
         @Override
-        public boolean supports(@NonNull BindingProperty bindingProperty) {
+        public boolean supports(BindingProperty bindingProperty) {
             // Not used in this test
             return true;
         }
 
         @Override
-        public Object resolve(@NonNull BindingProperty bindingProperty, @NonNull NativeWebRequest request) {
+        @Nullable
+        public Object resolve(BindingProperty bindingProperty, NativeWebRequest request) {
             if (exception != null) {
                 throw exception;
             }
@@ -418,10 +323,14 @@ class BeanParameterMethodArgumentResolverTest {
         }
     }
 
+    @SuppressWarnings("unused")
     private static class ABeanClass {
+        @Nullable
         private String propertyOne;
+        @Nullable
         private Integer propertyTwo;
 
+        @Nullable
         public String getPropertyOne() {
             return propertyOne;
         }
@@ -430,6 +339,7 @@ class BeanParameterMethodArgumentResolverTest {
             this.propertyOne = propertyOne;
         }
 
+        @Nullable
         public Integer getPropertyTwo() {
             return propertyTwo;
         }

@@ -1,11 +1,11 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.mattbertolini.spring.web.servlet.mvc.bind.config;
 
 import com.mattbertolini.spring.web.bind.introspect.AnnotatedRequestBeanIntrospector;
@@ -36,7 +35,7 @@ import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.RequestPropertyRes
 import com.mattbertolini.spring.web.servlet.mvc.bind.resolver.SessionParameterRequestPropertyResolver;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
@@ -90,12 +89,11 @@ public class BinderConfiguration implements BeanPostProcessor {
     }
 
     @Override
-    public Object postProcessBeforeInitialization(@NonNull Object bean, @NonNull String beanName) {
-        if (!(bean instanceof RequestMappingHandlerAdapter)) {
+    @Nullable
+    public Object postProcessBeforeInitialization(Object bean, String beanName) {
+        if (!(bean instanceof RequestMappingHandlerAdapter adapter)) {
             return bean;
         }
-
-        RequestMappingHandlerAdapter adapter = (RequestMappingHandlerAdapter) bean;
 
         PropertyResolverRegistry resolverRegistry = createPropertyResolverRegistry(adapter);
         AnnotatedRequestBeanIntrospector introspector = createIntrospector(resolverRegistry);

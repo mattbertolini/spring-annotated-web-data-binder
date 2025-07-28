@@ -1,7 +1,13 @@
 # Release Notes
 
-## 0.7.0-SNAPSHOT
+## 1.0.0-SNAPSHOT
 Released N/A
+
+- Breaking change
+- Updated to support Spring 6.x and Spring Boot 3.x. This brings with it a minimum Java version of 17. With the Spring 
+  upgrade comes a switch to the Jakara EE Servlet API instead of Java EE.
+- Update build to Gradle 8.9
+- Added support for ErrorProne and NullAway for compile time checks of nullability. 
 
 ## 0.6.0
 Released 2023-12-01

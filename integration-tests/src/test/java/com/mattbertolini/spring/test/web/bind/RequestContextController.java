@@ -1,11 +1,11 @@
 /*
- * Copyright 2019-2022 the original author or authors.
+ * Copyright 2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.mattbertolini.spring.test.web.bind;
 
 import com.mattbertolini.spring.test.web.bind.records.RequestContextRecord;
 import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
 import org.springframework.http.MediaType;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -65,14 +67,16 @@ public class RequestContextController {
     }
 
     // Locale
+    @Nullable
     @GetMapping(value = "/locale", produces = MediaType.TEXT_PLAIN_VALUE)
     public String locale(@BeanParameter RequestContextBean requestContextBean) {
-        return requestContextBean.getLocale().toString();
+        return Objects.requireNonNull(requestContextBean.getLocale()).toString();
     }
 
+    @Nullable
     @GetMapping(value = "/timeZone", produces = MediaType.TEXT_PLAIN_VALUE)
     public String timeZone(@BeanParameter RequestContextBean requestContextBean) {
-        return requestContextBean.getTimeZone().toString();
+        return Objects.requireNonNull(requestContextBean.getTimeZone()).toString();
     }
 
     @GetMapping(value = "/timeZoneRecord", produces = MediaType.TEXT_PLAIN_VALUE)
@@ -80,23 +84,27 @@ public class RequestContextController {
         return requestContextRecord.timeZone().toString();
     }
 
+    @Nullable
     @GetMapping(value = "/zoneId", produces = MediaType.TEXT_PLAIN_VALUE)
     public String zoneId(@BeanParameter RequestContextBean requestContextBean) {
-        return requestContextBean.getZoneId().toString();
+        return Objects.requireNonNull(requestContextBean.getZoneId()).toString();
     }
 
+    @Nullable
     @GetMapping(value = "/method", produces = MediaType.TEXT_PLAIN_VALUE)
     public String method(@BeanParameter RequestContextBean requestContextBean) {
-        return requestContextBean.getMethod().toString();
+        return Objects.requireNonNull(requestContextBean.getMethod()).toString();
     }
 
+    @Nullable
     @GetMapping(value = "/session", produces = MediaType.TEXT_PLAIN_VALUE)
     public String httpSession(@BeanParameter RequestContextBean requestContextBean) {
-        return (String) requestContextBean.getHttpSession().getAttribute("name");
+        return (String) Objects.requireNonNull(requestContextBean.getHttpSession()).getAttribute("name");
     }
 
+    @Nullable
     @GetMapping(value = "/webSession", produces = MediaType.TEXT_PLAIN_VALUE)
     public String webSession(@BeanParameter RequestContextBean requestContextBean) {
-        return requestContextBean.getWebSession().getAttribute("name");
+        return Objects.requireNonNull(requestContextBean.getWebSession()).getAttribute("name");
     }
 }

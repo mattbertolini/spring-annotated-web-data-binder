@@ -1,11 +1,11 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.mattbertolini.spring.web.bind.docs;
 
 import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
@@ -25,6 +24,7 @@ import com.mattbertolini.spring.web.bind.annotation.RequestBean;
 import com.mattbertolini.spring.web.bind.annotation.RequestContext;
 import com.mattbertolini.spring.web.bind.annotation.RequestParameter;
 import com.mattbertolini.spring.web.bind.annotation.SessionParameter;
+import org.springframework.lang.Nullable;
 
 import java.time.ZoneId;
 import java.util.Locale;
@@ -37,6 +37,7 @@ public class CustomRequestBean {
     // end::class[]
 
     // Query parameters
+    @Nullable
     // tag::queryParam[]
     @RequestParameter("different_name")
     private String queryParam;
@@ -44,6 +45,7 @@ public class CustomRequestBean {
     // end::queryParam[]
 
     // Form data
+    @Nullable
     // tag::formParam[]
     @FormParameter("form_data")
     private String formData;
@@ -51,6 +53,7 @@ public class CustomRequestBean {
     // end::formParam[]
 
     // HTTP headers
+    @Nullable
     // tag::headerParam[]
     @HeaderParameter("X-Custom-Header")
     private String headerValues;
@@ -58,6 +61,7 @@ public class CustomRequestBean {
     // end::headerParam[]
 
     // Spring MVC/WebFlux path variables
+    @Nullable
     // tag::pathParam[]
     @PathParameter("pathParam")
     private Integer pathParam;
@@ -65,6 +69,7 @@ public class CustomRequestBean {
     // end::pathParam[]
 
     // HTTP cookie values
+    @Nullable
     // tag::cookieParam[]
     @CookieParameter("cookie_value")
     private String cookieValue;
@@ -72,6 +77,7 @@ public class CustomRequestBean {
     // end::cookieParam[]
 
     // HTTP session attributes
+    @Nullable
     // tag::sessionParam[]
     @SessionParameter("sessionAttribute")
     private String sessionAttribute;
@@ -79,16 +85,20 @@ public class CustomRequestBean {
     // end::sessionParam[]
 
     // Spring derived request scoped data like locale and time zone
+    @Nullable
     @RequestContext
     private Locale locale;
 
+    @Nullable
     @RequestContext
     private ZoneId timeZone;
 
     // A nested Java bean with additional annotated properties
+    @Nullable
     @BeanParameter
     private NestedBean nestedBean;
 
+    @Nullable
     // tag::queryParam[]
     public String getQueryParam() {
         return queryParam;
@@ -99,6 +109,7 @@ public class CustomRequestBean {
     }
     // end::queryParam[]
 
+    @Nullable
     // tag::formParam[]
     public String getFormData() {
         return formData;
@@ -109,6 +120,7 @@ public class CustomRequestBean {
     }
     // end::formParam[]
 
+    @Nullable
     // tag::headerParam[]
     public String getHeaderValues() {
         return headerValues;
@@ -119,6 +131,7 @@ public class CustomRequestBean {
     }
     // end::headerParam[]
 
+    @Nullable
     // tag::pathParam[]
     public Integer getPathParam() {
         return pathParam;
@@ -129,6 +142,7 @@ public class CustomRequestBean {
     }
     // end::pathParam[]
 
+    @Nullable
     // tag::cookieParam[]
     public String getCookieValue() {
         return cookieValue;
@@ -139,6 +153,7 @@ public class CustomRequestBean {
     }
     // end::cookieParam[]
 
+    @Nullable
     // tag::sessionParam[]
     public String getSessionAttribute() {
         return sessionAttribute;
@@ -149,6 +164,7 @@ public class CustomRequestBean {
     }
     // end::sessionParam[]
 
+    @Nullable
     public Locale getLocale() {
         return locale;
     }
@@ -157,6 +173,7 @@ public class CustomRequestBean {
         this.locale = locale;
     }
 
+    @Nullable
     public ZoneId getTimeZone() {
         return timeZone;
     }
@@ -165,6 +182,7 @@ public class CustomRequestBean {
         this.timeZone = timeZone;
     }
 
+    @Nullable
     public NestedBean getNestedBean() {
         return nestedBean;
     }

@@ -12,7 +12,8 @@ configurations {
 dependencies {
     implementation(project(":spring-webmvc-annotated-data-binder"))
     implementation(project(":spring-webflux-annotated-data-binder"))
-    implementation(libs.javaxServletApi) // Version defined in Spring BOM file
+    implementation(libs.jakartaServletApi) // Version defined in Spring BOM file
+    compileOnly(libs.findbugsJsr305)
 
     add("asciidoctorExt", libs.springAsciidoctorExtBlockSwitch)
 
@@ -20,7 +21,10 @@ dependencies {
     testImplementation(libs.assertJCore)
     testImplementation(libs.mockitoCore)
     testImplementation(libs.springTest)
+    testImplementation(libs.jakartaWebsocketApi)
+    testImplementation(libs.jakartaWebsocketClientApi)
     testCompileOnly(libs.hamcrest) // Needed for Spring mock MVC matchers
+    testCompileOnly(libs.findbugsJsr305)
 }
 
 tasks.named<AsciidoctorTask>("asciidoctor").configure {

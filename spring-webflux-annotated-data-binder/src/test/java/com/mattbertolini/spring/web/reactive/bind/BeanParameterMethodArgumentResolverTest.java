@@ -1,11 +1,11 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.mattbertolini.spring.web.reactive.bind;
 
 import com.mattbertolini.spring.web.bind.RequestPropertyBindingException;
@@ -22,27 +21,23 @@ import com.mattbertolini.spring.web.bind.introspect.AnnotatedRequestBeanIntrospe
 import com.mattbertolini.spring.web.bind.introspect.BindingProperty;
 import com.mattbertolini.spring.web.bind.introspect.ResolvedPropertyData;
 import com.mattbertolini.spring.web.reactive.bind.resolver.RequestPropertyResolver;
+import jakarta.validation.Valid;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.PropertyValues;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.ReactiveAdapterRegistry;
-import org.springframework.format.support.FormattingConversionServiceFactoryBean;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
 import org.springframework.mock.web.server.MockServerWebExchange;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.validation.support.BindingAwareConcurrentModel;
 import org.springframework.web.bind.support.WebExchangeBindException;
-import org.springframework.web.bind.support.WebExchangeDataBinder;
-import org.springframework.web.reactive.BindingContext;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import javax.validation.Valid;
 import java.beans.PropertyDescriptor;
 import java.util.Arrays;
 import java.util.List;
@@ -51,9 +46,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.catchThrowableOfType;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -62,15 +54,14 @@ class BeanParameterMethodArgumentResolverTest {
 
     private ServerWebExchange exchange;
     private AnnotatedRequestBeanIntrospector introspector;
-    private BindingContext bindingContext;
+    private MockBindingContext bindingContext;
 
     @BeforeEach
     void setUp() {
         MockServerHttpRequest request = MockServerHttpRequest.get("/irrelevant").build();
         exchange = MockServerWebExchange.from(request);
         introspector = mock(AnnotatedRequestBeanIntrospector.class);
-        bindingContext = mock(BindingContext.class);
-        when(bindingContext.getModel()).thenReturn(new BindingAwareConcurrentModel());
+        bindingContext = new MockBindingContext();
         ReactiveAdapterRegistry registry = new ReactiveAdapterRegistry();
         resolver = new BeanParameterMethodArgumentResolver(registry, introspector);
     }
@@ -105,14 +96,11 @@ class BeanParameterMethodArgumentResolverTest {
 
         MethodParameter methodParameter = createMethodParameter("anAnnotatedMethod", ABeanClass.class);
 
-        StubWebExchangeDataBinder dataBinder = new StubWebExchangeDataBinder(new ABeanClass());
-        when(bindingContext.createDataBinder(eq(exchange), any(ABeanClass.class), anyString())).thenReturn(dataBinder);
-
         when(introspector.getResolversFor(ABeanClass.class)).thenReturn(propertyData);
         Mono<Object> objectMono = resolver.resolveArgument(methodParameter, bindingContext, exchange);
         objectMono.block();
 
-        PropertyValues propertyValues = dataBinder.getPropertyValues();
+        PropertyValues propertyValues = bindingContext.getDataBinder().getPropertyValues();
         assertThat(propertyValues.contains("propertyOne")).isTrue();
         assertThat(propertyValues.contains("propertyTwo")).isTrue();
 
@@ -133,14 +121,11 @@ class BeanParameterMethodArgumentResolverTest {
 
         MethodParameter methodParameter = createMethodParameter("anAnnotatedMethod", ABeanClass.class);
 
-        StubWebExchangeDataBinder dataBinder = new StubWebExchangeDataBinder(new ABeanClass());
-        when(bindingContext.createDataBinder(eq(exchange), any(ABeanClass.class), anyString())).thenReturn(dataBinder);
-
         when(introspector.getResolversFor(ABeanClass.class)).thenReturn(propertyData);
         Mono<Object> objectMono = resolver.resolveArgument(methodParameter, bindingContext, exchange);
         objectMono.block();
 
-        PropertyValues propertyValues = dataBinder.getPropertyValues();
+        PropertyValues propertyValues = bindingContext.getDataBinder().getPropertyValues();
         assertThat(propertyValues.contains("propertyOne")).isFalse();
         assertThat(propertyValues.contains("propertyTwo")).isTrue();
         
@@ -173,7 +158,6 @@ class BeanParameterMethodArgumentResolverTest {
 
         MethodParameter methodParameter = createMethodParameter("anAnnotatedMethod", ABeanClass.class);
 
-        when(bindingContext.createDataBinder(eq(exchange), any(ABeanClass.class), anyString())).thenReturn(new StubWebExchangeDataBinder(new ABeanClass()));
         when(introspector.getResolversFor(ABeanClass.class)).thenReturn(propertyData);
         Mono<Object> objectMono = resolver.resolveArgument(methodParameter, bindingContext, exchange);
         assertThatThrownBy(objectMono::block).isInstanceOf(RequestPropertyBindingException.class);
@@ -183,38 +167,30 @@ class BeanParameterMethodArgumentResolverTest {
     void validatesWhenValidAnnotationPresent() throws Exception {
         MethodParameter methodParameter = createMethodParameter("aValidMethod", ABeanClass.class);
 
-        StubWebExchangeDataBinder dataBinder = new StubWebExchangeDataBinder(new ABeanClass());
-        when(bindingContext.createDataBinder(eq(exchange), any(ABeanClass.class), anyString())).thenReturn(dataBinder);
-
         Mono<Object> objectMono = resolver.resolveArgument(methodParameter, bindingContext, exchange);
         objectMono.block();
 
-        assertThat(dataBinder.isValidateInvoked()).isTrue();
+        assertThat(bindingContext.getDataBinder().isValidateInvoked()).isTrue();
     }
 
     @Test
     void validatesWhenValidatedAnnotationPresent() throws Exception {
         MethodParameter methodParameter = createMethodParameter("aValidatedMethod", ABeanClass.class);
 
-        StubWebExchangeDataBinder dataBinder = new StubWebExchangeDataBinder(new ABeanClass());
-        when(bindingContext.createDataBinder(eq(exchange), any(ABeanClass.class), anyString())).thenReturn(dataBinder);
-
         Mono<Object> objectMono = resolver.resolveArgument(methodParameter, bindingContext, exchange);
         objectMono.block();
 
-        assertThat(dataBinder.isValidateInvoked()).isTrue();
+        assertThat(bindingContext.getDataBinder().isValidateInvoked()).isTrue();
     }
 
     @Test
     void validatesWithGroups() throws Exception {
         MethodParameter methodParameter = createMethodParameter("validationGroups", ABeanClass.class);
 
-        StubWebExchangeDataBinder dataBinder = new StubWebExchangeDataBinder(new ABeanClass());
-        when(bindingContext.createDataBinder(eq(exchange), any(ABeanClass.class), anyString())).thenReturn(dataBinder);
-
         Mono<Object> objectMono = resolver.resolveArgument(methodParameter, bindingContext, exchange);
         objectMono.block();
 
+        MockWebExchangeDataBinder dataBinder = bindingContext.getDataBinder();
         assertThat(dataBinder.isValidateInvoked()).isTrue();
         assertThat(dataBinder.getValidationHints()).contains(ValidationGroupOne.class, ValidationGroupTwo.class);
     }
@@ -226,9 +202,7 @@ class BeanParameterMethodArgumentResolverTest {
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        StubWebExchangeDataBinder dataBinder = new StubWebExchangeDataBinder(new ABeanClass());
-        dataBinder.setBindingResult(bindingResult);
-        when(bindingContext.createDataBinder(eq(exchange), any(ABeanClass.class), anyString())).thenReturn(dataBinder);
+        bindingContext.setBindingResult(bindingResult);
 
         Mono<Object> objectMono = resolver.resolveArgument(methodParameter, bindingContext, exchange);
         WebExchangeBindException exception = catchThrowableOfType(objectMono::block, WebExchangeBindException.class);
@@ -240,84 +214,27 @@ class BeanParameterMethodArgumentResolverTest {
         MethodParameter methodParameter = createMethodParameter("withBindingResult", ABeanClass.class, BindingResult.class);
 
         BindingResult bindingResult = mock(BindingResult.class);
-        when(bindingResult.hasErrors()).thenReturn(true);
+        when(bindingResult.hasErrors())
+            .thenReturn(false)
+            .thenReturn(false)
+            .thenReturn(true);
 
-        StubWebExchangeDataBinder dataBinder = new StubWebExchangeDataBinder(new ABeanClass());
-        dataBinder.setBindingResult(bindingResult);
-        when(bindingContext.createDataBinder(eq(exchange), any(ABeanClass.class), anyString())).thenReturn(dataBinder);
+        bindingContext.setBindingResult(bindingResult);
 
         Mono<Object> objectMono = resolver.resolveArgument(methodParameter, bindingContext, exchange);
         objectMono.block();
 
-        assertThat(dataBinder.getBindingResult()).isEqualTo(bindingResult);
+        assertThat(bindingContext.getDataBinder().getBindingResult()).isEqualTo(bindingResult);
     }
 
     private MethodParameter createMethodParameter(String anAnnotatedMethod, Class<?>... parameterTypes) throws NoSuchMethodException {
         return new MethodParameter(FakeHandlerMethod.class.getMethod(anAnnotatedMethod, parameterTypes), 0);
     }
 
-    private static class StubWebExchangeDataBinder extends WebExchangeDataBinder {
-        private boolean bindInvoked = false;
-        private boolean validateInvoked = true;
-        private PropertyValues pvs;
-        private List<Object> validationHints;
-        private BindingResult bindingResult;
-
-        public StubWebExchangeDataBinder(Object target) {
-            super(target);
-            FormattingConversionServiceFactoryBean conversionServiceFactoryBean = new FormattingConversionServiceFactoryBean();
-            conversionServiceFactoryBean.afterPropertiesSet();
-            setConversionService(conversionServiceFactoryBean.getObject());
-        }
-
-        @Override
-        public void bind(PropertyValues pvs) {
-            this.pvs = pvs;
-            bindInvoked = true;
-        }
-
-        @Override
-        public void validate() {
-            validateInvoked = true;
-        }
-
-        @Override
-        public void validate(Object... validationHints) {
-            this.validationHints = Arrays.asList(validationHints);
-            validateInvoked = true;
-        }
-
-        @Override
-        public BindingResult getBindingResult() {
-            if (bindingResult == null) {
-                return super.getBindingResult();
-            }
-            return bindingResult;
-        }
-
-        public void setBindingResult(BindingResult bindingResult) {
-            this.bindingResult = bindingResult;
-        }
-
-        public boolean isBindInvoked() {
-            return bindInvoked;
-        }
-
-        public boolean isValidateInvoked() {
-            return validateInvoked;
-        }
-
-        public List<Object> getValidationHints() {
-            return validationHints;
-        }
-
-        public PropertyValues getPropertyValues() {
-            return pvs;
-        }
-    }
-
     private static class MockRequestPropertyResolver implements RequestPropertyResolver {
+        @Nullable
         private final Object value;
+        @Nullable
         private final RuntimeException exception;
 
         private <T> MockRequestPropertyResolver(@Nullable T value, @Nullable RuntimeException exception) {
@@ -326,14 +243,14 @@ class BeanParameterMethodArgumentResolverTest {
         }
 
         @Override
-        public boolean supports(@NonNull BindingProperty bindingProperty) {
+        public boolean supports(BindingProperty bindingProperty) {
             // Not used in this test
             return true;
         }
 
         @NonNull
         @Override
-        public Mono<Object> resolve(@NonNull BindingProperty bindingProperty, @NonNull ServerWebExchange exchange) {
+        public Mono<Object> resolve(BindingProperty bindingProperty, ServerWebExchange exchange) {
             if (exception != null) {
                 throw exception;
             }
@@ -389,11 +306,15 @@ class BeanParameterMethodArgumentResolverTest {
         }
     }
 
+    @SuppressWarnings("unused")
     private static class ABeanClass {
+        @Nullable
         private String propertyOne;
 
+        @Nullable
         private Integer propertyTwo;
 
+        @Nullable
         public String getPropertyOne() {
             return propertyOne;
         }
@@ -402,6 +323,7 @@ class BeanParameterMethodArgumentResolverTest {
             this.propertyOne = propertyOne;
         }
 
+        @Nullable
         public Integer getPropertyTwo() {
             return propertyTwo;
         }

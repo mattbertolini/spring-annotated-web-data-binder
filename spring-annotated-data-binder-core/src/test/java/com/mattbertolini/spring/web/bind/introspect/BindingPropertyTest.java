@@ -1,11 +1,11 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.mattbertolini.spring.web.bind.introspect;
 
 import com.mattbertolini.spring.web.bind.annotation.RequestParameter;
@@ -23,6 +22,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.convert.TypeDescriptor;
+import org.springframework.lang.Nullable;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -153,26 +153,32 @@ class BindingPropertyTest {
         return aPropertyDescriptor(propertyName, getterMethodName, null);
     }
 
-    private PropertyDescriptor aPropertyDescriptor(String propertyName, String getterName, String setterName) throws IntrospectionException {
+    private PropertyDescriptor aPropertyDescriptor(String propertyName, @Nullable String getterName, @Nullable String setterName) throws IntrospectionException {
         return new PropertyDescriptor(propertyName, TestingType.class, getterName, setterName);
     }
 
     @SuppressWarnings("unused")
     private static class TestingType {
+        @Nullable
         private String stringProperty;
 
         private int primitiveProperty;
 
+        @Nullable
         @RequestParameter("irrelevant")
         private String annotatedProperty;
 
+        @Nullable
         private String getterOnly;
 
         @SuppressWarnings("FieldCanBeLocal")
+        @Nullable
         private String setterOnly;
 
+        @Nullable
         private String noGetterOrSetter;
 
+        @Nullable
         public String getStringProperty() {
             return stringProperty;
         }
@@ -189,6 +195,7 @@ class BindingPropertyTest {
             this.primitiveProperty = primitiveProperty;
         }
 
+        @Nullable
         public String getAnnotatedProperty() {
             return annotatedProperty;
         }
@@ -197,6 +204,7 @@ class BindingPropertyTest {
             this.annotatedProperty = annotatedProperty;
         }
 
+        @Nullable
         public String getGetterOnly() {
             return getterOnly;
         }

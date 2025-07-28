@@ -1,11 +1,11 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.mattbertolini.spring.web.reactive.bind.config;
 
 import com.mattbertolini.spring.web.bind.introspect.AnnotatedRequestBeanIntrospector;
@@ -37,12 +36,12 @@ import com.mattbertolini.spring.web.reactive.bind.resolver.SessionParameterReque
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.ReactiveAdapterRegistry;
-import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.web.reactive.result.method.annotation.ArgumentResolverConfigurer;
 import org.springframework.web.reactive.result.method.annotation.RequestMappingHandlerAdapter;
 
 import java.util.Collections;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -66,8 +65,8 @@ public class BinderConfiguration implements BeanPostProcessor {
      *
      * @param propertyResolverRegistry The resolver registry to use.
      */
-    public BinderConfiguration(@NonNull PropertyResolverRegistry propertyResolverRegistry) {
-        packagesToScan = new LinkedHashSet<>();
+    public BinderConfiguration(PropertyResolverRegistry propertyResolverRegistry) {
+        packagesToScan = new HashSet<>();
         this.propertyResolverRegistry = propertyResolverRegistry;
     }
 
@@ -116,7 +115,7 @@ public class BinderConfiguration implements BeanPostProcessor {
     }
 
     /**
-     * Add all of the resolvers from the given registry into this registry.
+     * Add all the resolvers from the given registry into this registry.
      *
      * @param propertyResolverRegistry The registry to add resolvers from. Required.
      * @return This instance of the configuration.
@@ -136,12 +135,12 @@ public class BinderConfiguration implements BeanPostProcessor {
     }
 
     @Override
-    public Object postProcessBeforeInitialization(@NonNull Object bean, @NonNull String beanName) {
-        if (!(bean instanceof RequestMappingHandlerAdapter)) {
+    @Nullable
+    public Object postProcessBeforeInitialization(Object bean, String beanName) {
+        if (!(bean instanceof RequestMappingHandlerAdapter adapter)) {
             return bean;
         }
 
-        RequestMappingHandlerAdapter adapter = (RequestMappingHandlerAdapter) bean;
         ArgumentResolverConfigurer resolverConfigurer = adapter.getArgumentResolverConfigurer();
         if (resolverConfigurer != null) {
             ReactiveAdapterRegistry reactiveAdapterRegistry = adapter.getReactiveAdapterRegistry();
@@ -157,7 +156,7 @@ public class BinderConfiguration implements BeanPostProcessor {
         }
         return adapter;
     }
-    
+
     private PropertyResolverRegistry createPropertyResolverRegistry(RequestMappingHandlerAdapter adapter, ReactiveAdapterRegistry reactiveAdapterRegistry) {
         PropertyResolverRegistry registry = new PropertyResolverRegistry();
 

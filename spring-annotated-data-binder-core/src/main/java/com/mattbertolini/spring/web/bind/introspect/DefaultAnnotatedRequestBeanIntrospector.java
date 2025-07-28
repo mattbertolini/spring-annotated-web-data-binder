@@ -1,11 +1,11 @@
 /*
- * Copyright 2019-2022 the original author or authors.
+ * Copyright 2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.mattbertolini.spring.web.bind.introspect;
 
 import com.mattbertolini.spring.web.bind.AbstractPropertyResolverRegistry;
@@ -21,7 +20,6 @@ import com.mattbertolini.spring.web.bind.annotation.BeanParameter;
 import com.mattbertolini.spring.web.bind.resolver.RequestPropertyResolverBase;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import java.beans.PropertyDescriptor;
@@ -39,7 +37,7 @@ public class DefaultAnnotatedRequestBeanIntrospector implements AnnotatedRequest
     
     private final AbstractPropertyResolverRegistry<?> registry;
 
-    public DefaultAnnotatedRequestBeanIntrospector(@NonNull AbstractPropertyResolverRegistry<?> registry) {
+    public DefaultAnnotatedRequestBeanIntrospector(AbstractPropertyResolverRegistry<?> registry) {
         this.registry = registry;
     }
 
@@ -52,18 +50,17 @@ public class DefaultAnnotatedRequestBeanIntrospector implements AnnotatedRequest
      * @throws CircularReferenceException If a circular reference is found while traversing the object graph.
      */
     @Override
-    @NonNull
-    public Map<String, ResolvedPropertyData> getResolverMapFor(@NonNull Class<?> targetType) {
+    public Map<String, ResolvedPropertyData> getResolverMapFor(Class<?> targetType) {
         Set<Class<?>> cycleClasses = new LinkedHashSet<>();
         Map<String, ResolvedPropertyData> propertyData = new HashMap<>();
         recursiveGetResolverMapFor(targetType, null, propertyData, cycleClasses);
         return Collections.unmodifiableMap(propertyData);
     }
 
-    private void recursiveGetResolverMapFor(@NonNull final Class<?> targetType,
+    private void recursiveGetResolverMapFor(final Class<?> targetType,
                                             @Nullable final String prefix,
-                                            @NonNull Map<String, ResolvedPropertyData> propertyData,
-                                            @NonNull final Set<Class<?>> cycleClasses) {
+                                            Map<String, ResolvedPropertyData> propertyData,
+                                            final Set<Class<?>> cycleClasses) {
         PropertyDescriptor[] propertyDescriptors;
         try {
             propertyDescriptors = BeanUtils.getPropertyDescriptors(targetType);
@@ -102,7 +99,7 @@ public class DefaultAnnotatedRequestBeanIntrospector implements AnnotatedRequest
      * @param propertyDescriptor The property descriptor to find a name for. Required.
      * @return The full property name path
      */
-    private String getPropertyName(@Nullable String prefix, @NonNull PropertyDescriptor propertyDescriptor) {
+    private String getPropertyName(@Nullable String prefix, PropertyDescriptor propertyDescriptor) {
         if (prefix == null) {
             return propertyDescriptor.getName();
         }

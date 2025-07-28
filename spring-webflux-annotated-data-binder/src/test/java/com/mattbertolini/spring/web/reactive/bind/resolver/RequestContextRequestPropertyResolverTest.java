@@ -1,11 +1,11 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.mattbertolini.spring.web.reactive.bind.resolver;
 
 import com.mattbertolini.spring.web.bind.annotation.RequestContext;
@@ -23,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.context.i18n.TimeZoneAwareLocaleContext;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.lang.Nullable;
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
 import org.springframework.mock.web.server.MockServerWebExchange;
 import org.springframework.mock.web.server.MockWebSession;
@@ -216,32 +216,42 @@ class RequestContextRequestPropertyResolverTest {
 
     @SuppressWarnings("unused")
     private static class TestingBean {
+        @Nullable
         private ServerWebExchange notAnnotated;
 
+        @Nullable
         @RequestContext
         private NotKnown notKnown;
 
+        @Nullable
         @RequestContext
         private ServerWebExchange serverWebExchange;
 
+        @Nullable
         @RequestContext
         private ServerHttpRequest serverHttpRequest;
 
+        @Nullable
         @RequestContext
         private WebSession webSession;
 
+        @Nullable
         @RequestContext
         private HttpMethod httpMethod;
 
+        @Nullable
         @RequestContext
         private Locale locale;
 
+        @Nullable
         @RequestContext
         private TimeZone timeZone;
 
+        @Nullable
         @RequestContext
         private ZoneId zoneId;
 
+        @Nullable
         public ServerWebExchange getNotAnnotated() {
             return notAnnotated;
         }
@@ -250,6 +260,7 @@ class RequestContextRequestPropertyResolverTest {
             this.notAnnotated = notAnnotated;
         }
 
+        @Nullable
         public NotKnown getNotKnown() {
             return notKnown;
         }
@@ -258,6 +269,7 @@ class RequestContextRequestPropertyResolverTest {
             this.notKnown = notKnown;
         }
 
+        @Nullable
         public ServerWebExchange getServerWebExchange() {
             return serverWebExchange;
         }
@@ -266,6 +278,7 @@ class RequestContextRequestPropertyResolverTest {
             this.serverWebExchange = serverWebExchange;
         }
 
+        @Nullable
         public ServerHttpRequest getServerHttpRequest() {
             return serverHttpRequest;
         }
@@ -274,6 +287,7 @@ class RequestContextRequestPropertyResolverTest {
             this.serverHttpRequest = serverHttpRequest;
         }
 
+        @Nullable
         public WebSession getWebSession() {
             return webSession;
         }
@@ -282,6 +296,7 @@ class RequestContextRequestPropertyResolverTest {
             this.webSession = webSession;
         }
 
+        @Nullable
         public HttpMethod getHttpMethod() {
             return httpMethod;
         }
@@ -290,6 +305,7 @@ class RequestContextRequestPropertyResolverTest {
             this.httpMethod = httpMethod;
         }
 
+        @Nullable
         public Locale getLocale() {
             return locale;
         }
@@ -298,6 +314,7 @@ class RequestContextRequestPropertyResolverTest {
             this.locale = locale;
         }
 
+        @Nullable
         public TimeZone getTimeZone() {
             return timeZone;
         }
@@ -306,6 +323,7 @@ class RequestContextRequestPropertyResolverTest {
             this.timeZone = timeZone;
         }
 
+        @Nullable
         public ZoneId getZoneId() {
             return zoneId;
         }

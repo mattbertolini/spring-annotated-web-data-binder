@@ -40,7 +40,7 @@ class PathParameterIntegrationTest {
     private MockMvc mockMvc;
 
     @BeforeEach
-    public void setUp(WebApplicationContext webApplicationContext) {
+    void setUp(WebApplicationContext webApplicationContext) {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 

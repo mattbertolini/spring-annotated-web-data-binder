@@ -34,7 +34,7 @@ class RequestParameterIntegrationTest {
     private WebTestClient webTestClient;
 
     @BeforeEach
-    public void setUp(WebApplicationContext webApplicationContext) {
+    void setUp(WebApplicationContext webApplicationContext) {
         webTestClient = WebTestClient.bindToApplicationContext(webApplicationContext).build();
     }
 

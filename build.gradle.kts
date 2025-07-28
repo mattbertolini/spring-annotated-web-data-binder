@@ -18,7 +18,7 @@ val reportXmlFile = rootProject.layout.buildDirectory.file("$rootJacocoDir/$cove
 reporting {
     reports {
         named<JacocoCoverageReport>("testCodeCoverageReport") {
-            testType.set(TestSuiteType.UNIT_TEST)
+            testSuiteName.set("allTests")
         }
     }
 }
